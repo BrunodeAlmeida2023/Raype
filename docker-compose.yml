@@ -1,0 +1,23 @@
+services:
+  raype-mail:
+    image: 'sj26/mailcatcher'
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+
+  raype-redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  raype-db:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - "raype-db-data:/var/lib/postgresql/data"
+
+volumes:
+  raype-db-data:

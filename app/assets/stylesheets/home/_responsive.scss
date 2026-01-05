@@ -1,0 +1,66 @@
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+  .home-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 15px;
+  }
+
+  .home-nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .home-nav-btn {
+    margin: 5px 5px 5px 0;
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+
+  .home-banner {
+    height: 180px;
+  }
+
+  .home-banner-slide img {
+    width: 90%;
+    max-width: 350px;
+  }
+
+  .home-banner-slide h1 {
+    font-size: 1.5em;
+  }
+
+  .home-description {
+    padding: 30px 15px;
+    font-size: 16px;
+  }
+
+  .home-description-title {
+    font-size: 1.5em;
+  }
+
+  .home-services-grid {
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 15px;
+  }
+
+  .home-service-card {
+    width: 100%;
+    max-width: 350px;
+    margin: 0 auto;
+  }
+
+  .home-services-title {
+    font-size: 2em;
+  }
+
+  .home-social-link {
+    display: block;
+    margin: 10px 0;
+  }
+}
+

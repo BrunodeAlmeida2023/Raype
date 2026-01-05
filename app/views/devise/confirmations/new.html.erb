@@ -1,0 +1,32 @@
+<% content_for :title, "Reenviar Confirmação - Raype" %>
+<div class="auth-container">
+  <%= render "devise/shared/auth_branding" %>
+
+  <div class="auth-right-panel">
+    <div class="auth-form-container">
+
+      <%= render "devise/shared/flash_messages" %>
+
+      <div class="auth-form-header">
+        <h2>Reenviar confirmação</h2>
+        <p>Não recebeu as instruções de confirmação?</p>
+      </div>
+
+      <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div class="auth-input-group">
+          <%= f.label :email, "E-mail" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %>
+        </div>
+
+        <%= f.submit "Reenviar instruções", class: "auth-btn-submit" %>
+      <% end %>
+
+      <div class="auth-form-footer">
+        <p><%= link_to "Voltar para login", new_session_path(resource_name) %></p>
+      </div>
+    </div>
+  </div>
+</div>
+

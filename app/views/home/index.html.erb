@@ -1,0 +1,92 @@
+<div class="content-wrap">
+  <header class="home-header">
+    <div class="home-header-left">
+      <div class="home-header-logo">
+        <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
+          <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
+        </svg>
+      </div>
+      <h1>RAYPE</h1>
+    </div>
+    <nav class="home-nav">
+      <span class="home-nav-btn home-nav-user">
+        <%= current_user.email %>
+        <% if current_user.admin? %>
+          <span class="home-user-badge">ADMIN</span>
+        <% end %>
+      </span>
+      <a href="#" class="home-nav-btn">Ajuda</a>
+      <a href="#contact-section" class="home-nav-btn" id="contact-button">Contato</a>
+      <a href="#services-section" class="home-nav-btn">Orçamentos</a>
+      <% if current_user.admin? %>
+        <a href="/sidekiq" target="_blank" class="home-nav-btn">Sidekiq</a>
+        <a href="/flipper" target="_blank" class="home-nav-btn">Flipper</a>
+      <% end %>
+      <%= link_to "Sair", destroy_user_session_path, data: { turbo_method: :delete }, class: "home-nav-btn btn-logout" %>
+    </nav>
+  </header>
+
+  <div class="home-banner">
+    <div class="home-banner-carousel" id="carousel-container">
+      <div class="home-banner-slide" id="home-slide-1">
+        <h1>SLIDE 1: OUTDOOR TRIEDO</h1>
+      </div>
+
+      <div class="home-banner-slide" id="home-slide-2">
+        <h1>SLIDE 2: OUTDOOR TRIEDO</h1>
+      </div>
+
+      <div class="home-banner-slide" id="home-slide-3">
+        <h1>SLIDE 3: NOVIDADE LED</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="home-description">
+    <h1 class="home-description-title">Bem Vindo à Raype!</h1>
+    <p class="home-description-text">
+      Na Raype, atuamos no ramo de marketing com outdoors triedo e outdoors de LED, mas o que realmente nos diferencia
+      são as nossas ideias inovadoras e o compromisso em oferecer outdoors de verdade. Saia do comum. Venha para a Raype
+      e descubra como podemos transformar a maneira como o seu público vê a sua marca.
+    </p>
+  </section>
+
+  <section class="home-services" id="services-section">
+    <h1 class="home-services-title">Orçamentos</h1>
+
+    <div class="home-services-grid">
+      <div class="home-service-card">
+        <i class="home-service-icon fas fa-map-location-dot"></i>
+        <div class="home-service-description">Qual outdoor?</div>
+        <button class="home-service-btn">Escolher</button>
+      </div>
+
+      <div class="home-service-card">
+        <i class="home-service-icon fas fa-calendar-alt"></i>
+        <div class="home-service-description">Qual Data?</div>
+        <button class="home-service-btn">Escolher</button>
+      </div>
+
+      <div class="home-service-card">
+        <i class="home-service-icon fas fa-signs-post"></i>
+        <div class="home-service-description">Escolha sua Arte?</div>
+        <button class="home-service-btn">Escolher</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<footer class="home-footer" id="contact-section">
+  <div class="home-footer-content">
+    <p>Siga-nos nas Redes Sociais:</p>
+    <a href="https://www.google.com/maps/place/R.+Heitor+Ferrari+Hablich,+189+-+Centro,+Dois+Vizinhos+-+PR,+85660-000/@-25.7469195,-53.053471,17z"
+       target="_blank"
+       class="home-social-link">
+      <i class="fab fa-instagram"></i>
+      Instagram Raype
+    </a>
+    <p class="home-copyright">&copy; 2026 RAYPE - Todos os direitos reservados.</p>
+  </div>
+</footer>
+

@@ -1,0 +1,15 @@
+#!/bin/sh
+# bin/wait-for-tcp - Aguarda o banco de dados PostgreSQL estar disponível
+
+set -e
+
+host="${1:-localhost}"
+port="${2:-5432}"
+
+echo "Aguardando banco de dados em $host:$port..."
+
+until nc -z "$host" "$port" 2>/dev/null; do
+  sleep 1
+done
+
+echo "Banco de dados está pronto!"

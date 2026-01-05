@@ -1,0 +1,51 @@
+/* Banner carousel styles */
+.home-banner {
+  width: 100%;
+  height: 300px;
+  background-color: #da6420;
+  overflow: hidden;
+  position: relative;
+}
+
+.home-banner-carousel {
+  display: flex;
+  width: 400%;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.home-banner-slide {
+  width: calc(100% / 4);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.home-banner-slide img {
+  width: 550px;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-banner-slide h1 {
+  color: white;
+  font-size: 2.5em;
+  text-align: center;
+}
+
+#home-slide-2 {
+  background-color: #ff9100;
+}
+
+#home-slide-3 {
+  background-color: #000000;
+}
+
+#home-slide-3 h1 {
+  color: #ff9100;
+}
+

@@ -1,0 +1,5 @@
+# stripe: bin/wait-for-it localhost:3000 -- bin/stripe
+docker: docker compose up
+web: rm -f tmp/pids/server.pid && bin/wait-for-tcp localhost && env RUBY_DEBUG_OPEN=true bin/rails server -p 3000
+worker: bin/wait-for-tcp localhost 6379 && bundle exec sidekiq
+css: yarn build:css --watch

@@ -1,0 +1,32 @@
+<% content_for :title, "Esqueci a Senha - Raype" %>
+<div class="auth-container">
+  <%= render "devise/shared/auth_branding" %>
+
+  <div class="auth-right-panel">
+    <div class="auth-form-container">
+
+      <%= render "devise/shared/flash_messages" %>
+
+      <div class="auth-form-header">
+        <h2>Esqueceu a senha?</h2>
+        <p>Digite seu e-mail para receber instruções de recuperação</p>
+      </div>
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <%= render "devise/shared/error_messages", resource: resource %>
+
+        <div class="auth-input-group">
+          <%= f.label :email, "E-mail" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "seu@email.com" %>
+        </div>
+
+        <%= f.submit "Enviar instruções", class: "auth-btn-submit" %>
+      <% end %>
+
+      <div class="auth-form-footer">
+        <p><%= link_to "Voltar para login", new_session_path(resource_name) %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
