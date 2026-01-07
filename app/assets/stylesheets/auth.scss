@@ -185,6 +185,48 @@
   }
 }
 
+// Password Toggle
+.auth-password-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  .auth-password-field {
+    width: 100%;
+    padding-right: 50px !important;
+  }
+
+  .auth-password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    transition: color 0.3s ease;
+    z-index: 10;
+
+    &:hover {
+      color: #ff6b00;
+    }
+
+    &:focus {
+      outline: none;
+    }
+
+    .eye-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
 // Document Row
 .auth-documento-row {
   display: flex;
