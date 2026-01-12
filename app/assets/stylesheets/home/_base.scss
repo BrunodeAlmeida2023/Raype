@@ -1,6 +1,12 @@
 /* Base styles for home page */
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
   font-family: Arial, sans-serif;
   background-color: #f4f4f9;
   color: #333;
@@ -9,11 +15,77 @@ body {
   flex-direction: column;
 }
 
+/* Orange background for specific form pages */
+body.orange-bg {
+  background: linear-gradient(135deg, #ff6b00 0%, #ff8c33 100%);
+}
+
 .content-wrap {
   flex: 1;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Flash Messages */
+.flash-notice,
+.flash-alert {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  padding: 16px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  font-size: 1.1em;
+  font-weight: 600;
+  animation: slideDown 0.4s ease-out, fadeOut 0.5s ease-in 4.5s;
+  max-width: 90%;
+  text-align: center;
+}
+
+.flash-notice {
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  border: 2px solid #45a049;
+}
+
+.flash-alert {
+  background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+  color: white;
+  border: 2px solid #da190b;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Auto-hide flash messages after 5s */
+.flash-notice,
+.flash-alert {
+  animation-fill-mode: forwards;
 }
 

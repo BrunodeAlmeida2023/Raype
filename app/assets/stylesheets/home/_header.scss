@@ -1,23 +1,26 @@
 /* Header styles */
 .home-header {
-  width: 100%;
-  padding: 10px 20px;
+  width: 100vw;
+  padding: 15px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #ffffff;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  box-sizing: border-box;
 }
 
 .home-header-left {
   display: flex;
   align-items: center;
   gap: 15px;
+  padding-left: 20px;
 }
 
 .home-header-logo {
-  height: 50px;
-  display: flex;
   align-items: center;
 
   svg {
@@ -35,6 +38,7 @@
 .home-nav {
   display: flex;
   gap: 15px;
+  padding-right: 20px;
 }
 
 .home-nav-btn {

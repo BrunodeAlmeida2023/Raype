@@ -8,8 +8,16 @@ Rails.application.routes.draw do
     confirmations: 'users/confirmations'
   }
 
-  # Root path
   root "home#index"
+
+  resource :home, only: [:show], controller: 'home' do
+    get :find_outdoor
+    get :find_date
+    get :choose_art
+    post :post_find_outdoor
+    post :post_find_date
+    post :post_choose_art
+  end
 
   # Sidekiq Web UI - Requer autenticação admin
   authenticate :user, ->(user) { user.admin? } do

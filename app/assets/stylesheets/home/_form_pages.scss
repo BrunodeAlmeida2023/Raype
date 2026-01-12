@@ -1,0 +1,89 @@
+/* Styles específicos para páginas de formulário (find_outdoor, find_date, choose_art) */
+
+/* Header nas páginas de formulário - TOPO, LARGURA TOTAL */
+body.orange-bg .home-header {
+  width: 100vw;
+  margin: 0;
+  margin-left: calc(-50vw + 50%);
+  margin-right: calc(-50vw + 50%);
+  padding: 15px 20px;
+  border-radius: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  box-sizing: border-box;
+}
+
+body.orange-bg .home-header-left {
+  padding-left: 20px;
+}
+
+body.orange-bg .home-nav {
+  padding-right: 20px;
+}
+
+/* Content-wrap nas páginas de formulário */
+body.orange-bg .content-wrap {
+  padding: 40px 20px 20px 20px;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Home-services nas páginas de formulário */
+body.orange-bg .home-services {
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+}
+
+@media screen and (max-width: 768px) {
+  body.orange-bg .home-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+  }
+
+  body.orange-bg .home-header-left {
+    padding-left: 10px;
+  }
+
+  body.orange-bg .home-nav {
+    margin-top: 0;
+    width: auto;
+    padding-right: 10px;
+  }
+
+  body.orange-bg .home-nav-btn {
+    margin: 0;
+    padding: 8px 15px;
+    font-size: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  body.orange-bg .home-header {
+    padding: 8px 10px;
+  }
+
+  body.orange-bg .home-header-left {
+    padding-left: 5px;
+    gap: 8px;
+  }
+
+  body.orange-bg .home-header-left h1 {
+    font-size: 1.3em;
+  }
+
+  body.orange-bg .home-nav {
+    padding-right: 5px;
+  }
+
+  body.orange-bg .home-nav-btn {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
+

@@ -1,0 +1,66 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
+        <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
+      </svg>
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="content-wrap">
+  <section class="home-services">
+    <h1 class="home-services-title">Escolha sua Arte</h1>
+
+    <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container" do |f| %>
+      <div class="home-form-content">
+        <div class="home-form-group">
+          <%= f.label :art_file, "Upload da sua arte:", class: "home-form-label" %>
+          <%= f.file_field :art_file,
+              accept: "image/*",
+              class: "home-form-file-input",
+              required: true,
+              onchange: "previewImage(event)"
+          %>
+          <div id="image-preview" class="home-image-preview"></div>
+        </div>
+
+        <div class="home-form-group">
+          <%= f.label :art_description, "Descrição da arte:", class: "home-form-label" %>
+          <%= f.text_area :art_description,
+              placeholder: "Descreva sua arte...",
+              rows: 4,
+              class: "home-form-textarea"
+          %>
+        </div>
+
+        <div class="home-form-actions">
+          <%= f.submit "Enviar Arte", class: "home-submit-btn" %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+</div>
+
+<script>
+function previewImage(event) {
+  const preview = document.getElementById('image-preview');
+  const file = event.target.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;">';
+    }
+    reader.readAsDataURL(file);
+  }
+}
+</script>
+

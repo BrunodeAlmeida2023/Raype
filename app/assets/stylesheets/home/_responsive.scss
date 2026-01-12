@@ -62,5 +62,89 @@
     display: block;
     margin: 10px 0;
   }
+
+  /* Form responsive styles */
+  .home-form-container {
+    padding: 10px;
+  }
+
+  .home-form-content {
+    padding: 20px 15px;
+  }
+
+  .home-form-label {
+    font-size: 1em;
+  }
+
+  .home-form-input,
+  .home-form-textarea {
+    font-size: 0.95em;
+    padding: 10px;
+  }
+
+  .home-submit-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1em;
+  }
+}
+
+/* Extra small devices */
+@media screen and (max-width: 480px) {
+  .home-header-left h1 {
+    font-size: 1.3em;
+  }
+
+  .home-header-logo svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .home-services-title {
+    font-size: 1.7em;
+    margin-bottom: 25px;
+  }
+
+  .home-service-icon {
+    font-size: 2.8em;
+  }
+
+  .home-service-description {
+    font-size: 1em;
+  }
+
+  .home-form-content {
+    padding: 15px 10px;
+  }
+
+  .home-submit-btn {
+    padding: 12px 15px;
+    font-size: 0.95em;
+  }
+
+  /* Flash messages responsive */
+  .flash-notice,
+  .flash-alert {
+    top: 10px;
+    padding: 12px 20px;
+    font-size: 0.95em;
+    max-width: 95%;
+  }
+}
+
+/* Tablet landscape */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+  .home-services-grid {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .home-service-card {
+    width: 250px;
+  }
+
+  .home-form-container {
+    max-width: 550px;
+  }
 }
 

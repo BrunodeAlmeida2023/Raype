@@ -59,20 +59,24 @@
       <div class="home-service-card">
         <i class="home-service-icon fas fa-map-location-dot"></i>
         <div class="home-service-description">Qual outdoor?</div>
-        <button class="home-service-btn">Escolher</button>
+        <%= link_to "Escolher", find_outdoor_home_path, class: "home-service-btn" %>
       </div>
 
       <div class="home-service-card">
         <i class="home-service-icon fas fa-calendar-alt"></i>
         <div class="home-service-description">Qual Data?</div>
-        <button class="home-service-btn">Escolher</button>
+        <%= link_to "Escolher", find_date_home_path, class: "home-service-btn" %>
       </div>
 
       <div class="home-service-card">
         <i class="home-service-icon fas fa-signs-post"></i>
         <div class="home-service-description">Escolha sua Arte?</div>
-        <button class="home-service-btn">Escolher</button>
+        <%= link_to "Escolher", choose_art_home_path, class: "home-service-btn" %>
       </div>
+    </div>
+
+    <div style="text-align: center; width: 100%;">
+      <button class="home-finalize-budget-btn">Finalizar Orçamento</button>
     </div>
   </section>
 </div>

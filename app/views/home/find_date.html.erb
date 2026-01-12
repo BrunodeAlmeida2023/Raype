@@ -1,0 +1,36 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
+        <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
+      </svg>
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="content-wrap">
+  <section class="home-services">
+    <h1 class="home-services-title">Qual Data?</h1>
+
+    <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container" do |f| %>
+      <div class="home-form-content">
+        <div class="home-form-group">
+          <%= f.label :selected_date, "Selecione a data:", class: "home-form-label" %>
+          <%= f.date_field :selected_date, class: "home-form-input", required: true %>
+        </div>
+
+        <div class="home-form-actions">
+          <%= f.submit "Confirmar Data", class: "home-submit-btn" %>
+        </div>
+      </div>
+    <% end %>
+  </section>
+</div>
+

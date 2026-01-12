@@ -41,6 +41,8 @@
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="cssbundling-rails (v1.4.3, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="date (v3.5.1, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="TEST" name="debase (v3.0.12, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="debase-ruby_core_source (v3.4.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="debug (v1.11.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="devise (v4.9.4, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="drb (v2.2.3, asdf: 3.3.6) [gem]" level="application" />
@@ -107,6 +109,7 @@
     <orderEntry type="library" scope="PROVIDED" name="rubocop-performance (v1.26.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubocop-rails (v2.34.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="TEST" name="rubocop-rails-omakase (v1.1.0, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="TEST" name="ruby-debug-ide (v3.0.12, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ruby-progressbar (v1.13.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rubyzip (v3.2.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="sanitize (v7.0.0, asdf: 3.3.6) [gem]" level="application" />

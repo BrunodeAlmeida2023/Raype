@@ -5,6 +5,12 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  background: rgba(255, 255, 255, 0.95);
+  margin: 0 auto 80px auto;
+  border-radius: 20px;
+  max-width: 1200px;
+  width: 100%;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
 .home-services-title {
@@ -17,11 +23,12 @@
 
 .home-services-grid {
   display: flex;
-  gap: 30px;
+  gap: 50px;
   padding: 20px;
   width: 100%;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 
 .home-service-card {
@@ -71,5 +78,129 @@
 
 .home-service-btn:hover {
   background-color: #ff6600;
+}
+
+/* Finalizar Orçamento Button */
+.home-finalize-budget-btn {
+  background-color: #ca8504;
+  color: white;
+  border: none;
+  padding: 15px 50px;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-top: 20px;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.home-finalize-budget-btn:hover {
+  background-color: #ff6600;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(202, 133, 4, 0.3);
+}
+
+/* Form Container Styles */
+.home-form-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.home-form-content {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.home-form-group {
+  margin-bottom: 25px;
+}
+
+.home-form-label {
+  display: block;
+  font-size: 1.1em;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.home-form-input,
+.home-form-textarea {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 1em;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.home-form-input:focus,
+.home-form-textarea:focus {
+  border-color: #ff6600;
+  box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+}
+
+.home-form-textarea {
+  resize: vertical;
+  font-family: inherit;
+  min-height: 100px;
+}
+
+.home-form-file-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 2px dashed #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.home-form-file-input:hover {
+  border-color: #ff6600;
+}
+
+.home-image-preview {
+  margin-top: 15px;
+  text-align: center;
+  min-height: 50px;
+}
+
+.home-form-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.home-submit-btn {
+  background: linear-gradient(135deg, #ff6600 0%, #ff8c00 100%);
+  color: white;
+  border: none;
+  padding: 14px 40px;
+  font-size: 1.1em;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
+}
+
+.home-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 102, 0, 0.3);
+  background: linear-gradient(135deg, #ff8c00 0%, #ffa500 100%);
+}
+
+.home-submit-btn:active {
+  transform: translateY(0);
 }
 
