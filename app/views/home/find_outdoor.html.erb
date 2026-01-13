@@ -24,19 +24,28 @@
         <div class="home-form-group">
           <%= f.label :outdoor_type, "Escolha o tipo de outdoor:", class: "home-form-label" %>
           <%= f.select :outdoor_type,
-              options_for_select([
-                ['Outdoor Triedo', 'triedo'],
-                ['Outdoor LED', 'led'],
-                ['Outdoor Digital', 'digital']
-              ]),
+              options_for_select(Outdoor.outdoor_type_options, @outdoor&.outdoor_type),
               { prompt: 'Selecione uma opção' },
               { class: "home-form-input", required: true }
           %>
         </div>
 
         <div class="home-form-group">
-          <%= f.label :location, "Local desejado:", class: "home-form-label" %>
-          <%= f.text_field :location, placeholder: "Digite o local...", class: "home-form-input", required: true %>
+          <%= f.label :outdoor_location, "Escolha o local do outdoor:", class: "home-form-label" %>
+          <%= f.select :outdoor_location,
+              options_for_select(Outdoor.outdoor_location_options, @outdoor&.outdoor_location),
+              { prompt: 'Selecione uma opção' },
+              { class: "home-form-input", required: true }
+          %>
+        </div>
+
+        <div class="home-form-group">
+          <%= f.label :outdoor_size, "Tamanho do outdoor selecionado:", class: "home-form-label" %>
+          <%= f.select :outdoor_size,
+              options_for_select(Outdoor.outdoor_size_options, @outdoor&.outdoor_size),
+              { prompt: 'Selecione uma opção' },
+              { class: "home-form-input", required: true }
+          %>
         </div>
 
         <div class="home-form-actions">

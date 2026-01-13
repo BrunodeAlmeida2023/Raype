@@ -6,4 +6,6 @@ import "./home_carousel"
 import "./home_scroll"
 import "./password_toggle"
 import "./flash_messages"
+import "./date_validation"
+import "./choose_art"
 

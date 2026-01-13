@@ -11,7 +11,7 @@
     <h1>RAYPE</h1>
   </div>
   <nav class="home-nav">
-    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
+    <%= link_to "Voltar", find_outdoor_home_path, class: "home-nav-btn" %>
   </nav>
 </header>
 
@@ -19,12 +19,29 @@
   <section class="home-services">
     <h1 class="home-services-title">Qual Data?</h1>
 
-    <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container" do |f| %>
+    <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container", id: "date-form" do |f| %>
       <div class="home-form-content">
         <div class="home-form-group">
-          <%= f.label :selected_date, "Selecione a data:", class: "home-form-label" %>
-          <%= f.date_field :selected_date, class: "home-form-input", required: true %>
+          <%= f.label :selected_start_date, "Data Inicial:", class: "home-form-label" %>
+          <%= f.date_field :selected_start_date,
+              value: @outdoor&.selected_start_date,
+              class: "home-form-input",
+              required: true,
+              id: "start_date",
+              min: Date.today.to_s %>
         </div>
+
+        <div class="home-form-group">
+          <%= f.label :selected_end_date, "Data Final:", class: "home-form-label" %>
+          <%= f.date_field :selected_end_date,
+              value: @outdoor&.selected_end_date,
+              class: "home-form-input",
+              required: true,
+              id: "end_date",
+              min: (Date.today + 1.month).to_s %>
+        </div>
+
+        <p class="home-form-hint">* A data final deve ser no mínimo 1 mês após a data inicial.</p>
 
         <div class="home-form-actions">
           <%= f.submit "Confirmar Data", class: "home-submit-btn" %>

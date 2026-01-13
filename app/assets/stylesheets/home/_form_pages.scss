@@ -38,6 +38,311 @@ body.orange-bg .home-services {
   width: 100%;
 }
 
+/* Hint de formulário */
+.home-form-hint {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.85em;
+  margin: 10px 0;
+  text-align: center;
+}
+
+/* ===== ESTILOS CHOOSE ART - OUTDOOR TRIEDO PREVIEW ===== */
+
+/* Layout centralizado do choose art */
+.choose-art-form {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.choose-art-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.choose-art-left {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.choose-art-right {
+  width: 100%;
+}
+
+/* Select de quantidade de artes - GRANDE e centralizado */
+.art-quantity-group {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.art-quantity-label {
+  display: block;
+  font-size: 1.6em !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  color: #333 !important;
+  text-align: center !important;
+}
+
+.art-quantity-select {
+  width: 100% !important;
+  max-width: 400px !important;
+  padding: 14px 20px !important;
+  font-size: 1.1em !important;
+  font-weight: 500 !important;
+  border-radius: 10px !important;
+  border: 2px solid rgba(0, 0, 0, 0.2) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center !important;
+  text-align-last: center !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 15px center !important;
+  background-size: 18px !important;
+}
+
+.art-quantity-select:hover {
+  border-color: #333 !important;
+  background-color: #fff !important;
+}
+
+.art-quantity-select:focus {
+  outline: none;
+  border-color: #ff6b00 !important;
+  box-shadow: 0 0 0 5px rgba(255, 107, 0, 0.25);
+}
+
+/* Grid de campos de upload centralizado */
+.upload-fields-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 500px;
+  align-items: center;
+}
+
+/* Campo de upload centralizado */
+.upload-field {
+  text-align: center;
+  width: 100%;
+}
+
+.upload-field .home-form-label {
+  display: block;
+  text-align: center !important;
+  font-size: 1.3em !important;
+  font-weight: 600 !important;
+  margin-bottom: 12px !important;
+}
+
+/* Ações do formulário */
+.choose-art-actions {
+  margin-top: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Mensagem quando não tem arte */
+.no-art-message {
+  text-align: center;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.no-art-message p {
+  color: #333;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+/* Campo de upload de arquivo */
+.upload-field {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+}
+
+.home-form-file-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  color: #333;
+}
+
+.home-form-file-input:hover {
+  border-color: #333;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.home-form-file-input:focus {
+  outline: none;
+  border-color: #ff6b00;
+  box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
+}
+
+/* Preview da imagem upload */
+.upload-preview {
+  margin-top: 15px;
+  text-align: center;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.upload-placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-size: 0.9em;
+}
+
+.upload-thumb {
+  max-width: 200px;
+  max-height: 150px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.upload-thumb:hover {
+  transform: scale(1.05);
+}
+
+/* Container do preview do outdoor */
+.outdoor-preview-container {
+  margin: 30px 0;
+  padding: 25px;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.preview-title {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Wrapper do triedo */
+.triedo-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  perspective: 1000px;
+}
+
+/* Display principal do triedo */
+.triedo-display {
+  width: 100%;
+  max-width: 400px;
+  height: 250px;
+  background: #222;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow:
+    0 0 20px rgba(255, 107, 0, 0.3),
+    inset 0 0 50px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Placeholder quando não há imagem */
+.triedo-placeholder {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.triedo-placeholder p {
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  font-size: 1em;
+}
+
+/* Frame do triedo */
+.triedo-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Painel do triedo com imagem */
+.triedo-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.triedo-panel img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.triedo-panel.triedo-rotating {
+  transform: rotateY(90deg);
+  opacity: 0;
+}
+
+/* Estrutura do poste do outdoor */
+.triedo-structure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -5px;
+}
+
+.triedo-pole {
+  width: 15px;
+  height: 80px;
+  background: linear-gradient(90deg, #666 0%, #999 50%, #666 100%);
+  border-radius: 0 0 5px 5px;
+}
+
+.triedo-base {
+  width: 60px;
+  height: 15px;
+  background: linear-gradient(180deg, #555 0%, #333 100%);
+  border-radius: 0 0 10px 10px;
+}
+
+/* Hint do preview */
+.preview-hint {
+  color: rgba(255, 255, 255, 0.6);
+  text-align: center;
+  font-size: 0.85em;
+  margin-top: 15px;
+}
+
 @media screen and (max-width: 768px) {
   body.orange-bg .home-header {
     flex-direction: row;
@@ -61,6 +366,25 @@ body.orange-bg .home-services {
     padding: 8px 15px;
     font-size: 14px;
   }
+
+  /* Preview responsivo */
+  .triedo-display {
+    max-width: 300px;
+    height: 200px;
+  }
+
+  .outdoor-preview-container {
+    padding: 20px 15px;
+    margin: 20px 0;
+  }
+
+  .preview-title {
+    font-size: 1.1em;
+  }
+
+  .triedo-pole {
+    height: 60px;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -83,6 +407,38 @@ body.orange-bg .home-services {
 
   body.orange-bg .home-nav-btn {
     padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  /* Preview mobile */
+  .triedo-display {
+    max-width: 250px;
+    height: 160px;
+  }
+
+  .upload-thumb {
+    max-width: 150px;
+    max-height: 100px;
+  }
+
+  .upload-preview {
+    min-height: 60px;
+  }
+
+  .outdoor-preview-container {
+    padding: 15px 10px;
+  }
+
+  .preview-title {
+    font-size: 1em;
+  }
+
+  .upload-field {
+    padding: 10px;
+  }
+
+  .home-form-file-input {
+    padding: 10px;
     font-size: 13px;
   }
 }

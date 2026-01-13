@@ -4,6 +4,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :confirmable
 
+  # Relacionamentos
+  has_one :outdoor, dependent: :destroy
+
   # Validações de documento
   validates :documento_tipo, presence: true, inclusion: { in: %w[cpf cnpj] }
   validates :documento_numero, presence: true, uniqueness: true

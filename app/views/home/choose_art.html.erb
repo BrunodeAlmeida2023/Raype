@@ -19,29 +19,48 @@
   <section class="home-services">
     <h1 class="home-services-title">Escolha sua Arte</h1>
 
-    <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container" do |f| %>
-      <div class="home-form-content">
-        <div class="home-form-group">
-          <%= f.label :art_file, "Upload da sua arte:", class: "home-form-label" %>
-          <%= f.file_field :art_file,
-              accept: "image/*",
-              class: "home-form-file-input",
-              required: true,
-              onchange: "previewImage(event)"
-          %>
-          <div id="image-preview" class="home-image-preview"></div>
+    <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container choose-art-form", id: "choose-art-form" do |f| %>
+      <div class="choose-art-layout">
+        <div class="choose-art-left">
+          <div class="home-form-group art-quantity-group">
+            <%= f.label :art_quantity, "Quantas artes você tem?", class: "home-form-label art-quantity-label" %>
+            <%= f.select :art_quantity,
+                options_for_select([
+                  ['Nenhuma (quero que criem para mim)', 0],
+                  ['1 arte', 1],
+                  ['2 artes', 2],
+                  ['3 artes', 3]
+                ], @outdoor&.art_quantity || 0),
+                {},
+                { class: "home-form-select art-quantity-select", id: "art_quantity" }
+            %>
+          </div>
+
+          <div id="upload-fields-container" class="upload-fields-grid">
+            <!-- Campos de upload serão inseridos dinamicamente via JS -->
+          </div>
         </div>
 
-        <div class="home-form-group">
-          <%= f.label :art_description, "Descrição da arte:", class: "home-form-label" %>
-          <%= f.text_area :art_description,
-              placeholder: "Descreva sua arte...",
-              rows: 4,
-              class: "home-form-textarea"
-          %>
+        <div class="choose-art-right">
+          <!-- Preview do Outdoor Triedo -->
+          <div id="outdoor-preview-container" class="outdoor-preview-container" style="display: none;">
+            <h3 class="preview-title">Prévia do seu Outdoor</h3>
+            <div class="triedo-wrapper">
+              <div id="triedo-display" class="triedo-display">
+                <div class="triedo-placeholder">
+                  <p>Faça upload das suas artes para visualizar</p>
+                </div>
+              </div>
+              <div class="triedo-structure">
+                <div class="triedo-pole"></div>
+                <div class="triedo-base"></div>
+              </div>
+            </div>
+            <p class="preview-hint">* As imagens rotacionam automaticamente simulando um outdoor triedo</p>
+          </div>
         </div>
 
-        <div class="home-form-actions">
+        <div class="home-form-actions choose-art-actions">
           <%= f.submit "Enviar Arte", class: "home-submit-btn" %>
         </div>
       </div>
@@ -49,18 +68,4 @@
   </section>
 </div>
 
-<script>
-function previewImage(event) {
-  const preview = document.getElementById('image-preview');
-  const file = event.target.files[0];
-
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      preview.innerHTML = '<img src="' + e.target.result + '" alt="Preview" style="max-width: 100%; max-height: 300px; border-radius: 8px;">';
-    }
-    reader.readAsDataURL(file);
-  }
-}
-</script>
 
