@@ -17,6 +17,7 @@ Rails.application.routes.draw do
     post :post_find_outdoor
     post :post_find_date
     post :post_choose_art
+    post :finalize_budget
   end
 
   # Sidekiq Web UI - Requer autenticação admin

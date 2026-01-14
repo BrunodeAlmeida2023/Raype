@@ -2,15 +2,15 @@
   <header class="home-header">
     <div class="home-header-left">
       <div class="home-header-logo">
-        <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
-          <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
-        </svg>
+        <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
       </div>
       <h1>RAYPE</h1>
     </div>
     <nav class="home-nav">
       <span class="home-nav-btn home-nav-user">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="user-icon">
+          <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+        </svg>
         <%= current_user.email %>
         <% if current_user.admin? %>
           <span class="home-user-badge">ADMIN</span>
@@ -55,28 +55,79 @@
   <section class="home-services" id="services-section">
     <h1 class="home-services-title">Orçamentos</h1>
 
+    <% outdoor_completed = @outdoor&.outdoor_type.present? && @outdoor&.outdoor_location.present? %>
+    <% date_completed = @outdoor&.selected_start_date.present? && @outdoor&.selected_end_date.present? %>
+    <% art_completed = @outdoor&.art_quantity.present? && @outdoor&.art_quantity >= 0 && (@outdoor&.art_quantity == 0 || @outdoor&.art_files&.attached?) %>
+    <% all_completed = outdoor_completed && date_completed && art_completed %>
+
     <div class="home-services-grid">
       <div class="home-service-card">
-        <i class="home-service-icon fas fa-map-location-dot"></i>
-        <div class="home-service-description">Qual outdoor?</div>
-        <%= link_to "Escolher", find_outdoor_home_path, class: "home-service-btn" %>
+        <% if outdoor_completed %>
+          <div class="home-service-icon home-service-check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        <% else %>
+          <i class="home-service-icon fas fa-map-location-dot"></i>
+        <% end %>
+        <div class="home-service-description">
+          <% if outdoor_completed %>
+            <span class="service-completed-text">Outdoor Selecionado</span>
+          <% else %>
+            Qual outdoor?
+          <% end %>
+        </div>
+        <%= link_to outdoor_completed ? "Alterar" : "Escolher", find_outdoor_home_path, class: "home-service-btn #{'btn-alterar' if outdoor_completed}" %>
       </div>
 
       <div class="home-service-card">
-        <i class="home-service-icon fas fa-calendar-alt"></i>
-        <div class="home-service-description">Qual Data?</div>
-        <%= link_to "Escolher", find_date_home_path, class: "home-service-btn" %>
+        <% if date_completed %>
+          <div class="home-service-icon home-service-check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        <% else %>
+          <i class="home-service-icon fas fa-calendar-alt"></i>
+        <% end %>
+        <div class="home-service-description">
+          <% if date_completed %>
+            <span class="service-completed-text">Data Selecionada</span>
+          <% else %>
+            Qual Data?
+          <% end %>
+        </div>
+        <%= link_to date_completed ? "Alterar" : "Escolher", find_date_home_path, class: "home-service-btn #{'btn-alterar' if date_completed}" %>
       </div>
 
       <div class="home-service-card">
-        <i class="home-service-icon fas fa-signs-post"></i>
-        <div class="home-service-description">Escolha sua Arte?</div>
-        <%= link_to "Escolher", choose_art_home_path, class: "home-service-btn" %>
+        <% if art_completed %>
+          <div class="home-service-icon home-service-check">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        <% else %>
+          <i class="home-service-icon fas fa-signs-post"></i>
+        <% end %>
+        <div class="home-service-description">
+          <% if art_completed %>
+            <span class="service-completed-text">Arte Enviada</span>
+          <% else %>
+            Escolha sua Arte?
+          <% end %>
+        </div>
+        <%= link_to art_completed ? "Alterar" : "Escolher", choose_art_home_path, class: "home-service-btn #{'btn-alterar' if art_completed}" %>
       </div>
     </div>
 
     <div style="text-align: center; width: 100%;">
-      <button class="home-finalize-budget-btn">Finalizar Orçamento</button>
+      <% if all_completed %>
+        <%= link_to "Finalizar Orçamento", finalize_budget_home_path, class: "home-finalize-budget-btn", data: { turbo_method: :post } %>
+      <% else %>
+        <button class="home-finalize-budget-btn disabled" disabled>Finalizar Orçamento</button>
+      <% end %>
     </div>
   </section>
 </div>
@@ -84,11 +135,10 @@
 <footer class="home-footer" id="contact-section">
   <div class="home-footer-content">
     <p>Siga-nos nas Redes Sociais:</p>
-    <a href="https://www.google.com/maps/place/R.+Heitor+Ferrari+Hablich,+189+-+Centro,+Dois+Vizinhos+-+PR,+85660-000/@-25.7469195,-53.053471,17z"
-       target="_blank"
-       class="home-social-link">
-      <i class="fab fa-instagram"></i>
-      Instagram Raype
+    <a href="https://www.instagram.com/raype" target="_blank" class="home-social-link">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+      </svg>
     </a>
     <p class="home-copyright">&copy; 2026 RAYPE - Todos os direitos reservados.</p>
   </div>

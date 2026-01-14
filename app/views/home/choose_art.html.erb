@@ -3,10 +3,7 @@
 <header class="home-header">
   <div class="home-header-left">
     <div class="home-header-logo">
-      <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
-        <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
-      </svg>
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
     </div>
     <h1>RAYPE</h1>
   </div>
@@ -18,6 +15,19 @@
 <div class="content-wrap">
   <section class="home-services">
     <h1 class="home-services-title">Escolha sua Arte</h1>
+
+    <%# Dados das artes já salvas para o JavaScript %>
+    <% saved_art_urls = [] %>
+    <% if @outdoor&.art_files&.attached? %>
+      <% @outdoor.art_files.each do |art_file| %>
+        <% saved_art_urls << url_for(art_file) %>
+      <% end %>
+    <% end %>
+    <div id="saved-art-data"
+         data-art-quantity="<%= @outdoor&.art_quantity || 0 %>"
+         data-saved-arts="<%= saved_art_urls.to_json %>"
+         style="display: none;">
+    </div>
 
     <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container choose-art-form", id: "choose-art-form" do |f| %>
       <div class="choose-art-layout">

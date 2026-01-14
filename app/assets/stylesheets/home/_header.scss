@@ -11,6 +11,7 @@
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
 .home-header-left {
@@ -27,18 +28,27 @@
     height: 50px;
     width: 50px;
   }
+
+  .header-logo-img {
+    height: 70px;
+    width: auto;
+    object-fit: contain;
+  }
 }
 
 .home-header h1 {
   margin: 0;
   font-size: 1.8rem;
-  color: #ff6b00;
+  color: #000000;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
 }
 
 .home-nav {
   display: flex;
   gap: 15px;
   padding-right: 20px;
+  align-items: center;
 }
 
 .home-nav-btn {
@@ -51,7 +61,10 @@
   font-size: 15px;
   transition: background-color 0.3s;
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: Arial, sans-serif;
 }
 
 .home-nav-btn:hover {
@@ -62,9 +75,18 @@
   background: transparent;
   color: #333;
   cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 
   &:hover {
     background: transparent;
+  }
+
+  .user-icon {
+    width: 24px;
+    height: 24px;
+    fill: #ff6b00;
   }
 }
 

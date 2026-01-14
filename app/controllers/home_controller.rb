@@ -88,6 +88,30 @@ class HomeController < ApplicationController
     end
   end
 
+  def finalize_budget
+    @outdoor = current_user.outdoor
+
+    if @outdoor.nil?
+      flash[:alert] = "Você precisa criar um outdoor primeiro."
+      redirect_to root_path
+      return
+    end
+
+    outdoor_completed = @outdoor.outdoor_type.present? && @outdoor.outdoor_location.present?
+    date_completed = @outdoor.selected_start_date.present? && @outdoor.selected_end_date.present?
+    art_completed = @outdoor.art_quantity.present? && @outdoor.art_quantity >= 0 && (@outdoor.art_quantity == 0 || @outdoor.art_files.attached?)
+
+    unless outdoor_completed && date_completed && art_completed
+      flash[:alert] = "Você precisa completar todas as etapas antes de finalizar o orçamento."
+      redirect_to root_path
+      return
+    end
+
+    @outdoor.status_completed!
+    flash[:notice] = "Orçamento finalizado com sucesso! Em breve entraremos em contato."
+    redirect_to root_path
+  end
+
   private
 
   def set_outdoor

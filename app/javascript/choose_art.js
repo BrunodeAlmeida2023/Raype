@@ -3,6 +3,7 @@ function initChooseArt() {
   const uploadContainer = document.getElementById('upload-fields-container');
   const previewContainer = document.getElementById('outdoor-preview-container');
   const triedoDisplay = document.getElementById('triedo-display');
+  const savedArtData = document.getElementById('saved-art-data');
 
   if (!artQuantitySelect || !uploadContainer) return;
 
@@ -10,14 +11,26 @@ function initChooseArt() {
   let currentImageIndex = 0;
   let rotationInterval = null;
 
+  // Carrega dados das artes já salvas
+  let savedArts = [];
+  let savedQuantity = 0;
+  if (savedArtData) {
+    savedQuantity = parseInt(savedArtData.dataset.artQuantity) || 0;
+    try {
+      savedArts = JSON.parse(savedArtData.dataset.savedArts || '[]');
+    } catch (e) {
+      savedArts = [];
+    }
+  }
+
   // Atualiza campos de upload baseado na quantidade selecionada
   artQuantitySelect.addEventListener('change', function() {
     const quantity = parseInt(this.value);
-    updateUploadFields(quantity);
+    updateUploadFields(quantity, []);
     resetPreview();
   });
 
-  function updateUploadFields(quantity) {
+  function updateUploadFields(quantity, existingArts = []) {
     uploadContainer.innerHTML = '';
     uploadedImages = [];
 
@@ -34,6 +47,9 @@ function initChooseArt() {
     if (previewContainer) previewContainer.style.display = 'block';
 
     for (let i = 1; i <= quantity; i++) {
+      const existingArt = existingArts[i - 1];
+      const hasExistingArt = existingArt && existingArt.length > 0;
+
       const fieldHtml = `
         <div class="home-form-group upload-field">
           <label for="art_file_${i}" class="home-form-label">Arte ${i}:</label>
@@ -43,19 +59,33 @@ function initChooseArt() {
                  accept="image/*" 
                  class="home-form-file-input"
                  data-index="${i}"
-                 required>
+                 ${hasExistingArt ? '' : 'required'}>
           <div class="upload-preview" id="preview_${i}">
-            <span class="upload-placeholder">Clique para selecionar uma imagem</span>
+            ${hasExistingArt 
+              ? `<img src="${existingArt}" alt="Arte ${i} salva" class="upload-thumb">
+                 <p class="saved-art-label">Arte atual salva</p>` 
+              : '<span class="upload-placeholder">Clique para selecionar uma imagem</span>'}
           </div>
+          ${hasExistingArt ? '<p class="art-hint">* Selecione um novo arquivo apenas se quiser trocar a arte</p>' : ''}
         </div>
       `;
       uploadContainer.insertAdjacentHTML('beforeend', fieldHtml);
+
+      // Se tem arte salva, adiciona ao array de imagens para preview
+      if (hasExistingArt) {
+        uploadedImages[i - 1] = existingArt;
+      }
     }
 
     // Adiciona listeners aos novos campos
     document.querySelectorAll('input[name="art_files[]"]').forEach(input => {
       input.addEventListener('change', handleFileSelect);
     });
+
+    // Atualiza o preview com as artes existentes
+    if (existingArts.length > 0) {
+      updateTriedoPreview();
+    }
   }
 
   function handleFileSelect(event) {
@@ -66,7 +96,8 @@ function initChooseArt() {
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview ${index}" class="upload-thumb">`;
+        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview ${index}" class="upload-thumb">
+                               <p class="saved-art-label" style="color: #28a745;">Nova arte selecionada</p>`;
         uploadedImages[index - 1] = e.target.result;
         updateTriedoPreview();
       };
@@ -151,9 +182,15 @@ function initChooseArt() {
     }
   }
 
-  // Inicializa com o valor atual do select
+  // Inicializa com o valor atual do select e artes salvas
   const initialQuantity = parseInt(artQuantitySelect.value) || 0;
-  updateUploadFields(initialQuantity);
+
+  // Se há artes salvas, carrega-as
+  if (savedArts.length > 0 && savedQuantity > 0) {
+    updateUploadFields(savedQuantity, savedArts);
+  } else {
+    updateUploadFields(initialQuantity, []);
+  }
 }
 
 // Suporte para Turbo (Rails 7) e carregamento normal

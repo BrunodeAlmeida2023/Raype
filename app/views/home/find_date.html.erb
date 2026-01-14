@@ -3,21 +3,34 @@
 <header class="home-header">
   <div class="home-header-left">
     <div class="home-header-logo">
-      <svg width="50" height="50" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="25" cy="25" r="23" fill="#ff6b00"/>
-        <text x="25" y="35" font-family="Arial, sans-serif" font-size="30" font-weight="bold" fill="black" text-anchor="middle">R</text>
-      </svg>
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
     </div>
     <h1>RAYPE</h1>
   </div>
   <nav class="home-nav">
-    <%= link_to "Voltar", find_outdoor_home_path, class: "home-nav-btn" %>
+    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
   </nav>
 </header>
 
 <div class="content-wrap">
   <section class="home-services">
     <h1 class="home-services-title">Qual Data?</h1>
+
+    <% if @outdoor&.outdoor_type == 'triedo' %>
+      <div class="triedo-warning-alert">
+        <div class="triedo-warning-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        <div class="triedo-warning-content">
+          <strong>Atenção - Outdoor Triedo:</strong>
+          <p>O outdoor triedo possui um tempo mínimo de <strong>5 dias úteis</strong> para fabricação e instalação após a confirmação do pagamento.</p>
+        </div>
+      </div>
+    <% end %>
 
     <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container", id: "date-form" do |f| %>
       <div class="home-form-content">

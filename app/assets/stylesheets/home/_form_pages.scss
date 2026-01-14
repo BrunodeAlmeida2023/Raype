@@ -1,5 +1,95 @@
 /* Styles específicos para páginas de formulário (find_outdoor, find_date, choose_art) */
 
+/* ===== TRIEDO WARNING ALERT ===== */
+.triedo-warning-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 18px 22px;
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.25);
+  max-width: 600px;
+  width: 100%;
+}
+
+.triedo-warning-icon {
+  flex-shrink: 0;
+  color: #856404;
+  margin-top: 2px;
+}
+
+.triedo-warning-content {
+  flex: 1;
+}
+
+.triedo-warning-content strong {
+  display: block;
+  color: #856404;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+
+.triedo-warning-content p {
+  color: #664d03;
+  font-size: 0.95em;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.triedo-warning-content p strong {
+  display: inline;
+  font-size: inherit;
+  margin-bottom: 0;
+}
+
+/* ===== LOCATION MAP BUTTON ===== */
+.location-select-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.location-select-wrapper .home-form-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.location-map-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #ff6b00, #ff8533);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95em;
+  text-decoration: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(255, 107, 0, 0.35);
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.location-map-btn:hover {
+  background: linear-gradient(135deg, #ff8533, #ff6b00);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 0, 0.45);
+  color: #fff;
+}
+
+.location-map-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(255, 107, 0, 0.3);
+}
+
+.location-map-btn svg {
+  flex-shrink: 0;
+}
+
 /* Header nas páginas de formulário - TOPO, LARGURA TOTAL */
 body.orange-bg .home-header {
   width: 100vw;
@@ -231,6 +321,22 @@ body.orange-bg .home-services {
   transform: scale(1.05);
 }
 
+/* Label de arte salva */
+.saved-art-label {
+  font-size: 0.85em;
+  color: #ff6b00;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* Dica de arte existente */
+.art-hint {
+  font-size: 0.8em;
+  color: rgba(0, 0, 0, 0.5);
+  margin-top: 5px;
+  font-style: italic;
+}
+
 /* Container do preview do outdoor */
 .outdoor-preview-container {
   margin: 30px 0;
@@ -365,6 +471,17 @@ body.orange-bg .home-services {
     margin: 0;
     padding: 8px 15px;
     font-size: 14px;
+  }
+
+  /* Location map button responsivo */
+  .location-select-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .location-map-btn {
+    justify-content: center;
+    padding: 14px 20px;
   }
 
   /* Preview responsivo */

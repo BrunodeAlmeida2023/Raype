@@ -80,6 +80,55 @@
   background-color: #ff6600;
 }
 
+/* Botão Alterar - quando etapa concluída */
+.home-service-btn.btn-alterar {
+  background-color: transparent;
+  color: #ca8504;
+  border: 2px solid #ca8504;
+}
+
+.home-service-btn.btn-alterar:hover {
+  background-color: #ca8504;
+  color: white;
+}
+
+/* Check de etapa concluída */
+.home-service-check {
+  color: #ca8504 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  animation: checkPulse 0.5s ease-in-out;
+}
+
+.home-service-check svg {
+  width: 56px;
+  height: 56px;
+  fill: #ca8504;
+}
+
+@keyframes checkPulse {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Texto de etapa concluída */
+.service-completed-text {
+  color: #ca8504;
+  font-weight: bold;
+  font-size: 0.95em;
+}
+
 /* Finalizar Orçamento Button */
 .home-finalize-budget-btn {
   background-color: #ca8504;
@@ -101,6 +150,20 @@
   background-color: #ff6600;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(202, 133, 4, 0.3);
+}
+
+/* Botão Finalizar Orçamento Disabled */
+.home-finalize-budget-btn.disabled {
+  background-color: #cccccc;
+  color: #888888;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.home-finalize-budget-btn.disabled:hover {
+  background-color: #cccccc;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Form Container Styles */
