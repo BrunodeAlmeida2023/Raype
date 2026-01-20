@@ -39,8 +39,7 @@ class Outdoor < ApplicationRecord
   def self.outdoor_type_options
     [
       ['Outdoor Triedo', 'triedo'],
-      ['Outdoor LED', 'led'],
-      ['Outdoor Digital', 'digital']
+      ['Outdoor LED', 'led']
     ]
   end
 
@@ -55,8 +54,7 @@ class Outdoor < ApplicationRecord
   def self.outdoor_size_options
     [
       ['Pequeno (3x2m)', 'pequeno'],
-      ['Médio (5x3m)', 'medio'],
-      ['Grande (9x3m)', 'grande']
+      ['Médio (5x3m)', 'medio']
     ]
   end
 

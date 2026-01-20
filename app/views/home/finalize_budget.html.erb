@@ -37,21 +37,21 @@
         <div class="home-form-group">
           <%= f.label :selected_start_date, "Data Inicial:", class: "home-form-label" %>
           <%= f.date_field :selected_start_date,
-              value: @outdoor&.selected_start_date,
-              class: "home-form-input",
-              required: true,
-              id: "start_date",
-              min: (Date.today + 5).to_s %>
+                           value: @outdoor&.selected_start_date,
+                           class: "home-form-input",
+                           required: true,
+                           id: "start_date",
+                           min: Date.today.to_s %>
         </div>
 
         <div class="home-form-group">
-          <%= f.label :selected_quantity_month, "Data Final:", class: "home-form-label" %>
-          <%= f.text_field :selected_quantity_month,
-              value: @outdoor&.selected_quantity_month,
-              class: "home-form-input",
-              required: true,
-              id: "quantity_month",
-              min: 1 %>
+          <%= f.label :selected_end_date, "Data Final:", class: "home-form-label" %>
+          <%= f.date_field :selected_end_date,
+                           value: @outdoor&.selected_end_date,
+                           class: "home-form-input",
+                           required: true,
+                           id: "end_date",
+                           min: (Date.today + 1.month).to_s %>
         </div>
 
         <p class="home-form-hint">* A data final deve ser no mínimo 1 mês após a data inicial.</p>

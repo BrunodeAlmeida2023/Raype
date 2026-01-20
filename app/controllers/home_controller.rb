@@ -39,22 +39,19 @@ class HomeController < ApplicationController
     @outdoor = current_user.outdoor || current_user.build_outdoor
 
     start_date = params[:selected_start_date]
-    end_date = params[:selected_end_date]
+    quantity_month = params[:selected_quantity_month]
 
     # Validação no backend: data final deve ser no mínimo 1 mês após a data inicial
-    if start_date.present? && end_date.present?
-      start = Date.parse(start_date)
-      end_d = Date.parse(end_date)
-      min_end_date = start + 1.month
-
-      if end_d < min_end_date
+    if start_date.present? && quantity_month.present?
+      puts "Start Date: #{start_date}, Quantity Month: #{quantity_month.to_i}"
+      if quantity_month.to_i < 1
         flash[:alert] = "A data final deve ser no mínimo 1 mês após a data inicial."
         redirect_to find_date_home_path
         return
       end
     end
 
-    if @outdoor.update(selected_start_date: start_date, selected_end_date: end_date)
+    if @outdoor.update(selected_start_date: start_date, selected_quantity_month: quantity_month)
       flash[:notice] = "Data salva com sucesso!"
       redirect_to root_path
     else

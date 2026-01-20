@@ -69,7 +69,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_13_030718) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "selected_start_date"
-    t.date "selected_end_date"
+    t.integer "selected_quantity_month"
     t.integer "art_quantity"
     t.index ["outdoor_type"], name: "index_outdoors_on_outdoor_type"
     t.index ["status"], name: "index_outdoors_on_status"

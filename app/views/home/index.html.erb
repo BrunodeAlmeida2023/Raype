@@ -56,7 +56,7 @@
     <h1 class="home-services-title">Orçamentos</h1>
 
     <% outdoor_completed = @outdoor&.outdoor_type.present? && @outdoor&.outdoor_location.present? %>
-    <% date_completed = @outdoor&.selected_start_date.present? && @outdoor&.selected_end_date.present? %>
+    <% date_completed = @outdoor&.selected_start_date.present? && @outdoor&.selected_quantity_month.present? %>
     <% art_completed = @outdoor&.art_quantity.present? && @outdoor&.art_quantity >= 0 && (@outdoor&.art_quantity == 0 || @outdoor&.art_files&.attached?) %>
     <% all_completed = outdoor_completed && date_completed && art_completed %>
 
