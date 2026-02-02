@@ -14,11 +14,14 @@ Rails.application.routes.draw do
     get :find_outdoor
     get :find_date
     get :choose_art
+    get :finalize_budget
     post :post_find_outdoor
     post :post_find_date
     post :post_choose_art
-    post :finalize_budget
+    post :post_finalize_budget
   end
+
+  get 'checkout/success', to: 'checkout#success', as: 'checkout_success'
 
   # Sidekiq Web UI - Requer autenticação admin
   authenticate :user, ->(user) { user.admin? } do

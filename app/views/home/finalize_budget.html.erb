@@ -12,55 +12,159 @@
   </nav>
 </header>
 
-<div class="content-wrap">
-  <section class="home-services">
-    <h1 class="home-services-title">Qual Data?</h1>
+<%= form_with url: post_finalize_budget_home_path, method: :post, class: "home-form-container", id: "finalize-budget-form" do |f| %>
+  <div class="budget-container">
+    <h1 class="home-services-title">Resumo do Orçamento</h1>
 
-    <% if @outdoor&.outdoor_type == 'triedo' %>
-      <div class="triedo-warning-alert">
-        <div class="triedo-warning-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="8" x2="12" y2="12"></line>
-            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-          </svg>
+    <%
+      # Cálculos
+      start_date = @outdoor.selected_start_date
+      quantity_months = @outdoor.selected_quantity_month.to_i
+      end_date = start_date + quantity_months.months if start_date.present?
+
+      valor_por_mes = 1200
+      valor_por_arte = 600
+
+      total_outdoor = quantity_months * valor_por_mes
+      total_grafica = @outdoor.art_quantity.to_i * valor_por_arte
+      total_geral = total_outdoor + total_grafica
+    %>
+
+    <div class="budget-layout">
+      <!-- Lado Esquerdo: Detalhes -->
+      <div class="budget-details">
+        <!-- Card: Outdoor -->
+        <div class="budget-card">
+          <div class="budget-card-header">
+            <i class="fas fa-rectangle-ad budget-card-icon"></i>
+            <h3>Outdoor Selecionado</h3>
+          </div>
+          <div class="budget-card-body">
+            <div class="budget-info-row">
+              <span class="budget-label">Tipo:</span>
+              <span class="budget-value"><%= @outdoor.outdoor_type&.titleize %></span>
+            </div>
+            <div class="budget-info-row">
+              <span class="budget-label">Tamanho:</span>
+              <span class="budget-value"><%= @outdoor.outdoor_size %></span>
+            </div>
+            <div class="budget-info-row">
+              <span class="budget-label">Local:</span>
+              <span class="budget-value"><%= @outdoor.outdoor_location %></span>
+            </div>
+          </div>
         </div>
-        <div class="triedo-warning-content">
-          <strong>Atenção - Outdoor Triedo:</strong>
-          <p>O outdoor triedo possui um tempo mínimo de <strong>5 dias úteis</strong> para fabricação e instalação após a confirmação do pagamento.</p>
+
+        <!-- Card: Período -->
+        <div class="budget-card">
+          <div class="budget-card-header">
+            <i class="fas fa-calendar-days budget-card-icon"></i>
+            <h3>Período de Veiculação</h3>
+          </div>
+          <div class="budget-card-body">
+            <div class="budget-info-row">
+              <span class="budget-label">Data Inicial:</span>
+              <span class="budget-value"><%= start_date&.strftime('%d/%m/%Y') %></span>
+            </div>
+            <div class="budget-info-row">
+              <span class="budget-label">Data Final:</span>
+              <span class="budget-value"><%= end_date&.strftime('%d/%m/%Y') %></span>
+            </div>
+            <div class="budget-info-row">
+              <span class="budget-label">Duração:</span>
+              <span class="budget-value highlight"><%= quantity_months %> <%= quantity_months == 1 ? 'mês' : 'meses' %></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card: Artes Gráficas -->
+        <div class="budget-card">
+          <div class="budget-card-header">
+            <i class="fas fa-palette budget-card-icon"></i>
+            <h3>Artes Gráficas</h3>
+          </div>
+          <div class="budget-card-body">
+            <div class="budget-info-row">
+              <span class="budget-label">Quantidade de Artes:</span>
+              <span class="budget-value"><%= @outdoor.art_quantity %> <%= @outdoor.art_quantity == 1 ? 'arte' : 'artes' %></span>
+            </div>
+            <% if @outdoor.art_quantity > 0 %>
+              <div class="budget-info-row">
+                <span class="budget-label">Valor por Arte:</span>
+                <span class="budget-value">R$ <%= number_with_delimiter(valor_por_arte, delimiter: '.') %>,00</span>
+              </div>
+              <div class="budget-arts-preview">
+                <% @outdoor.art_files.each_with_index do |art, index| %>
+                  <div class="budget-art-thumb">
+                    <%= image_tag art, alt: "Arte #{index + 1}" %>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="budget-info-note">
+                <i class="fas fa-info-circle"></i>
+                <p>Artes serão criadas pela nossa equipe de design</p>
+              </div>
+            <% end %>
+          </div>
         </div>
       </div>
-    <% end %>
 
-    <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container", id: "date-form" do |f| %>
-      <div class="home-form-content">
-        <div class="home-form-group">
-          <%= f.label :selected_start_date, "Data Inicial:", class: "home-form-label" %>
-          <%= f.date_field :selected_start_date,
-                           value: @outdoor&.selected_start_date,
-                           class: "home-form-input",
-                           required: true,
-                           id: "start_date",
-                           min: Date.today.to_s %>
-        </div>
+      <!-- Lado Direito: Totais -->
+      <div class="budget-summary">
+        <div class="budget-summary-card">
+          <h3 class="budget-summary-title">Valores</h3>
 
-        <div class="home-form-group">
-          <%= f.label :selected_end_date, "Data Final:", class: "home-form-label" %>
-          <%= f.date_field :selected_end_date,
-                           value: @outdoor&.selected_end_date,
-                           class: "home-form-input",
-                           required: true,
-                           id: "end_date",
-                           min: (Date.today + 1.month).to_s %>
-        </div>
+          <div class="budget-summary-items">
+            <!-- Outdoor -->
+            <div class="budget-summary-item">
+              <div class="budget-summary-item-header">
+                <span class="budget-summary-label">Outdoor (<%= quantity_months %> <%= quantity_months == 1 ? 'mês' : 'meses' %>)</span>
+                <span class="budget-summary-calc"><%= quantity_months %> × R$ <%= number_with_delimiter(valor_por_mes, delimiter: '.') %></span>
+              </div>
+              <div class="budget-summary-value">
+                R$ <%= number_with_delimiter(total_outdoor, delimiter: '.') %>,00
+              </div>
+            </div>
 
-        <p class="home-form-hint">* A data final deve ser no mínimo 1 mês após a data inicial.</p>
+            <!-- Gráfica -->
+            <div class="budget-summary-item">
+              <div class="budget-summary-item-header">
+                <span class="budget-summary-label">Gráfica (<%= @outdoor.art_quantity %> <%= @outdoor.art_quantity == 1 ? 'arte' : 'artes' %>)</span>
+                <span class="budget-summary-calc"><%= @outdoor.art_quantity %> × R$ <%= number_with_delimiter(valor_por_arte, delimiter: '.') %></span>
+              </div>
+              <div class="budget-summary-value">
+                R$ <%= number_with_delimiter(total_grafica, delimiter: '.') %>,00
+              </div>
+            </div>
+          </div>
 
-        <div class="home-form-actions">
-          <%= f.submit "Confirmar Data", class: "home-submit-btn" %>
+          <div class="budget-summary-divider"></div>
+
+          <!-- Total Geral -->
+          <div class="budget-summary-total">
+            <span class="budget-summary-total-label">Total</span>
+            <span class="budget-summary-total-value">
+              R$ <%= number_with_delimiter(total_geral, delimiter: '.') %>,00
+            </span>
+          </div>
+
+          <%= hidden_field_tag :outdoor_id, @outdoor.id %>
+          <%= hidden_field_tag :selected_start_date, @outdoor.selected_start_date %>
+          <%= hidden_field_tag :selected_quantity_month, @outdoor.selected_quantity_month %>
+          <%= hidden_field_tag :total_amount, total_geral %>
+          <!-- Botão de Pagamento -->
+          <div class="budget-summary-actions">
+            <%= f.submit "Pagar Agora", class: "budget-pay-btn" %>
+          </div>
+
+          <!-- Info adicional -->
+          <div class="budget-summary-note">
+            <i class="fas fa-shield-halved"></i>
+            <p>Pagamento 100% seguro</p>
+          </div>
         </div>
       </div>
-    <% end %>
-  </section>
-</div>
-
+    </div>
+  </div>
+<% end %>

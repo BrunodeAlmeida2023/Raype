@@ -124,7 +124,7 @@
 
     <div style="text-align: center; width: 100%;">
       <% if all_completed %>
-        <%= link_to "Finalizar Orçamento", finalize_budget_home_path, class: "home-finalize-budget-btn", data: { turbo_method: :post } %>
+        <%= link_to "Finalizar Orçamento", finalize_budget_home_path, class: "home-finalize-budget-btn", data: { turbo: false } %>
       <% else %>
         <button class="home-finalize-budget-btn disabled" disabled>Finalizar Orçamento</button>
       <% end %>

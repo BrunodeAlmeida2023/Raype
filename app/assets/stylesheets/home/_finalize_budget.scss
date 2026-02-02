@@ -1,0 +1,481 @@
+/* ==================== FINALIZE BUDGET - DESKTOP E MOBILE CORRETOS ==================== */
+
+/* Form container */
+.home-form-container#finalize-budget-form {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem 1.5rem;
+  box-sizing: border-box;
+}
+
+/* Container branco */
+.budget-container {
+  max-width: 1600px;
+  width: 100%;
+  background: white;
+  border-radius: 20px;
+  padding: 3rem 4rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+}
+
+/* Título */
+.home-services-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #2c3e50;
+  margin: 0 0 3rem 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Layout Grid */
+.budget-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  width: 100%;
+  align-items: start;
+}
+
+/* ==================== LADO ESQUERDO: DETALHES ==================== */
+
+.budget-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.budget-card {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 2rem 2.25rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e9ecef;
+}
+
+.budget-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.budget-card-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.budget-card-icon {
+  font-size: 1.75rem;
+  color: #ff6b35;
+  flex-shrink: 0;
+}
+
+.budget-card-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.budget-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.budget-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  gap: 1.5rem;
+}
+
+.budget-label {
+  font-weight: 500;
+  color: #666;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.budget-value {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.15rem;
+  text-align: right;
+}
+
+.budget-value.highlight {
+  color: #ff6b35;
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.budget-info-note {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fff3e0;
+  padding: 1.25rem;
+  border-radius: 10px;
+  border-left: 4px solid #ff6b35;
+  margin-top: 0.5rem;
+}
+
+.budget-info-note i {
+  color: #ff6b35;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.budget-info-note p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.budget-arts-preview {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.budget-art-thumb {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #dee2e6;
+  transition: transform 0.2s, border-color 0.2s;
+  background: white;
+}
+
+.budget-art-thumb:hover {
+  transform: scale(1.05);
+  border-color: #ff6b35;
+}
+
+.budget-art-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==================== LADO DIREITO: RESUMO ==================== */
+
+.budget-summary {
+  position: relative;
+  top: 0;
+  height: fit-content;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+
+.budget-summary-card {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #e9ecef;
+}
+
+.budget-summary-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 2rem 0;
+  text-align: center;
+}
+
+.budget-summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+.budget-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.budget-summary-item-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.budget-summary-label {
+  font-weight: 600;
+  color: #2c3e50;
+  font-size: 1.125rem;
+}
+
+.budget-summary-calc {
+  font-size: 0.95rem;
+  color: #999;
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+}
+
+.budget-summary-value {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #ff6b35;
+  text-align: right;
+}
+
+.budget-summary-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ff6b35, transparent);
+  margin: 2rem 0;
+}
+
+.budget-summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.75rem 2rem;
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 6px 16px rgba(255, 107, 53, 0.35);
+}
+
+.budget-summary-total-label {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.budget-summary-total-value {
+  font-size: 2.125rem;
+  font-weight: 800;
+  color: white;
+  letter-spacing: -0.5px;
+}
+
+.budget-summary-actions {
+  margin-bottom: 1.5rem;
+}
+
+.budget-pay-btn {
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.75px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px rgba(76, 175, 80, 0.35);
+}
+
+.budget-pay-btn:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.45);
+}
+
+.budget-summary-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.budget-summary-note i {
+  color: #4caf50;
+  font-size: 1.125rem;
+}
+
+.budget-summary-note p {
+  margin: 0;
+  font-size: 0.975rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
+
+/* DESKTOP 1200px+ - GRID 2 COLUNAS COM STRETCH */
+@media (min-width: 1200px) {
+  .budget-layout {
+    grid-template-columns: 1fr 450px !important;
+    gap: 3rem !important;
+    align-items: stretch !important; /* ESTICA OS DOIS ATÉ O FINAL */
+  }
+
+  .budget-summary {
+    max-width: 450px !important;
+    height: 100% !important; /* OCUPA TODA A ALTURA */
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .budget-summary-card {
+    height: 100% !important; /* ESTICA O CARD */
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .budget-summary-items {
+    flex: 1 !important; /* EMPURRA O BOTÃO PRA BAIXO */
+  }
+}
+
+@media (min-width: 1440px) {
+  .budget-layout {
+    grid-template-columns: 1fr 500px !important;
+    gap: 3.5rem !important;
+  }
+
+  .budget-summary {
+    max-width: 500px !important;
+  }
+}
+
+@media (min-width: 1920px) {
+  .budget-container {
+    max-width: 1800px;
+  }
+
+  .budget-layout {
+    grid-template-columns: 1fr 550px !important;
+    gap: 4rem !important;
+  }
+
+  .budget-summary {
+    max-width: 550px !important;
+  }
+}
+
+/* TABLET E MOBILE - MANTÉM COMO ESTAVA */
+@media (max-width: 1199px) {
+  .budget-summary {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-form-container#finalize-budget-form {
+    padding: 1.5rem 1rem;
+  }
+
+  .budget-container {
+    padding: 1.75rem 2rem;
+    border-radius: 16px;
+  }
+
+  .home-services-title {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+
+  .budget-card {
+    padding: 1.5rem 1.75rem;
+  }
+
+  .budget-card-header h3 {
+    font-size: 1.25rem;
+  }
+
+  .budget-summary-card {
+    padding: 2rem;
+  }
+
+  .budget-summary-title {
+    font-size: 1.5rem;
+  }
+
+  .budget-summary-total-value {
+    font-size: 1.75rem;
+  }
+
+  .budget-arts-preview {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .home-form-container#finalize-budget-form {
+    padding: 1rem 0.75rem;
+  }
+
+  .budget-container {
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+  }
+
+  .home-services-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .budget-card {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .budget-card-header h3 {
+    font-size: 1.125rem;
+  }
+
+  .budget-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .budget-value {
+    text-align: left;
+  }
+
+  .budget-summary-card {
+    padding: 1.75rem;
+  }
+
+  .budget-summary-total {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .budget-pay-btn {
+    font-size: 1.125rem;
+    padding: 1.125rem 1.75rem;
+  }
+
+  .budget-arts-preview {
+    grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+  }
+}

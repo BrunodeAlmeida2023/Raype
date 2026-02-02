@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_outdoor, only: [:find_outdoor, :find_date, :choose_art]
+  before_action :set_outdoor, only: [:find_outdoor, :find_date, :choose_art, :finalize_budget]
 
   def index
     @user = current_user
@@ -21,6 +21,10 @@ class HomeController < ApplicationController
 
   def choose_art
     # @outdoor já está setado pelo before_action
+  end
+
+  def finalize_budget
+    puts 'kakdakdakdakdakdkakdakodakodaokdaodokadokadokaok'
   end
 
   def post_find_outdoor
@@ -85,28 +89,47 @@ class HomeController < ApplicationController
     end
   end
 
-  def finalize_budget
-    @outdoor = current_user.outdoor
+  def post_finalize_budget
+    @outdoor = Outdoor.find(params[:outdoor_id])
 
-    if @outdoor.nil?
-      flash[:alert] = "Você precisa criar um outdoor primeiro."
-      redirect_to root_path
-      return
-    end
+    # 1. REMOVA OU COMENTE ESTA LINHA QUE CAUSA O ERRO
+    # start_date = Date.parse(params[:selected_start_date])
 
-    outdoor_completed = @outdoor.outdoor_type.present? && @outdoor.outdoor_location.present?
-    date_completed = @outdoor.selected_start_date.present? && @outdoor.selected_end_date.present?
-    art_completed = @outdoor.art_quantity.present? && @outdoor.art_quantity >= 0 && (@outdoor.art_quantity == 0 || @outdoor.art_files.attached?)
+    months = params[:selected_quantity_month].to_i
 
-    unless outdoor_completed && date_completed && art_completed
-      flash[:alert] = "Você precisa completar todas as etapas antes de finalizar o orçamento."
-      redirect_to root_path
-      return
-    end
+    # Se months vier vazio, force 1 mês ou trate o erro
+    months = 1 if months.zero?
+    
+    unit_amount_cents = 60
 
-    @outdoor.status_completed!
-    flash[:notice] = "Orçamento finalizado com sucesso! Em breve entraremos em contato."
-    redirect_to root_path
+    session = Stripe::Checkout::Session.create({
+                                                 locale: 'pt-BR',
+                                                 payment_method_types: ['card', 'boleto', 'pix'],
+                                                 line_items: [{
+                                                                price_data: {
+                                                                  currency: 'brl',
+                                                                  product_data: {
+                                                                    name: "Locação Outdoor: #{@outdoor.outdoor_type}",
+                                                                    # 2. SIMPLIFIQUE A DESCRIÇÃO (Tire a data daqui)
+                                                                    description: "Período de locação: #{months} meses",
+                                                                  },
+                                                                  unit_amount: unit_amount_cents,
+                                                                },
+                                                                quantity: months,
+                                                              }],
+                                                 mode: 'payment',
+                                                 success_url: checkout_success_url + "?session_id={CHECKOUT_SESSION_ID}",
+                                                 cancel_url: root_url,
+                                                 metadata: {
+                                                   outdoor_id: @outdoor.id,
+                                                   user_id: current_user.id,
+                                                   # 3. REMOVA A DATA DO METADATA TAMBÉM
+                                                   # start_date: start_date.to_s,
+                                                   months: months
+                                                 }
+                                               })
+
+    redirect_to session.url, allow_other_host: true, status: 303
   end
 
   private
