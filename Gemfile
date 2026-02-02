@@ -65,7 +65,7 @@ gem "sidekiq", "~> 8.1"
 gem "flipper", "~> 1.3"
 gem "flipper-ui", "~> 1.3"
 gem "flipper-active_record", "~> 1.3"
-gem "cpf_cnpj", "~> 0.5.0"
+gem "cpf_cnpj", "~> 1.0.1"
 gem "cssbundling-rails", "~> 1.4"
 gem "sassc-rails"
 gem 'stripe'
