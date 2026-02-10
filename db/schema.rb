@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_01_13_030718) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_10_013045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,22 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_13_030718) do
     t.index ["user_id"], name: "index_outdoors_on_user_id"
   end
 
+  create_table "rents", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "outdoor_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.decimal "total_amount"
+    t.string "status"
+    t.string "asaas_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "payment_method"
+    t.text "asaas_payment_url"
+    t.index ["outdoor_id"], name: "index_rents_on_outdoor_id"
+    t.index ["user_id"], name: "index_rents_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -100,4 +116,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_01_13_030718) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "outdoors", "users"
+  add_foreign_key "rents", "outdoors"
+  add_foreign_key "rents", "users"
 end

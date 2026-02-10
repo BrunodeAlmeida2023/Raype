@@ -5,17 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Raype.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Raype.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/webhooks_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/services/asaas_service.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/initializers/asaas.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/outdoor.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/outdoor.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/user.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/index.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/initializers/stripe.rb" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/config/routes.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -238,44 +240,15 @@
       <workItem from="1769868215402" duration="2173000" />
       <workItem from="1770033019419" duration="183000" />
       <workItem from="1770033557065" duration="2586000" />
+      <workItem from="1770742844954" duration="4080000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/app/controllers/checkout_controller.rb</url>
-          <line>4</line>
-          <properties myBlockOrdinal="-1">
-            <option name="block-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/app/controllers/checkout_controller.rb</url>
-          <line>2</line>
-          <properties myBlockOrdinal="-1">
-            <option name="block-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="5" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="ruby-line">
-          <url>file://$PROJECT_DIR$/app/controllers/home_controller.rb</url>
-          <line>102</line>
-          <properties myBlockOrdinal="-1">
-            <option name="block-ordinal" value="-1" />
-          </properties>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1770033790515" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
+    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1770745492788" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

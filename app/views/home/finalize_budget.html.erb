@@ -12,7 +12,7 @@
   </nav>
 </header>
 
-<%= form_with url: post_finalize_budget_home_path, method: :post, class: "home-form-container", id: "finalize-budget-form" do |f| %>
+<%= form_with url: post_finalize_budget_home_path, method: :post, class: "home-form-container", id: "finalize-budget-form", data: { turbo: false} do |f| %>
   <div class="budget-container">
     <h1 class="home-services-title">Resumo do Orçamento</h1>
 

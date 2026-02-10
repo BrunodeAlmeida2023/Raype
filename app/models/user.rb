@@ -7,6 +7,9 @@ class User < ApplicationRecord
   # Relacionamentos
   has_one :outdoor, dependent: :destroy
 
+  has_many :rents
+  has_many :outdoors, through: :rents
+
   # Validações de documento
   validates :documento_tipo, presence: true, inclusion: { in: %w[cpf cnpj] }
   validates :documento_numero, presence: true, uniqueness: true

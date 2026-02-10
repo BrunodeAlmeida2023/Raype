@@ -1,6 +1,7 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
+  resources :webhooks_controllers
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
@@ -22,6 +23,8 @@ Rails.application.routes.draw do
   end
 
   get 'checkout/success', to: 'checkout#success', as: 'checkout_success'
+  get 'pedido/whatsapp/:id', to: 'home#redirect_whatsapp', as: :pedido_whatsapp
+  post 'webhooks/asaas', to: 'webhooks#asaas'
 
   # Sidekiq Web UI - Requer autenticação admin
   authenticate :user, ->(user) { user.admin? } do

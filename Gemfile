@@ -68,4 +68,5 @@ gem "flipper-active_record", "~> 1.3"
 gem "cpf_cnpj", "~> 0.5.0"
 gem "cssbundling-rails", "~> 1.4"
 gem "sassc-rails"
-gem 'stripe'
+gem 'rest-client'
+gem 'json'

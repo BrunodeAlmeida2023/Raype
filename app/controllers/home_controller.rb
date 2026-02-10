@@ -89,47 +89,66 @@ class HomeController < ApplicationController
     end
   end
 
+  # app/controllers/home_controller.rb
+
   def post_finalize_budget
     @outdoor = Outdoor.find(params[:outdoor_id])
 
-    # 1. REMOVA OU COMENTE ESTA LINHA QUE CAUSA O ERRO
-    # start_date = Date.parse(params[:selected_start_date])
+    # 1. Tratamento do valor (tira R$ se tiver e converte)
+    valor_total = params[:total_amount].to_s.gsub('R$', '').gsub(',', '.').to_f - 7795
 
-    months = params[:selected_quantity_month].to_i
+    # 2. Cria o Aluguel
+    @rent = Rent.new(
+      user: current_user,
+      outdoor: @outdoor,
+      start_date: @outdoor.selected_start_date,
+      end_date: @outdoor.selected_start_date + @outdoor.selected_quantity_month.months,
+      total_amount: valor_total,
+      status: 'pending'
+    )
 
-    # Se months vier vazio, force 1 mês ou trate o erro
-    months = 1 if months.zero?
-    
-    unit_amount_cents = 60
+    if @rent.save
+      # 3. Prepara a URL de Retorno (Para onde o Asaas manda o cliente depois de pagar)
+      # Isso gera o link: seite.com/pedido/whatsapp/123
+      url_retorno_whatsapp = pedido_whatsapp_url(@rent.id, host: request.base_url)
 
-    session = Stripe::Checkout::Session.create({
-                                                 locale: 'pt-BR',
-                                                 payment_method_types: ['card', 'boleto', 'pix'],
-                                                 line_items: [{
-                                                                price_data: {
-                                                                  currency: 'brl',
-                                                                  product_data: {
-                                                                    name: "Locação Outdoor: #{@outdoor.outdoor_type}",
-                                                                    # 2. SIMPLIFIQUE A DESCRIÇÃO (Tire a data daqui)
-                                                                    description: "Período de locação: #{months} meses",
-                                                                  },
-                                                                  unit_amount: unit_amount_cents,
-                                                                },
-                                                                quantity: months,
-                                                              }],
-                                                 mode: 'payment',
-                                                 success_url: checkout_success_url + "?session_id={CHECKOUT_SESSION_ID}",
-                                                 cancel_url: root_url,
-                                                 metadata: {
-                                                   outdoor_id: @outdoor.id,
-                                                   user_id: current_user.id,
-                                                   # 3. REMOVA A DATA DO METADATA TAMBÉM
-                                                   # start_date: start_date.to_s,
-                                                   months: months
-                                                 }
-                                               })
+      # 4. Chama o Service com os 5 Argumentos
+      asaas = AsaasService.new
 
-    redirect_to session.url, allow_other_host: true, status: 303
+      link_pagamento = asaas.create_payment_url(
+        current_user, # 1. Usuário
+        valor_total, # 2. Valor
+        "Aluguel Outdoor: #{@outdoor.outdoor_type}", # 3. Descrição
+        @rent.id, # 4. ID Externo (para Webhook)
+        url_retorno_whatsapp # 5. URL de Redirecionamento (NOVO)
+      )
+
+      if link_pagamento
+        # SUCESSO: Cliente vai para o Asaas
+        redirect_to link_pagamento, allow_other_host: true
+      else
+        # FALHA: Apaga o rent e avisa
+        @rent.destroy
+        redirect_to root_path, alert: "Erro de comunicação com o Asaas. Tente novamente."
+      end
+
+    else
+      redirect_to root_path, alert: "Erro ao criar pedido: #{@rent.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def redirect_whatsapp
+    @rent = Rent.find(params[:id])
+
+    # Corrigido: outdoor_type em vez de name (baseado nos seus params)
+    mensagem = "Olá! Acabei de pagar o Outdoor #{@rent.outdoor.outdoor_type}. O ID do meu pedido é ##{@rent.id}."
+
+    texto_url = URI.encode_www_form_component(mensagem)
+    numero_whatsapp = "5546999776924" # Seu número
+
+    link_wpp = "https://wa.me/#{numero_whatsapp}?text=#{texto_url}"
+
+    redirect_to link_wpp, allow_other_host: true
   end
 
   private

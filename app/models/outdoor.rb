@@ -4,6 +4,8 @@ class Outdoor < ApplicationRecord
   # Attachments para as artes do outdoor (até 3 artes)
   has_many_attached :art_files
 
+  has_many :rents
+
   # Enum para tipo de outdoor
   enum :outdoor_type, {
     triedo: 0,
@@ -82,6 +84,13 @@ class Outdoor < ApplicationRecord
     when 'art_uploaded'
       status_completed!
     end
+  end
+
+  def available?(date = Date.today)
+    # Procura se existe algum aluguel PAGO que cubra essa data
+    rents.where(status: 'paid')
+         .where('start_date <= ? AND end_date >= ?', date, date)
+         .empty?
   end
 end
 
