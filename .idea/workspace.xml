@@ -4,57 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/ASSET_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CHECKOUT_SIMPLIFICATION.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FINAL_FIX_COMPLETE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ORDER_STATUS_FIX.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Procfile.dev" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/REFACTORING_ORDER_STATUS.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WEBHOOK_SETUP_GUIDE.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/assets/stylesheets/checkout.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/assets/stylesheets/checkout/_order_status.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_checkout.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/helpers/budget_helper.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/helpers/checkout_helper.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/helpers/choose_art_helper.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/helpers/finalize_budget_helper.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/helpers/order_status_helper.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/javascript/checkout_payment.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/javascript/order_status.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/services/budget_calculator.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/checkout/order_status.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/checkout/show.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/checkout/success.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_blocking_and_availability.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_paid_rent_validation.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_payment_method.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/application.tailwind.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_finalize_budget.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_finalize_budget.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_header.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_header.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_services.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_services.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/webhooks_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/webhooks_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/helpers/home_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/home_helper.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/application.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/application.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/rent.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/rent.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/services/asaas_service.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/asaas_service.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/find_date.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/find_date.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/find_outdoor.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/find_outdoor.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/index.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/layouts/application.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/layouts/application.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/importmap.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/importmap.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/initializers/asaas.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/initializers/asaas.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
-    </list>
+    <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -302,7 +252,7 @@
       <workItem from="1770937181123" duration="2801000" />
       <workItem from="1771503020939" duration="125000" />
       <workItem from="1771503210209" duration="13000" />
-      <workItem from="1771528968273" duration="4691000" />
+      <workItem from="1771528968273" duration="5028000" />
     </task>
     <servers />
   </component>
