@@ -21,7 +21,7 @@
         <div class="home-form-group">
           <%= f.label :outdoor_type, "Escolha o tipo de outdoor:", class: "home-form-label" %>
           <%= f.select :outdoor_type,
-              options_for_select(Outdoor.outdoor_type_options, @outdoor&.outdoor_type),
+              outdoor_type_options_select(@outdoor&.outdoor_type),
               { prompt: 'Selecione uma opção' },
               { class: "home-form-input", required: true }
           %>
@@ -30,7 +30,7 @@
         <div class="home-form-group">
           <%= f.label :outdoor_size, "Tamanho do outdoor selecionado:", class: "home-form-label" %>
           <%= f.select :outdoor_size,
-              options_for_select(Outdoor.outdoor_size_options, @outdoor&.outdoor_size),
+              outdoor_size_options_select(@outdoor&.outdoor_size),
               { prompt: 'Selecione uma opção' },
               { class: "home-form-input", required: true }
           %>
@@ -40,22 +40,17 @@
           <%= f.label :outdoor_location, "Escolha o local do outdoor:", class: "home-form-label" %>
           <div class="location-select-wrapper">
             <%= f.select :outdoor_location,
-                         options_for_select(Outdoor.outdoor_location_options, @outdoor&.outdoor_location),
+                         outdoor_location_options_select(@outdoor&.outdoor_location),
                          { prompt: 'Selecione uma opção' },
                          { class: "home-form-input", id: "outdoor_location_select", required: true }
             %>
-            <a href="https://www.google.com/maps/place/Dois+Vizinhos,+PR,+85660-000/@-25.7501245,-53.0667007,14z/data=!3m1!4b1!4m6!3m5!1s0x94f047ed43a4d2dd:0xc57179d696514a97!8m2!3d-25.7511034!4d-53.0606298!16s%2Fg%2F1yy3vkg2x?entry=ttu&g_ep=EgoyMDI2MDEwNy4wIKXMDSoASAFQAw%3D%3D"
-               target="_blank"
-               rel="noopener noreferrer"
-               id="location-map-btn"
-               class="location-map-btn"
-               style="display: none;">
+            <%= link_to location_map_url, target: "_blank", rel: "noopener noreferrer", id: "location-map-btn", class: "location-map-btn hidden-data" do %>
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
               Ver no Mapa
-            </a>
+            <% end %>
           </div>
         </div>
 

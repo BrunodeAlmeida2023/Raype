@@ -1,0 +1,10 @@
+// Main application stylesheet
+@import "./home.scss";
+@import "./checkout.scss";
+@import "./auth.scss";
+
+// Utility classes
+.hidden-data {
+  display: none !important;
+}
+

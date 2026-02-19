@@ -55,13 +55,20 @@
   <section class="home-services" id="services-section">
     <h1 class="home-services-title">Orçamentos</h1>
 
-    <% outdoor_completed = @outdoor&.outdoor_type.present? && @outdoor&.outdoor_location.present? %>
-    <% date_completed = @outdoor&.selected_start_date.present? && @outdoor&.selected_quantity_month.present? %>
-    <% art_completed = @outdoor&.art_quantity.present? && @outdoor&.art_quantity >= 0 && (@outdoor&.art_quantity == 0 || @outdoor&.art_files&.attached?) %>
-    <% all_completed = outdoor_completed && date_completed && art_completed %>
+    <%
+      # ✅ Usa helpers para lógica limpa
+      outdoor_completed = outdoor_completed?(@outdoor)
+      date_completed = date_completed?(@outdoor)
+      art_completed = art_completed?(@outdoor)
+      all_completed = all_steps_completed?(@outdoor)
+
+      block_changes = user_has_blocking_rent?(current_user)
+      has_pending_rent = user_pending_rent(current_user).present?
+      has_paid_rent = user_paid_rent(current_user).present?
+    %>
 
     <div class="home-services-grid">
-      <div class="home-service-card">
+      <div class="home-service-card <%= 'card-blocked' if block_changes %>">
         <% if outdoor_completed %>
           <div class="home-service-icon home-service-check">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
@@ -78,10 +85,17 @@
             Qual outdoor?
           <% end %>
         </div>
-        <%= link_to outdoor_completed ? "Alterar" : "Escolher", find_outdoor_home_path, class: "home-service-btn #{'btn-alterar' if outdoor_completed}" %>
+        <% if block_changes %>
+          <button class="home-service-btn btn-blocked #{'btn-alterar' if outdoor_completed}" disabled title="<%= finalize_button_tooltip(has_paid_rent, has_pending_rent) %>">
+            <%= outdoor_completed ? "Alterar" : "Escolher" %>
+            <i class="fas fa-lock"></i>
+          </button>
+        <% else %>
+          <%= link_to outdoor_completed ? "Alterar" : "Escolher", find_outdoor_home_path, class: "home-service-btn #{'btn-alterar' if outdoor_completed}" %>
+        <% end %>
       </div>
 
-      <div class="home-service-card">
+      <div class="home-service-card <%= 'card-blocked' if block_changes %>">
         <% if date_completed %>
           <div class="home-service-icon home-service-check">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
@@ -98,10 +112,17 @@
             Qual Data?
           <% end %>
         </div>
-        <%= link_to date_completed ? "Alterar" : "Escolher", find_date_home_path, class: "home-service-btn #{'btn-alterar' if date_completed}" %>
+        <% if block_changes %>
+          <button class="home-service-btn btn-blocked #{'btn-alterar' if date_completed}" disabled title="<%= finalize_button_tooltip(has_paid_rent, has_pending_rent) %>">
+            <%= date_completed ? "Alterar" : "Escolher" %>
+            <i class="fas fa-lock"></i>
+          </button>
+        <% else %>
+          <%= link_to date_completed ? "Alterar" : "Escolher", find_date_home_path, class: "home-service-btn #{'btn-alterar' if date_completed}" %>
+        <% end %>
       </div>
 
-      <div class="home-service-card">
+      <div class="home-service-card <%= 'card-blocked' if block_changes %>">
         <% if art_completed %>
           <div class="home-service-icon home-service-check">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="56" height="56">
@@ -118,15 +139,48 @@
             Escolha sua Arte?
           <% end %>
         </div>
-        <%= link_to art_completed ? "Alterar" : "Escolher", choose_art_home_path, class: "home-service-btn #{'btn-alterar' if art_completed}" %>
+        <% if block_changes %>
+          <button class="home-service-btn btn-blocked #{'btn-alterar' if art_completed}" disabled title="<%= finalize_button_tooltip(has_paid_rent, has_pending_rent) %>">
+            <%= art_completed ? "Alterar" : "Escolher" %>
+            <i class="fas fa-lock"></i>
+          </button>
+        <% else %>
+          <%= link_to art_completed ? "Alterar" : "Escolher", choose_art_home_path, class: "home-service-btn #{'btn-alterar' if art_completed}" %>
+        <% end %>
       </div>
     </div>
 
     <div style="text-align: center; width: 100%;">
-      <% if all_completed %>
-        <%= link_to "Finalizar Orçamento", finalize_budget_home_path, class: "home-finalize-budget-btn", data: { turbo: false } %>
+      <%
+        # Verifica rents usando helpers já definidos
+        paid_rent = user_paid_rent(current_user)
+        pending_rent = user_pending_rent(current_user)
+      %>
+
+      <% if paid_rent.present? %>
+        <!-- Usuário tem pedido PAGO - Mostrar botão de WhatsApp -->
+        <%= link_to pedido_whatsapp_link(paid_rent), class: "home-finalize-budget-btn home-whatsapp-btn", target: "_blank", data: { turbo: false } do %>
+          <i class="fab fa-whatsapp"></i>
+          Entrar em Contato - Enviar Informações
+        <% end %>
+      <% elsif pending_rent.present? %>
+        <!-- Usuário tem pedido PENDENTE - Mostrar status -->
+        <%= link_to order_status_path(pending_rent.id), class: "home-finalize-budget-btn home-status-btn", data: { turbo: false } do %>
+          <i class="fas fa-clipboard-list"></i>
+          Verificar Status do Pedido
+        <% end %>
+      <% elsif all_completed %>
+        <!-- Sem pedidos - Permitir criar novo orçamento -->
+        <%= link_to finalize_budget_home_path, class: "home-finalize-budget-btn", data: { turbo: false } do %>
+          <i class="fas fa-check-circle"></i>
+          Finalizar Orçamento
+        <% end %>
       <% else %>
-        <button class="home-finalize-budget-btn disabled" disabled>Finalizar Orçamento</button>
+        <!-- Etapas incompletas -->
+        <button class="home-finalize-budget-btn disabled" disabled>
+          <i class="fas fa-lock"></i>
+          Finalizar Orçamento
+        </button>
       <% end %>
     </div>
   </section>

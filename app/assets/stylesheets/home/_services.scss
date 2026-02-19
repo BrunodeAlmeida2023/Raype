@@ -142,14 +142,52 @@
   text-transform: uppercase;
   font-weight: bold;
   margin-top: 20px;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   text-decoration: none;
+}
+
+.home-finalize-budget-btn i {
+  font-size: 1.1em;
 }
 
 .home-finalize-budget-btn:hover {
   background-color: #ff6600;
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(202, 133, 4, 0.3);
+}
+
+/* Botão de Status (quando já tem pedido pendente) */
+.home-finalize-budget-btn.home-status-btn {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+}
+
+.home-finalize-budget-btn.home-status-btn:hover {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+}
+
+/* Botão de WhatsApp (quando tem pedido pago) */
+.home-finalize-budget-btn.home-whatsapp-btn {
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  animation: pulse-whatsapp 2s infinite;
+}
+
+.home-finalize-budget-btn.home-whatsapp-btn:hover {
+  background: linear-gradient(135deg, #128c7e 0%, #075e54 100%);
+  box-shadow: 0 4px 15px rgba(37, 211, 102, 0.5);
+  transform: translateY(-2px) scale(1.02);
+}
+
+@keyframes pulse-whatsapp {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.6);
+  }
 }
 
 /* Botão Finalizar Orçamento Disabled */
@@ -164,6 +202,46 @@
   background-color: #cccccc;
   transform: none;
   box-shadow: none;
+}
+
+/* Botões e Cards Bloqueados */
+.card-blocked {
+  opacity: 0.7;
+  position: relative;
+}
+
+.card-blocked::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(128, 128, 128, 0.1);
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+.home-service-btn.btn-blocked {
+  background-color: #9e9e9e !important;
+  color: #ffffff !important;
+  cursor: not-allowed !important;
+  opacity: 0.8;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.home-service-btn.btn-blocked i.fa-lock {
+  font-size: 0.9em;
+  margin-left: 4px;
+}
+
+.home-service-btn.btn-blocked:hover {
+  background-color: #9e9e9e !important;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* Form Container Styles */

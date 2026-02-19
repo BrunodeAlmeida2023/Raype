@@ -2,22 +2,107 @@
 @media screen and (max-width: 768px) {
   .home-header {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 10px 15px;
+    align-items: stretch;
+    padding: 12px 15px 15px 15px;
+    gap: 12px;
+  }
+
+  .home-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 0;
+    flex-wrap: nowrap;
+    width: 100%;
+    padding-right: 190px; /* Espaço aumentado para o usuário */
+  }
+
+  .home-header-left h1 {
+    font-size: 1.3rem;
+    margin: 0;
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  .home-header-logo {
+    flex-shrink: 0;
+  }
+
+  .home-header-logo .header-logo-img {
+    height: 45px;
+    width: auto;
   }
 
   .home-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     width: 100%;
-    margin-top: 10px;
+    margin-top: 0;
+    gap: 10px;
+    padding-right: 0;
   }
 
   .home-nav-btn {
-    margin: 5px 5px 5px 0;
-    padding: 8px 15px;
-    font-size: 14px;
+    margin: 0;
+    padding: 10px 8px;
+    font-size: 11.5px;
+    text-align: center;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+  }
+
+  /* Usuário posicionado no topo direito - removido do fluxo do grid */
+  .home-nav-btn.home-nav-user {
+    position: absolute !important;
+    top: 12px;
+    right: 15px;
+    grid-column: unset !important;
+    grid-row: unset !important;
+    padding: 8px 12px;
+    font-size: 13px;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    max-width: 180px;
+    overflow: visible !important;
+    min-height: auto;
+    font-weight: 500;
+    background: transparent !important;
+
+    /* Container do email com overflow */
+    > span:not(.user-icon) {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .user-icon {
+      width: 28px !important;
+      height: 28px !important;
+      flex-shrink: 0;
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      fill: #ff6b00 !important;
+      min-width: 28px;
+      min-height: 28px;
+    }
+
+    svg.user-icon {
+      width: 28px !important;
+      height: 28px !important;
+      fill: #ff6b00 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+    }
+  }
+
+  .home-user-badge {
+    display: none;
   }
 
   .home-banner {
@@ -91,13 +176,59 @@
 
 /* Extra small devices */
 @media screen and (max-width: 480px) {
-  .home-header-left h1 {
-    font-size: 1.3em;
+  .home-header {
+    padding: 10px 12px 12px 12px;
   }
 
-  .home-header-logo svg {
-    width: 40px;
-    height: 40px;
+  .home-header-left {
+    padding-right: 170px; /* Espaço aumentado para telas menores */
+  }
+
+  .home-header-left h1 {
+    font-size: 1.1rem;
+  }
+
+  .home-header-logo .header-logo-img {
+    height: 38px;
+  }
+
+  .home-nav {
+    gap: 8px;
+  }
+
+  .home-nav-btn {
+    padding: 9px 6px;
+    font-size: 10.5px;
+    min-height: 38px;
+  }
+
+  .home-nav-btn.home-nav-user {
+    top: 10px;
+    right: 12px;
+    padding: 7px 10px;
+    font-size: 12px;
+    max-width: 160px;
+    overflow: visible !important;
+
+    .user-icon {
+      width: 26px !important;
+      height: 26px !important;
+      display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      fill: #ff6b00 !important;
+      min-width: 26px;
+      min-height: 26px;
+    }
+
+    svg.user-icon {
+      width: 26px !important;
+      height: 26px !important;
+      fill: #ff6b00 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      display: block !important;
+    }
   }
 
   .home-services-title {

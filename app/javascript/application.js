@@ -9,4 +9,6 @@ import "./flash_messages"
 import "./date_validation"
 import "./choose_art"
 import "./location_map"
+import "./checkout_payment"
+import "./order_status"
 

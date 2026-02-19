@@ -16,7 +16,8 @@
   <section class="home-services">
     <h1 class="home-services-title">Qual Data?</h1>
 
-    <% if @outdoor&.outdoor_type == 'triedo' %>
+    <% if show_triedo_warning?(@outdoor) %>
+      <% warning = triedo_warning_message %>
       <div class="triedo-warning-alert">
         <div class="triedo-warning-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -26,8 +27,8 @@
           </svg>
         </div>
         <div class="triedo-warning-content">
-          <strong>Atenção - Outdoor Triedo:</strong>
-          <p>O outdoor triedo possui um tempo mínimo de <strong>5 dias úteis</strong> para fabricação e instalação após a confirmação do pagamento.</p>
+          <strong><%= warning[:title] %></strong>
+          <p><%= warning[:message] %></p>
         </div>
       </div>
     <% end %>
@@ -41,7 +42,7 @@
               class: "home-form-input",
               required: true,
               id: "start_date",
-              min: (Date.today + 5).to_s %>
+              min: minimum_start_date %>
         </div>
 
         <div class="home-form-group">
@@ -54,7 +55,7 @@
               min: 1 %>
         </div>
 
-        <p class="home-form-hint">* A data final deve ser no mínimo 1 mês após a data inicial.</p>
+        <p class="home-form-hint"><%= date_form_hint %></p>
 
         <div class="home-form-actions">
           <%= f.submit "Confirmar Data", class: "home-submit-btn" %>

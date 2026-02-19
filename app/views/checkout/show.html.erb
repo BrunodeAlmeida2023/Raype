@@ -1,0 +1,219 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="checkout-container">
+  <h1 class="checkout-title">Finalizar Pagamento</h1>
+
+  <div class="checkout-layout">
+    <!-- Resumo do Pedido -->
+    <div class="checkout-summary">
+      <div class="checkout-summary-card">
+        <h3 class="checkout-summary-title">
+          <i class="fas fa-receipt"></i>
+          Resumo do Pedido
+        </h3>
+
+        <div class="checkout-summary-items">
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Outdoor:</span>
+            <span class="checkout-summary-value"><%= @outdoor.outdoor_type&.titleize %></span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Localização:</span>
+            <span class="checkout-summary-value"><%= @outdoor.outdoor_location %></span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Período:</span>
+            <span class="checkout-summary-value">
+              <%= @rent.start_date.strftime('%d/%m/%Y') %> - <%= @rent.end_date.strftime('%d/%m/%Y') %>
+            </span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Duração:</span>
+            <span class="checkout-summary-value">
+              <%= @outdoor.selected_quantity_month %> <%= @outdoor.selected_quantity_month == 1 ? 'mês' : 'meses' %>
+            </span>
+          </div>
+
+          <% if @outdoor.art_quantity > 0 %>
+            <div class="checkout-summary-item">
+              <span class="checkout-summary-label">Artes Gráficas:</span>
+              <span class="checkout-summary-value">
+                <%= @outdoor.art_quantity %> <%= @outdoor.art_quantity == 1 ? 'arte' : 'artes' %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="checkout-summary-divider"></div>
+
+        <div class="checkout-summary-total">
+          <span class="checkout-summary-total-label">Valor Total</span>
+          <span class="checkout-summary-total-value">
+            R$ <%= number_with_delimiter(@rent.total_amount.to_i, delimiter: '.') %>,00
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Métodos de Pagamento -->
+    <div class="checkout-payment">
+      <div class="checkout-payment-card">
+        <h3 class="checkout-payment-title">
+          <i class="fas fa-credit-card"></i>
+          Escolha o Método de Pagamento
+        </h3>
+
+        <%= form_with url: process_payment_path(@rent.id), method: :post, id: "payment-form", data: { turbo: false } do |f| %>
+          <%= hidden_field_tag :payment_method, '', id: 'selected-payment-method' %>
+          <%= hidden_field_tag :payment_type, '', id: 'selected-payment-type' %>
+          <%= hidden_field_tag :installments, 1, id: 'selected-installments' %>
+
+          <% max_installments = @outdoor.selected_quantity_month.to_i %>
+
+          <!-- PIX ou Boleto Bancário -->
+          <div class="payment-method-card" data-method="PIX_BOLETO">
+            <div class="payment-method-header">
+              <div class="payment-method-icon pix-boleto-icon">
+                <i class="fas fa-qrcode"></i>
+                <i class="fas fa-barcode"></i>
+              </div>
+              <div class="payment-method-info">
+                <h4 class="payment-method-name">PIX ou Boleto Bancário</h4>
+                <p class="payment-method-desc">Escolha entre PIX ou Boleto</p>
+              </div>
+            </div>
+            <div class="payment-method-badge instant-badge">Aprovação rápida</div>
+
+            <!-- Opções de PIX ou Boleto + Parcelamento -->
+            <div class="installments-container" id="pix-boleto-options" style="display: none;">
+              <!-- Seleção PIX ou Boleto -->
+              <div class="payment-type-selector">
+                <h4 class="payment-type-title">Escolha o tipo de pagamento</h4>
+                <div class="payment-type-options-grid">
+                  <div class="payment-type-option-card" data-type="PIX">
+                    <div class="payment-type-icon">
+                      <i class="fas fa-qrcode"></i>
+                    </div>
+                    <div class="payment-type-content">
+                      <h5>PIX</h5>
+                      <p>Aprovação imediata</p>
+                    </div>
+                    <div class="payment-type-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+
+                  <div class="payment-type-option-card active" data-type="BOLETO">
+                    <div class="payment-type-icon">
+                      <i class="fas fa-barcode"></i>
+                    </div>
+                    <div class="payment-type-content">
+                      <h5>Boleto</h5>
+                      <p>Confirmação em 3 dias</p>
+                    </div>
+                    <div class="payment-type-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Opções de Pagamento: À Vista ou Parcelado -->
+              <div class="payment-mode-selector">
+                <h4 class="payment-mode-title">Como deseja pagar?</h4>
+                <div class="payment-mode-options">
+                  <!-- À Vista -->
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix-boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>À Vista</h5>
+                      <p class="payment-mode-value">R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></p>
+                      <span class="payment-mode-benefit">Pagamento único</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+
+                  <!-- Parcelado -->
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix-boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>Parcelado</h5>
+                      <p class="payment-mode-value">Até <%= max_installments %>x</p>
+                      <span class="payment-mode-benefit">Parcelas mensais</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grid de Parcelas -->
+              <div class="installments-grid-container" id="pix-boleto-installments-grid" style="display: none;">
+                <h4 class="installments-grid-title">
+                  <i class="fas fa-hand-pointer"></i>
+                  Escolha a quantidade de parcelas
+                </h4>
+                <div class="installments-grid-modern">
+                  <% (1..max_installments).each do |i| %>
+                    <% installment_value = (@rent.total_amount / i).round(2) %>
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix-boleto">
+                      <div class="installment-number"><%= i %>x</div>
+                      <div class="installment-value">R$ <%= number_with_precision(installment_value, precision: 2, delimiter: '.', separator: ',') %></div>
+                      <div class="installment-total">Total: R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></div>
+                      <div class="installment-check"><i class="fas fa-check"></i></div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão de Confirmar -->
+          <button type="submit" class="checkout-submit-btn" id="checkout-submit" disabled>
+            <i class="fas fa-lock"></i>
+            Confirmar Pagamento
+          </button>
+
+          <div class="checkout-security-note">
+            <i class="fas fa-shield-halved"></i>
+            <p>Pagamento processado de forma 100% segura através do Asaas</p>
+          </div>
+
+          <div class="checkout-info-note">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <p><strong>Importante:</strong> Após realizar o pagamento, você pode verificar o status do seu pedido a qualquer momento:</p>
+              <p style="margin-top: 10px;">
+                <%= link_to "Ver Status do Pedido ##{@rent.id}", order_status_path(@rent.id), class: "order-status-link", target: "_blank" %>
+              </p>
+              <p style="margin-top: 10px; font-size: 0.85em;">💡 Salve este link nos favoritos para acessar depois do pagamento!</p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

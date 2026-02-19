@@ -1,0 +1,203 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Voltar", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="checkout-container">
+  <h1 class="checkout-title">Finalizar Pagamento</h1>
+
+  <div class="checkout-layout">
+    <!-- Resumo do Pedido -->
+    <div class="checkout-summary">
+      <div class="checkout-summary-card">
+        <h3 class="checkout-summary-title">
+          <i class="fas fa-receipt"></i>
+          Resumo do Pedido
+        </h3>
+
+        <div class="checkout-summary-items">
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Outdoor:</span>
+            <span class="checkout-summary-value"><%= @outdoor.outdoor_type&.titleize %></span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Localização:</span>
+            <span class="checkout-summary-value"><%= @outdoor.outdoor_location %></span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Período:</span>
+            <span class="checkout-summary-value">
+              <%= format_checkout_period(@checkout_data[:start_date], @checkout_data[:end_date]) %>
+            </span>
+          </div>
+
+          <div class="checkout-summary-item">
+            <span class="checkout-summary-label">Duração:</span>
+            <span class="checkout-summary-value">
+              <%= @checkout_data[:quantity_months] %> <%= pluralize_checkout_months(@checkout_data[:quantity_months]) %>
+            </span>
+          </div>
+
+          <% if @outdoor.art_quantity > 0 %>
+            <div class="checkout-summary-item">
+              <span class="checkout-summary-label">Artes Gráficas:</span>
+              <span class="checkout-summary-value">
+                <%= @outdoor.art_quantity %> <%= pluralize_checkout_arts(@outdoor.art_quantity) %>
+              </span>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="checkout-summary-divider"></div>
+
+        <div class="checkout-summary-total">
+          <span class="checkout-summary-total-label">Valor Total</span>
+          <span class="checkout-summary-total-value">
+            <%= format_checkout_currency(@checkout_data[:total_amount]) %>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Métodos de Pagamento -->
+    <div class="checkout-payment">
+      <div class="checkout-payment-card">
+        <h3 class="checkout-payment-title">
+          <i class="fas fa-credit-card"></i>
+          Escolha o Método de Pagamento
+        </h3>
+
+        <%= form_with url: create_payment_path, method: :post, id: "payment-form", data: { turbo: false } do |f| %>
+          <%= hidden_field_tag :payment_method, '', id: 'selected-payment-method' %>
+          <%= hidden_field_tag :payment_type, '', id: 'selected-payment-type' %>
+          <%= hidden_field_tag :installments, 1, id: 'selected-installments' %>
+
+          <% max_installments = @checkout_data[:quantity_months].to_i %>
+
+          <!-- PIX ou Boleto Bancário -->
+          <div class="payment-method-card" data-method="PIX_BOLETO">
+            <div class="payment-method-header">
+              <div class="payment-method-icon pix-boleto-icon">
+                <i class="fas fa-qrcode"></i>
+                <i class="fas fa-barcode"></i>
+              </div>
+              <div class="payment-method-info">
+                <h4 class="payment-method-name">PIX ou Boleto Bancário</h4>
+                <p class="payment-method-desc">Escolha à vista ou parcelado</p>
+              </div>
+            </div>
+            <div class="payment-method-badge instant-badge">Aprovação rápida</div>
+
+            <!-- Opções: À Vista ou Parcelado (SEM escolher PIX/Boleto - Asaas decide) -->
+            <div class="installments-container hidden-data" id="pix-boleto-options">
+              <!-- Opções de Pagamento: À Vista ou Parcelado -->
+              <div class="payment-mode-selector">
+                <h4 class="payment-mode-title">Como deseja pagar?</h4>
+                <div class="payment-mode-options">
+                  <!-- À Vista -->
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix-boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>À Vista</h5>
+                      <p class="payment-mode-value"><%= format_installment_value(@checkout_data[:total_amount]) %></p>
+                      <span class="payment-mode-benefit">Pagamento único • PIX ou Boleto</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+
+                  <!-- Parcelado -->
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix-boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>Parcelado</h5>
+                      <p class="payment-mode-value">Até <%= max_installments %>x</p>
+                      <span class="payment-mode-benefit">Parcelas mensais • Boleto</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grid de Parcelas -->
+              <div class="installments-grid-container hidden-data" id="pix-boleto-installments-grid">
+                <h4 class="installments-grid-title">
+                  <i class="fas fa-hand-pointer"></i>
+                  Escolha a quantidade de parcelas
+                </h4>
+                <div class="installments-grid-modern">
+                  <% (1..max_installments).each do |i| %>
+                    <% installment_value = calculate_installment_value(@checkout_data[:total_amount], i) %>
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix-boleto">
+                      <div class="installment-number"><%= i %>x</div>
+                      <div class="installment-value"><%= format_installment_value(installment_value) %></div>
+                      <div class="installment-total">Total: <%= format_installment_value(@checkout_data[:total_amount]) %></div>
+                      <div class="installment-check"><i class="fas fa-check"></i></div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cartão -->
+          <div class="payment-method-card" data-method="CARD">
+            <div class="payment-method-header">
+              <div class="payment-method-icon card-icon">
+                <i class="fas fa-credit-card"></i>
+              </div>
+              <div class="payment-method-info">
+                <h4 class="payment-method-name">Cartão de Crédito ou Débito</h4>
+                <p class="payment-method-desc">Processado pelo Asaas</p>
+              </div>
+            </div>
+            <div class="payment-method-badge credit-badge">Aprovação imediata</div>
+
+            <!-- Sem opções adicionais - Asaas decide tudo -->
+            <div class="installments-container hidden-data" id="card-options">
+              <div class="card-info-notice">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Você será redirecionado para o Asaas</strong> onde poderá escolher entre:</p>
+                <ul>
+                  <li>💳 Cartão de Crédito (com opções de parcelamento)</li>
+                  <li>💰 Cartão de Débito (pagamento à vista)</li>
+                </ul>
+                <p class="card-security"><i class="fas fa-lock"></i> Ambiente seguro e criptografado</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botão de Confirmar -->
+          <button type="submit" class="checkout-submit-btn" id="checkout-submit" disabled>
+            <i class="fas fa-lock"></i>
+            Confirmar Pagamento
+          </button>
+
+          <div class="checkout-security-note">
+            <i class="fas fa-shield-halved"></i>
+            <p>Pagamento processado de forma 100% segura através do Asaas</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -12,19 +12,72 @@ class HomeController < ApplicationController
   end
 
   def find_outdoor
+    # Bloqueia se tem rent pendente ou pago
+    if current_user.rents.where(status: ['pending', 'paid']).exists?
+      rent = current_user.rents.where(status: ['pending', 'paid']).first
+      if rent.status == 'paid'
+        redirect_to root_path, alert: "Você já possui um pedido pago. Não é possível alterar as informações. Entre em contato via WhatsApp se precisar."
+      else
+        redirect_to order_status_path(rent.id), alert: "Você possui um pedido pendente. Cancele-o antes de fazer alterações."
+      end
+      return
+    end
+
     # @outdoor já está setado pelo before_action
   end
 
   def find_date
+    # Bloqueia se tem rent pendente ou pago
+    if current_user.rents.where(status: ['pending', 'paid']).exists?
+      rent = current_user.rents.where(status: ['pending', 'paid']).first
+      if rent.status == 'paid'
+        redirect_to root_path, alert: "Você já possui um pedido pago. Não é possível alterar as informações. Entre em contato via WhatsApp se precisar."
+      else
+        redirect_to order_status_path(rent.id), alert: "Você possui um pedido pendente. Cancele-o antes de fazer alterações."
+      end
+      return
+    end
+
     # @outdoor já está setado pelo before_action
   end
 
   def choose_art
+    # Bloqueia se tem rent pendente ou pago
+    if current_user.rents.where(status: ['pending', 'paid']).exists?
+      rent = current_user.rents.where(status: ['pending', 'paid']).first
+      if rent.status == 'paid'
+        redirect_to root_path, alert: "Você já possui um pedido pago. Não é possível alterar as informações. Entre em contato via WhatsApp se precisar."
+      else
+        redirect_to order_status_path(rent.id), alert: "Você possui um pedido pendente. Cancele-o antes de fazer alterações."
+      end
+      return
+    end
+
     # @outdoor já está setado pelo before_action
   end
 
   def finalize_budget
-    puts 'kakdakdakdakdakdkakdakodakodaokdaodokadokadokaok'
+    # Verifica se o usuário já possui um orçamento pago
+    paid_rent = current_user.rents.where(status: 'paid').first
+
+    if paid_rent.present?
+      # Já existe um orçamento pago, redireciona para WhatsApp
+      whatsapp_message = "Olá! Acabei de realizar o pagamento do meu outdoor (Pedido ##{paid_rent.id}). Gostaria de enviar as informações para impressão."
+      whatsapp_url = "https://wa.me/5546999776924?text=#{URI.encode_www_form_component(whatsapp_message)}"
+      redirect_to whatsapp_url, allow_other_host: true, alert: "Você já possui um pedido pago. Entre em contato via WhatsApp para enviar suas informações."
+      return
+    end
+
+    # Verifica se o usuário já possui um orçamento pendente
+    existing_rent = current_user.rents.where(status: 'pending').first
+
+    if existing_rent.present?
+      # Já existe um orçamento pendente, redireciona para a página de status
+      redirect_to order_status_path(existing_rent.id), alert: "Você já possui um orçamento pendente. Finalize ou cancele-o antes de criar um novo."
+      return
+    end
+
+    # @outdoor já está setado pelo before_action
   end
 
   def post_find_outdoor
@@ -92,49 +145,41 @@ class HomeController < ApplicationController
   # app/controllers/home_controller.rb
 
   def post_finalize_budget
+    # Verifica se o usuário já possui um orçamento pago
+    paid_rent = current_user.rents.where(status: 'paid').first
+
+    if paid_rent.present?
+      whatsapp_message = "Olá! Acabei de realizar o pagamento do meu outdoor (Pedido ##{paid_rent.id}). Gostaria de enviar as informações para impressão."
+      whatsapp_url = "https://wa.me/5546999776924?text=#{URI.encode_www_form_component(whatsapp_message)}"
+      redirect_to whatsapp_url, allow_other_host: true, alert: "Você já possui um pedido pago. Entre em contato via WhatsApp para enviar suas informações."
+      return
+    end
+
+    # Verifica se o usuário já possui um orçamento pendente
+    existing_rent = current_user.rents.where(status: 'pending').first
+
+    if existing_rent.present?
+      redirect_to order_status_path(existing_rent.id), alert: "Você já possui um orçamento pendente. Finalize ou cancele-o antes de criar um novo."
+      return
+    end
+
     @outdoor = Outdoor.find(params[:outdoor_id])
 
-    # 1. Tratamento do valor (tira R$ se tiver e converte)
-    valor_total = params[:total_amount].to_s.gsub('R$', '').gsub(',', '.').to_f - 7795
+    # ✅ SEGURANÇA: Calcula valor no BACKEND (não aceita do frontend)
+    total_amount = BudgetCalculator.calculate_total(@outdoor)
 
-    # 2. Cria o Aluguel
-    @rent = Rent.new(
-      user: current_user,
-      outdoor: @outdoor,
-      start_date: @outdoor.selected_start_date,
-      end_date: @outdoor.selected_start_date + @outdoor.selected_quantity_month.months,
-      total_amount: valor_total,
-      status: 'pending'
-    )
+    Rails.logger.info "🔒 Total calculado no backend: R$ #{total_amount}"
 
-    if @rent.save
-      # 3. Prepara a URL de Retorno (Para onde o Asaas manda o cliente depois de pagar)
-      # Isso gera o link: seite.com/pedido/whatsapp/123
-      url_retorno_whatsapp = pedido_whatsapp_url(@rent.id, host: request.base_url)
+    # Salva os dados na session (NÃO cria rent ainda)
+    session[:pending_checkout] = {
+      outdoor_id: @outdoor.id,
+      start_date: @outdoor.selected_start_date.to_s,
+      end_date: (@outdoor.selected_start_date + @outdoor.selected_quantity_month.months).to_s,
+      quantity_months: @outdoor.selected_quantity_month,
+      total_amount: total_amount
+    }
 
-      # 4. Chama o Service com os 5 Argumentos
-      asaas = AsaasService.new
-
-      link_pagamento = asaas.create_payment_url(
-        current_user, # 1. Usuário
-        valor_total, # 2. Valor
-        "Aluguel Outdoor: #{@outdoor.outdoor_type}", # 3. Descrição
-        @rent.id, # 4. ID Externo (para Webhook)
-        url_retorno_whatsapp # 5. URL de Redirecionamento (NOVO)
-      )
-
-      if link_pagamento
-        # SUCESSO: Cliente vai para o Asaas
-        redirect_to link_pagamento, allow_other_host: true
-      else
-        # FALHA: Apaga o rent e avisa
-        @rent.destroy
-        redirect_to root_path, alert: "Erro de comunicação com o Asaas. Tente novamente."
-      end
-
-    else
-      redirect_to root_path, alert: "Erro ao criar pedido: #{@rent.errors.full_messages.join(', ')}"
-    end
+    redirect_to new_checkout_path
   end
 
   def redirect_whatsapp

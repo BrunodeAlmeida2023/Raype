@@ -16,17 +16,11 @@
   <section class="home-services">
     <h1 class="home-services-title">Escolha sua Arte</h1>
 
-    <%# Dados das artes já salvas para o JavaScript %>
-    <% saved_art_urls = [] %>
-    <% if @outdoor&.art_files&.attached? %>
-      <% @outdoor.art_files.each do |art_file| %>
-        <% saved_art_urls << url_for(art_file) %>
-      <% end %>
-    <% end %>
+    <%# Dados das artes para o JavaScript - de forma segura via helper %>
     <div id="saved-art-data"
          data-art-quantity="<%= @outdoor&.art_quantity || 0 %>"
-         data-saved-arts="<%= saved_art_urls.to_json %>"
-         style="display: none;">
+         data-saved-arts="<%= saved_art_data_json(@outdoor).html_safe %>"
+         class="hidden-data">
     </div>
 
     <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container choose-art-form", id: "choose-art-form" do |f| %>
@@ -35,12 +29,7 @@
           <div class="home-form-group art-quantity-group">
             <%= f.label :art_quantity, "Quantas artes você tem?", class: "home-form-label art-quantity-label" %>
             <%= f.select :art_quantity,
-                options_for_select([
-                  ['Nenhuma (quero que criem para mim)', 0],
-                  ['1 arte', 1],
-                  ['2 artes', 2],
-                  ['3 artes', 3]
-                ], @outdoor&.art_quantity || 0),
+                art_quantity_options(@outdoor&.art_quantity),
                 {},
                 { class: "home-form-select art-quantity-select", id: "art_quantity" }
             %>
@@ -53,21 +42,23 @@
 
         <div class="choose-art-right">
           <!-- Preview do Outdoor Triedo -->
-          <div id="outdoor-preview-container" class="outdoor-preview-container" style="display: none;">
-            <h3 class="preview-title">Prévia do seu Outdoor</h3>
-            <div class="triedo-wrapper">
-              <div id="triedo-display" class="triedo-display">
-                <div class="triedo-placeholder">
-                  <p>Faça upload das suas artes para visualizar</p>
+          <% if show_outdoor_preview?(@outdoor) %>
+            <div id="outdoor-preview-container" class="outdoor-preview-container">
+              <h3 class="preview-title">Prévia do seu Outdoor</h3>
+              <div class="triedo-wrapper">
+                <div id="triedo-display" class="triedo-display">
+                  <div class="triedo-placeholder">
+                    <p>Faça upload das suas artes para visualizar</p>
+                  </div>
+                </div>
+                <div class="triedo-structure">
+                  <div class="triedo-pole"></div>
+                  <div class="triedo-base"></div>
                 </div>
               </div>
-              <div class="triedo-structure">
-                <div class="triedo-pole"></div>
-                <div class="triedo-base"></div>
-              </div>
+              <p class="preview-hint">* As imagens rotacionam automaticamente simulando um outdoor triedo</p>
             </div>
-            <p class="preview-hint">* As imagens rotacionam automaticamente simulando um outdoor triedo</p>
-          </div>
+          <% end %>
         </div>
 
         <div class="home-form-actions choose-art-actions">

@@ -17,17 +17,9 @@
     <h1 class="home-services-title">Resumo do Orçamento</h1>
 
     <%
-      # Cálculos
-      start_date = @outdoor.selected_start_date
-      quantity_months = @outdoor.selected_quantity_month.to_i
-      end_date = start_date + quantity_months.months if start_date.present?
-
-      valor_por_mes = 1200
-      valor_por_arte = 600
-
-      total_outdoor = quantity_months * valor_por_mes
-      total_grafica = @outdoor.art_quantity.to_i * valor_por_arte
-      total_geral = total_outdoor + total_grafica
+      # ✅ SEGURO: Dados calculados via helper
+      data = safe_budget_data(@outdoor)
+      budget = data[:budget]
     %>
 
     <div class="budget-layout">
@@ -42,15 +34,15 @@
           <div class="budget-card-body">
             <div class="budget-info-row">
               <span class="budget-label">Tipo:</span>
-              <span class="budget-value"><%= @outdoor.outdoor_type&.titleize %></span>
+              <span class="budget-value"><%= data[:outdoor_type] %></span>
             </div>
             <div class="budget-info-row">
               <span class="budget-label">Tamanho:</span>
-              <span class="budget-value"><%= @outdoor.outdoor_size %></span>
+              <span class="budget-value"><%= data[:outdoor_size] %></span>
             </div>
             <div class="budget-info-row">
               <span class="budget-label">Local:</span>
-              <span class="budget-value"><%= @outdoor.outdoor_location %></span>
+              <span class="budget-value"><%= data[:outdoor_location] %></span>
             </div>
           </div>
         </div>
@@ -64,15 +56,15 @@
           <div class="budget-card-body">
             <div class="budget-info-row">
               <span class="budget-label">Data Inicial:</span>
-              <span class="budget-value"><%= start_date&.strftime('%d/%m/%Y') %></span>
+              <span class="budget-value"><%= format_budget_date(data[:start_date]) %></span>
             </div>
             <div class="budget-info-row">
               <span class="budget-label">Data Final:</span>
-              <span class="budget-value"><%= end_date&.strftime('%d/%m/%Y') %></span>
+              <span class="budget-value"><%= format_budget_date(data[:end_date]) %></span>
             </div>
             <div class="budget-info-row">
               <span class="budget-label">Duração:</span>
-              <span class="budget-value highlight"><%= quantity_months %> <%= quantity_months == 1 ? 'mês' : 'meses' %></span>
+              <span class="budget-value highlight"><%= data[:months] %> <%= pluralize_months(data[:months]) %></span>
             </div>
           </div>
         </div>
@@ -86,12 +78,12 @@
           <div class="budget-card-body">
             <div class="budget-info-row">
               <span class="budget-label">Quantidade de Artes:</span>
-              <span class="budget-value"><%= @outdoor.art_quantity %> <%= @outdoor.art_quantity == 1 ? 'arte' : 'artes' %></span>
+              <span class="budget-value"><%= data[:art_quantity] %> <%= pluralize_arts(data[:art_quantity]) %></span>
             </div>
-            <% if @outdoor.art_quantity > 0 %>
+            <% if data[:art_quantity] > 0 %>
               <div class="budget-info-row">
                 <span class="budget-label">Valor por Arte:</span>
-                <span class="budget-value">R$ <%= number_with_delimiter(valor_por_arte, delimiter: '.') %>,00</span>
+                <span class="budget-value">R$ <%= format_budget_value(budget[:art_price_per_unit]) %>,00</span>
               </div>
               <div class="budget-arts-preview">
                 <% @outdoor.art_files.each_with_index do |art, index| %>
@@ -116,27 +108,49 @@
           <h3 class="budget-summary-title">Valores</h3>
 
           <div class="budget-summary-items">
-            <!-- Outdoor -->
+            <!-- Aluguel Mensal -->
             <div class="budget-summary-item">
               <div class="budget-summary-item-header">
-                <span class="budget-summary-label">Outdoor (<%= quantity_months %> <%= quantity_months == 1 ? 'mês' : 'meses' %>)</span>
-                <span class="budget-summary-calc"><%= quantity_months %> × R$ <%= number_with_delimiter(valor_por_mes, delimiter: '.') %></span>
+                <span class="budget-summary-label">Aluguel (<%= budget[:months] %> <%= pluralize_months(budget[:months]) %>)</span>
+                <span class="budget-summary-calc"><%= budget[:months] %> × R$ <%= format_budget_value(budget[:monthly_price]) %></span>
               </div>
               <div class="budget-summary-value">
-                R$ <%= number_with_delimiter(total_outdoor, delimiter: '.') %>,00
+                R$ <%= format_budget_value(budget[:rental_total]) %>,00
               </div>
             </div>
 
-            <!-- Gráfica -->
+            <!-- Artes Gráficas -->
             <div class="budget-summary-item">
               <div class="budget-summary-item-header">
-                <span class="budget-summary-label">Gráfica (<%= @outdoor.art_quantity %> <%= @outdoor.art_quantity == 1 ? 'arte' : 'artes' %>)</span>
-                <span class="budget-summary-calc"><%= @outdoor.art_quantity %> × R$ <%= number_with_delimiter(valor_por_arte, delimiter: '.') %></span>
+                <span class="budget-summary-label">Artes (<%= budget[:art_count] %> <%= pluralize_arts(budget[:art_count]) %>)</span>
+                <span class="budget-summary-calc"><%= budget[:art_count] %> × R$ <%= format_budget_value(budget[:art_price_per_unit]) %></span>
               </div>
               <div class="budget-summary-value">
-                R$ <%= number_with_delimiter(total_grafica, delimiter: '.') %>,00
+                R$ <%= format_budget_value(budget[:art_total]) %>,00
               </div>
             </div>
+
+            <!-- Taxa de Instalação -->
+            <div class="budget-summary-item">
+              <div class="budget-summary-item-header">
+                <span class="budget-summary-label">Instalação</span>
+              </div>
+              <div class="budget-summary-value">
+                R$ <%= format_budget_value(budget[:installation_fee]) %>,00
+              </div>
+            </div>
+
+            <!-- Taxa de Design (se aplicável) -->
+            <% if budget[:design_fee] > 0 %>
+              <div class="budget-summary-item">
+                <div class="budget-summary-item-header">
+                  <span class="budget-summary-label">Design</span>
+                </div>
+                <div class="budget-summary-value">
+                  R$ <%= format_budget_value(budget[:design_fee]) %>,00
+                </div>
+              </div>
+            <% end %>
           </div>
 
           <div class="budget-summary-divider"></div>
@@ -145,14 +159,21 @@
           <div class="budget-summary-total">
             <span class="budget-summary-total-label">Total</span>
             <span class="budget-summary-total-value">
-              R$ <%= number_with_delimiter(total_geral, delimiter: '.') %>,00
+              R$ <%= format_budget_value(budget[:total]) %>,00
             </span>
           </div>
 
           <%= hidden_field_tag :outdoor_id, @outdoor.id %>
-          <%= hidden_field_tag :selected_start_date, @outdoor.selected_start_date %>
-          <%= hidden_field_tag :selected_quantity_month, @outdoor.selected_quantity_month %>
-          <%= hidden_field_tag :total_amount, total_geral %>
+
+          <!-- Nota sobre disponibilidade -->
+          <div class="budget-summary-note budget-availability-note">
+            <i class="fas fa-info-circle"></i>
+            <p>
+              <strong>Importante:</strong> Ao confirmar o pagamento, estas datas ficarão reservadas.
+              Caso o outdoor já esteja alugado no período selecionado, você será notificado.
+            </p>
+          </div>
+
           <!-- Botão de Pagamento -->
           <div class="budget-summary-actions">
             <%= f.submit "Pagar Agora", class: "budget-pay-btn" %>

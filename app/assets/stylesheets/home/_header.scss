@@ -12,6 +12,7 @@
   margin-right: calc(-50vw + 50%);
   box-sizing: border-box;
   font-family: Arial, sans-serif;
+  position: relative;
 }
 
 .home-header-left {
@@ -87,6 +88,14 @@
     width: 24px;
     height: 24px;
     fill: #ff6b00;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  svg.user-icon {
+    fill: #ff6b00 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
 }
 

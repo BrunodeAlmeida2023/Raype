@@ -9,103 +9,166 @@ class AsaasService
     @api_key = config[:api_key].to_s.strip
     @base_url = config[:url]
 
-    # 2. Debug Inicial
-    puts "\n--- Verificação Asaas ---"
-    puts "🚀 Conectando em: #{@base_url}"
+    # 2. Debug Inicial (Apenas no console do servidor)
+    puts "\n--- Inicializando AsaasService ---"
     if @api_key.present?
-      puts "🔑 Chave identificada: #{@api_key[0..12]}..."
+      puts "🔑 Chave identificada: #{@api_key[0..5]}...******"
     else
       puts "❌ ERRO: Chave de API não encontrada em Rails.configuration.asaas"
     end
-    puts "------------------------\n"
   end
 
-  # Atualizado para aceitar Método de Pagamento e Parcelas
-  # payment_method: 'PIX', 'BOLETO', 'CREDIT_CARD' ou 'UNDEFINED' (cliente escolhe)
-  # installments: Inteiro (1 = à vista, >1 = parcelado)
+  # Cria a URL de pagamento
   def create_payment_url(user, value_float, description, external_id, redirect_url, payment_method = 'UNDEFINED', installments = 1)
-
+    # 1. Busca ou cria o cliente no Asaas
     customer_id = find_or_create_customer(user)
     return nil unless customer_id
 
-    # Garante que o método seja válido e maiúsculo
-    billing_type = ['PIX', 'BOLETO', 'CREDIT_CARD', 'UNDEFINED'].include?(payment_method.to_s.upcase) ? payment_method.to_s.upcase : 'UNDEFINED'
-
-    # Tratamento de Parcelamento
+    # 2. Normaliza os dados
+    raw_method = payment_method.to_s.upcase
     installments = installments.to_i
     installments = 1 if installments < 1
+    value_float = value_float.to_f
 
+    Rails.logger.info "💳 Processamento: #{raw_method} | Parcelas: #{installments} | Valor: R$ #{value_float}"
+
+    # 3. Determina billingType para o Asaas
+    billing_type = case raw_method
+                   when 'CREDIT_CARD', 'DEBIT_CARD', 'CARD'
+                     'CREDIT_CARD' # Asaas decide crédito ou débito na tela deles
+                   when 'PIX'
+                     'PIX'
+                   when 'BOLETO'
+                     'BOLETO'
+                   else
+                     'UNDEFINED' # Link genérico (Asaas mostra todas as opções)
+                   end
+
+    # 4. Tratamento ESPECIAL: Boleto Parcelado (Carnê)
+    if raw_method == 'BOLETO' && installments > 1
+      Rails.logger.info "📄 Criando carnê de boletos: #{installments}x"
+      return create_boleto_installments(customer_id, value_float, description, external_id, installments)
+    end
+
+    # 5. Validação de valor mínimo
+    min_value = (billing_type == 'PIX') ? 0.50 : 5.00
+    if value_float < min_value
+      Rails.logger.error "❌ Valor R$ #{value_float} abaixo do mínimo (R$ #{min_value})"
+      return nil
+    end
+
+    # 6. Monta payload
     payload = {
       customer: customer_id,
       billingType: billing_type,
+      value: value_float,
       dueDate: (Date.today + 1.day).to_s,
       description: description,
       postalService: false,
       externalReference: external_id.to_s
     }
 
-    if installments > 1
-      # LÓGICA DE PARCELAMENTO
-      # No Asaas, mandamos o valor da PARCELA e o número de parcelas
-      valor_parcela = (value_float / installments).round(2)
-
-      payload[:installmentCount] = installments
-      payload[:installmentValue] = valor_parcela
-
-      puts "📅 Configurando parcelamento: #{installments}x de R$ #{valor_parcela} via #{billing_type}"
-    else
-      # PAGAMENTO À VISTA
-      payload[:value] = value_float
+    # Para cartão, adiciona nota sobre parcelamento (opcional)
+    if billing_type == 'CREDIT_CARD' && installments > 1
+      payload[:description] += " (sugestão: #{installments}x)"
     end
 
-    # Envia Requisição
+    Rails.logger.debug "📦 Payload: #{payload.to_json}"
+
+    # 7. Envia para Asaas
     response = request(:post, "/payments", payload)
 
     if response && response.is_a?(Net::HTTPSuccess)
       json = JSON.parse(response.body)
-
-      # Retorna o link. Se for boleto/parcelado, o Asaas retorna o link da primeira cobrança ou do carnê.
-      return json['invoiceUrl']
+      invoice_url = json['invoiceUrl']
+      Rails.logger.info "✅ Link gerado: #{invoice_url}"
+      return invoice_url
     else
-      msg_erro = response ? response.body.force_encoding('UTF-8') : "Sem resposta"
-      puts "🔴 ERRO PAGAMENTO: #{msg_erro}"
-      nil
+      log_error(response)
+      return nil
     end
   end
 
   private
 
+  # Cria múltiplos boletos (Carnê)
+  def create_boleto_installments(customer_id, total_value, description, external_id, installments)
+    valor_parcela = (total_value / installments).round(2)
+
+    # Validação Asaas para boleto
+    if valor_parcela < 5.00
+      Rails.logger.error "❌ Valor da parcela (R$ #{valor_parcela}) abaixo do mínimo para boleto (R$ 5,00)"
+      return nil
+    end
+
+    puts "📋 Iniciando criação de carnê: #{installments}x de R$ #{valor_parcela}"
+
+    payment_urls = []
+
+    installments.times do |i|
+      parcela_num = i + 1
+      due_date = (Date.today + parcela_num.months).to_s
+
+      payload = {
+        customer: customer_id,
+        billingType: 'BOLETO',
+        value: valor_parcela,
+        dueDate: due_date,
+        description: "#{description} - Parc. #{parcela_num}/#{installments}",
+        postalService: false,
+        externalReference: "#{external_id}_parc_#{parcela_num}"
+      }
+
+      response = request(:post, "/payments", payload)
+
+      if response && response.is_a?(Net::HTTPSuccess)
+        json = JSON.parse(response.body)
+        payment_urls << json['invoiceUrl']
+        puts "   -> Parcela #{parcela_num} criada: #{json['id']}"
+      else
+        puts "   -> Erro na parcela #{parcela_num}"
+        log_error(response)
+        return nil # Aborta se uma falhar para não gerar carnê incompleto
+      end
+    end
+
+    # Retorna o link da primeira parcela (ou você poderia retornar uma página com todos os links)
+    puts "✅ Carnê finalizado com sucesso."
+    return payment_urls.first
+  end
+
   def find_or_create_customer(user)
     email = user.email.strip
-    encoded_email = URI.encode_www_form_component(email)
 
-    # 1. Busca Cliente
+    # 1. Tenta buscar pelo email
+    encoded_email = URI.encode_www_form_component(email)
     response = request(:get, "/customers?email=#{encoded_email}")
 
     if response && response.is_a?(Net::HTTPSuccess)
       data = JSON.parse(response.body)['data']
-      return data.first['id'] if data && data.any?
+      if data && data.any?
+        return data.first['id']
+      end
     end
 
-    # 2. Cria Cliente
-    nome = user.email.split('@').first.gsub(/\d/, '')
-    nome = "Cliente #{user.id}" if nome.to_s.strip.empty?
-    cpf = user.documento_numero.to_s.gsub(/\D/, '')
+    # 2. Se não achar, cria novo
+    nome = user.email.split('@').first
+    cpf = user.respond_to?(:documento_numero) ? user.documento_numero.to_s.gsub(/\D/, '') : ""
 
+    # Payload criação cliente
     payload = {
       name: nome,
       email: email,
-      cpfCnpj: cpf,
       externalReference: user.id.to_s
     }
+    payload[:cpfCnpj] = cpf if cpf.present?
 
     create_resp = request(:post, "/customers", payload)
 
     if create_resp && create_resp.is_a?(Net::HTTPSuccess)
       return JSON.parse(create_resp.body)['id']
     else
-      msg_erro = create_resp ? create_resp.body.force_encoding('UTF-8') : "Erro na criação do cliente"
-      puts "🔴 ERRO CLIENTE: #{msg_erro}"
+      log_error(create_resp, "Erro ao criar cliente")
       nil
     end
   end
@@ -115,19 +178,31 @@ class AsaasService
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
 
-    if method == :get
-      req = Net::HTTP::Get.new(uri.request_uri)
-    else
-      req = Net::HTTP::Post.new(uri.request_uri)
-      req.body = body.to_json if body
+    request_obj = method == :get ? Net::HTTP::Get.new(uri) : Net::HTTP::Post.new(uri)
+
+    request_obj['access_token'] = @api_key
+    request_obj['Content-Type'] = 'application/json'
+    request_obj.body = body.to_json if body
+
+    begin
+      http.request(request_obj)
+    rescue StandardError => e
+      Rails.logger.error "💥 AsaasService Exception: #{e.message}"
+      nil
     end
+  end
 
-    req['access_token'] = @api_key
-    req['Content-Type'] = 'application/json'
-
-    http.request(req)
-  rescue => e
-    puts "💥 ERRO DE REDE: #{e.message}"
-    nil
+  def log_error(response, context = "Erro Asaas")
+    if response
+      begin
+        body = JSON.parse(response.body)
+        errors = body['errors']&.map { |e| e['description'] }&.join(', ')
+        Rails.logger.error "🔴 #{context} (Status #{response.code}): #{errors || response.body}"
+      rescue
+        Rails.logger.error "🔴 #{context} (Status #{response.code}): #{response.body}"
+      end
+    else
+      Rails.logger.error "🔴 #{context}: Sem resposta da API"
+    end
   end
 end

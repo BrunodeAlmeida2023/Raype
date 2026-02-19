@@ -1,0 +1,304 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Início", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <i class="fas fa-check-circle"></i>
+    </div>
+
+    <h1 class="success-title">Pedido Realizado!</h1>
+
+    <p class="success-message">
+      Seu pedido foi criado com sucesso!
+      <% if @rent && @rent.status == 'paid' %>
+        O pagamento já foi confirmado.
+      <% else %>
+        Assim que o pagamento for confirmado, você receberá uma notificação.
+      <% end %>
+    </p>
+
+    <div class="success-details">
+      <h3>Detalhes do Pedido</h3>
+      <% if @rent %>
+        <div class="success-detail-item">
+          <span class="success-label">Número do Pedido:</span>
+          <span class="success-value">#<%= @rent.id %></span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-label">Outdoor:</span>
+          <span class="success-value"><%= @rent.outdoor.outdoor_type&.titleize %></span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-label">Valor:</span>
+          <span class="success-value">R$ <%= number_with_delimiter(@rent.total_amount.to_i, delimiter: '.') %>,00</span>
+        </div>
+        <div class="success-detail-item">
+          <span class="success-label">Status:</span>
+          <span class="success-value <%= @rent.status == 'paid' ? 'status-paid' : 'status-pending' %>">
+            <%= @rent.status == 'paid' ? 'Pago' : 'Aguardando Pagamento' %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="success-actions">
+      <%= link_to pedido_whatsapp_path(@rent.id), class: "success-whatsapp-btn", target: "_blank" do %>
+        <i class="fab fa-whatsapp"></i>
+        Falar com Atendimento no WhatsApp
+      <% end %>
+
+      <%= link_to "Voltar para Início", root_path, class: "success-home-btn" %>
+    </div>
+
+    <div class="success-note">
+      <i class="fas fa-info-circle"></i>
+      <p>Entre em contato conosco via WhatsApp para finalizar os detalhes do seu pedido.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.success-container {
+  max-width: 600px;
+  margin: 60px auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 200px);
+}
+
+.success-card {
+  background: white;
+  border-radius: 20px;
+  padding: 50px 40px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  width: 100%;
+}
+
+.success-icon {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 30px;
+  background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+  animation: successPulse 2s ease-in-out infinite;
+}
+
+.success-icon i {
+  font-size: 50px;
+  color: white;
+}
+
+@keyframes successPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.success-title {
+  font-size: 2.2em;
+  color: #333;
+  margin: 0 0 20px 0;
+  font-weight: 700;
+}
+
+.success-message {
+  font-size: 1.1em;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 35px;
+}
+
+.success-details {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.success-details h3 {
+  font-size: 1.3em;
+  color: #333;
+  margin: 0 0 20px 0;
+  text-align: center;
+  font-weight: 700;
+}
+
+.success-detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.success-detail-item:last-child {
+  border-bottom: none;
+}
+
+.success-label {
+  font-size: 1em;
+  color: #666;
+  font-weight: 600;
+}
+
+.success-value {
+  font-size: 1em;
+  color: #333;
+  font-weight: 700;
+}
+
+.status-paid {
+  color: #4caf50;
+}
+
+.status-pending {
+  color: #ff9800;
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.success-whatsapp-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
+  color: white;
+  padding: 18px 30px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 1.2em;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(37, 211, 102, 0.3);
+}
+
+.success-whatsapp-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+}
+
+.success-whatsapp-btn i {
+  font-size: 1.4em;
+}
+
+.success-home-btn {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #333;
+  padding: 15px 30px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 1.1em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.success-home-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.success-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  background: #e3f2fd;
+  border-radius: 8px;
+  border: 1px solid #bbdefb;
+}
+
+.success-note i {
+  color: #1976d2;
+  font-size: 1.2em;
+}
+
+.success-note p {
+  margin: 0;
+  color: #1565c0;
+  font-size: 0.95em;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .success-card {
+    padding: 40px 25px;
+  }
+
+  .success-title {
+    font-size: 1.8em;
+  }
+
+  .success-message {
+    font-size: 1em;
+  }
+
+  .success-whatsapp-btn {
+    font-size: 1.1em;
+    padding: 16px 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .success-container {
+    margin: 30px auto;
+  }
+
+  .success-card {
+    padding: 30px 20px;
+  }
+
+  .success-icon {
+    width: 80px;
+    height: 80px;
+  }
+
+  .success-icon i {
+    font-size: 40px;
+  }
+
+  .success-title {
+    font-size: 1.5em;
+  }
+
+  .success-details {
+    padding: 20px;
+  }
+
+  .success-note {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+</style>
+

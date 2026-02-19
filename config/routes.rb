@@ -1,7 +1,6 @@
 require 'sidekiq/web'
 
 Rails.application.routes.draw do
-  resources :webhooks_controllers
   devise_for :users, controllers: {
     sessions: 'users/sessions',
     registrations: 'users/registrations',
@@ -22,7 +21,13 @@ Rails.application.routes.draw do
     post :post_finalize_budget
   end
 
-  get 'checkout/success', to: 'checkout#success', as: 'checkout_success'
+  get 'checkout/new', to: 'checkout#new', as: 'new_checkout'
+  post 'checkout/create_payment', to: 'checkout#create_payment', as: 'create_payment'
+  get 'checkout/:rent_id', to: 'checkout#show', as: 'checkout'
+  post 'checkout/:rent_id/process', to: 'checkout#process_payment', as: 'process_payment'
+  get 'checkout/success/:id', to: 'checkout#success', as: 'checkout_success'
+  get 'pedido/:id/status', to: 'checkout#order_status', as: 'order_status'
+  delete 'pedido/:id/cancelar', to: 'checkout#cancel_order', as: 'cancel_order'
   get 'pedido/whatsapp/:id', to: 'home#redirect_whatsapp', as: :pedido_whatsapp
   post 'webhooks/asaas', to: 'webhooks#asaas'
 

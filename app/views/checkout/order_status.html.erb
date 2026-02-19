@@ -1,0 +1,109 @@
+<% content_for :body_class, "orange-bg" %>
+
+<header class="home-header">
+  <div class="home-header-left">
+    <div class="home-header-logo">
+      <img src="/Logo.png" alt="Raype Logo" class="header-logo-img">
+    </div>
+    <h1>RAYPE</h1>
+  </div>
+  <nav class="home-nav">
+    <%= link_to "Início", root_path, class: "home-nav-btn" %>
+  </nav>
+</header>
+
+<div class="order-status-container">
+  <div class="order-status-card">
+    <h1 class="order-status-title">Status do Pedido #<%= @rent.id %></h1>
+
+    <div class="order-status-badge <%= order_status_badge_class(@rent.status) %>">
+      <i class="<%= order_status_icon(@rent.status) %>"></i>
+      <span><%= order_status_text(@rent.status) %></span>
+    </div>
+
+    <div class="order-details">
+      <h3>Detalhes do Pedido</h3>
+
+      <div class="order-detail-item">
+        <span class="order-label">Outdoor:</span>
+        <span class="order-value"><%= @rent.outdoor.outdoor_type&.titleize %></span>
+      </div>
+
+      <div class="order-detail-item">
+        <span class="order-label">Localização:</span>
+        <span class="order-value"><%= @rent.outdoor.outdoor_location %></span>
+      </div>
+
+      <div class="order-detail-item">
+        <span class="order-label">Período:</span>
+        <span class="order-value"><%= format_date_range(@rent.start_date, @rent.end_date) %></span>
+      </div>
+
+      <div class="order-detail-item">
+        <span class="order-label">Valor Total:</span>
+        <span class="order-value-highlight"><%= format_currency(@rent.total_amount) %></span>
+      </div>
+
+      <% if @rent.asaas_id.present? %>
+        <div class="order-detail-item">
+          <span class="order-label">ID Asaas:</span>
+          <span class="order-value"><%= @rent.asaas_id %></span>
+        </div>
+      <% end %>
+
+      <% if @rent.payment_method.present? %>
+        <div class="order-detail-item">
+          <span class="order-label">Método de Pagamento:</span>
+          <span class="order-value"><%= @rent.payment_method %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @rent.status == 'paid' %>
+      <div class="order-actions">
+        <%= link_to pedido_whatsapp_link(@rent), class: "order-whatsapp-btn", target: "_blank" do %>
+          <i class="fab fa-whatsapp"></i>
+          Falar com Atendimento no WhatsApp
+        <% end %>
+      </div>
+
+      <div class="order-success-message">
+        <i class="fas fa-check-circle"></i>
+        <p>Seu pagamento foi confirmado! Entre em contato conosco via WhatsApp para finalizar os detalhes.</p>
+      </div>
+    <% else %>
+      <div class="order-pending-message">
+        <i class="fas fa-hourglass-half"></i>
+        <p>Seu pedido está aguardando confirmação do pagamento. Isso pode levar alguns minutos para PIX ou até 3 dias úteis para boleto bancário.</p>
+      </div>
+
+      <div class="order-actions">
+        <% if @rent.asaas_payment_url.present? %>
+          <%= link_to @rent.asaas_payment_url, class: "order-payment-link-btn", target: "_blank", data: { turbo: false } do %>
+            <i class="fas fa-credit-card"></i>
+            Acessar Link de Pagamento
+          <% end %>
+        <% else %>
+          <div class="order-pending-message" style="margin-bottom: 20px;">
+            <i class="fas fa-info-circle"></i>
+            <p>Link de pagamento em processamento...</p>
+          </div>
+        <% end %>
+
+        <button type="button" class="order-refresh-btn">
+          <i class="fas fa-sync-alt"></i>
+          Atualizar Status
+        </button>
+
+        <%= button_to cancel_order_path(@rent.id), method: :delete, class: "order-cancel-btn", form: { data: { turbo: false, turbo_confirm: "Tem certeza que deseja cancelar este orçamento? Esta ação não pode ser desfeita." } } do %>
+          <i class="fas fa-times-circle"></i>
+          Cancelar Orçamento
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="order-back-link">
+      <%= link_to "← Voltar para Início", root_path %>
+    </div>
+  </div>
+</div>
