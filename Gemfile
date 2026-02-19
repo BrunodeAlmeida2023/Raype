@@ -43,9 +43,6 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
-  gem 'debase'
-  gem 'ruby-debug-ide'
 end
 
 group :development do
