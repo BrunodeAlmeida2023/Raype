@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+# Script para testar configuração de e-mail
+
+puts "🔍 Verificando configuração de e-mail...\n\n"
+
+# Verificar variáveis de ambiente
+required_vars = %w[SMTP_ADDRESS SMTP_PORT SMTP_USERNAME SMTP_PASSWORD MAILER_FROM_EMAIL]
+missing_vars = []
+
+required_vars.each do |var|
+  if ENV[var].nil? || ENV[var].empty?
+    missing_vars << var
+    puts "❌ #{var} - NÃO CONFIGURADA"
+  else
+    # Mostrar apenas parte da variável por segurança
+    value = ENV[var]
+    display_value = if var.include?('PASSWORD') || var.include?('KEY')
+                      "#{value[0..5]}..." # Mostra só os primeiros 6 caracteres
+                    else
+                      value
+                    end
+    puts "✅ #{var} - #{display_value}"
+  end
+end
+
+puts "\n"
+
+if missing_vars.any?
+  puts "⚠️  ATENÇÃO: Variáveis faltando: #{missing_vars.join(', ')}"
+  puts "\nPara configurar no Railway:"
+  puts "1. Acesse o projeto no Railway"
+  puts "2. Vá em 'Variables'"
+  puts "3. Adicione as variáveis faltando"
+  puts "\nVeja o arquivo RAILWAY_EMAIL_SETUP.md para instruções completas."
+  exit 1
+else
+  puts "✅ Todas as variáveis estão configuradas!\n\n"
+end
+
+# Verificar configuração do ActionMailer
+puts "📧 Configuração do ActionMailer:\n"
+puts "   Delivery method: #{ActionMailer::Base.delivery_method}"
+puts "   SMTP address: #{ActionMailer::Base.smtp_settings[:address]}"
+puts "   SMTP port: #{ActionMailer::Base.smtp_settings[:port]}"
+puts "   SMTP domain: #{ActionMailer::Base.smtp_settings[:domain]}"
+puts "   Default URL host: #{ActionMailer::Base.default_url_options[:host]}\n\n"
+
+# Testar envio de e-mail
+print "🧪 Deseja enviar um e-mail de teste? (s/n): "
+response = gets.chomp.downcase
+
+if response == 's'
+  print "Digite o e-mail de destino: "
+  email = gets.chomp
+
+  if email.match?(/\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i)
+    puts "\n📤 Enviando e-mail de teste para #{email}..."
+
+    begin
+      # Criar um usuário temporário apenas para teste
+      test_user = User.new(
+        email: email,
+        password: 'TempPassword123!',
+        password_confirmation: 'TempPassword123!',
+        documento_tipo: 'cpf',
+        documento_numero: '12345678900'
+      )
+
+      # Gerar token de confirmação sem salvar
+      test_user.send(:generate_confirmation_token)
+
+      # Enviar e-mail
+      Devise::Mailer.confirmation_instructions(test_user, test_user.confirmation_token).deliver_now
+
+      puts "✅ E-mail enviado com sucesso!"
+      puts "   Verifique a caixa de entrada de #{email}"
+      puts "   (Não esqueça de verificar o spam!)"
+    rescue => e
+      puts "❌ Erro ao enviar e-mail:"
+      puts "   #{e.class}: #{e.message}"
+      puts "\n🔍 Verifique:"
+      puts "   1. Se as credenciais SMTP estão corretas"
+      puts "   2. Se a senha de app do Gmail está correta (sem espaços)"
+      puts "   3. Os logs para mais detalhes"
+    end
+  else
+    puts "❌ E-mail inválido!"
+  end
+else
+  puts "⏭️  Pulando teste de envio."
+end
+
+puts "\n✨ Verificação concluída!"
+

@@ -1,0 +1,103 @@
+#!/bin/bash
+# Script de comandos úteis para o projeto Raype
+
+echo "================================================"
+echo "  RAYPE - Comandos Úteis"
+echo "================================================"
+echo ""
+
+# Função para mostrar menu
+show_menu() {
+    echo "Escolha uma opção:"
+    echo ""
+    echo "DESENVOLVIMENTO:"
+    echo "  1) Iniciar servidor de desenvolvimento"
+    echo "  2) Iniciar Mailcatcher (e-mails de teste)"
+    echo "  3) Testar configuração de e-mail"
+    echo "  4) Abrir console do Rails"
+    echo "  5) Rodar migrations"
+    echo ""
+    echo "RAILWAY (PRODUÇÃO):"
+    echo "  6) Ver logs do Railway"
+    echo "  7) Abrir console do Railway"
+    echo "  8) Ver variáveis de ambiente"
+    echo "  9) Fazer redeploy"
+    echo ""
+    echo "TESTES:"
+    echo "  10) Rodar todos os testes"
+    echo "  11) Enviar e-mail de teste"
+    echo ""
+    echo "  0) Sair"
+    echo ""
+    read -p "Opção: " option
+
+    case $option in
+        1)
+            echo "🚀 Iniciando servidor de desenvolvimento..."
+            bin/dev
+            ;;
+        2)
+            echo "📧 Iniciando Mailcatcher..."
+            echo "E-mails disponíveis em: http://localhost:1080"
+            mailcatcher
+            ;;
+        3)
+            echo "🔍 Testando configuração de e-mail..."
+            rails runner bin/test-email
+            ;;
+        4)
+            echo "💻 Abrindo console do Rails..."
+            rails console
+            ;;
+        5)
+            echo "🗄️  Rodando migrations..."
+            rails db:migrate
+            ;;
+        6)
+            echo "📋 Logs do Railway..."
+            railway logs --follow
+            ;;
+        7)
+            echo "💻 Abrindo console do Railway..."
+            railway run rails console
+            ;;
+        8)
+            echo "⚙️  Variáveis de ambiente do Railway..."
+            railway variables
+            ;;
+        9)
+            echo "🔄 Fazendo redeploy no Railway..."
+            railway up
+            ;;
+        10)
+            echo "🧪 Rodando testes..."
+            rails test
+            ;;
+        11)
+            echo "📧 Enviando e-mail de teste..."
+            rails runner bin/test-email
+            ;;
+        0)
+            echo "👋 Até logo!"
+            exit 0
+            ;;
+        *)
+            echo "❌ Opção inválida!"
+            ;;
+    esac
+
+    echo ""
+    read -p "Pressione ENTER para voltar ao menu..."
+    show_menu
+}
+
+# Verificar se o Railway CLI está instalado
+if ! command -v railway &> /dev/null; then
+    echo "⚠️  Railway CLI não está instalado!"
+    echo "Para instalar: npm install -g @railway/cli"
+    echo ""
+fi
+
+# Mostrar menu
+show_menu
+
