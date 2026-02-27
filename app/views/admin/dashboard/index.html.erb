@@ -1,0 +1,134 @@
+<div class="admin-dashboard">
+  <h1 class="admin-page-title">Dashboard Administrativo</h1>
+
+  <!-- Statistics Cards -->
+  <div class="admin-stats-grid">
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background: #ff6b00;">
+        <i class="fas fa-rectangle-ad"></i>
+      </div>
+      <div class="admin-stat-content">
+        <h3><%= @total_outdoors %></h3>
+        <p>Outdoors Cadastrados</p>
+      </div>
+    </div>
+
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background: #4CAF50;">
+        <i class="fas fa-check-circle"></i>
+      </div>
+      <div class="admin-stat-content">
+        <h3><%= @paid_rents %></h3>
+        <p>Aluguéis Pagos</p>
+      </div>
+    </div>
+
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background: #FFA726;">
+        <i class="fas fa-clock"></i>
+      </div>
+      <div class="admin-stat-content">
+        <h3><%= @pending_rents %></h3>
+        <p>Aluguéis Pendentes</p>
+      </div>
+    </div>
+
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background: #EF5350;">
+        <i class="fas fa-ban"></i>
+      </div>
+      <div class="admin-stat-content">
+        <h3><%= @total_blocked_dates %></h3>
+        <p>Períodos Bloqueados</p>
+      </div>
+    </div>
+
+    <div class="admin-stat-card">
+      <div class="admin-stat-icon" style="background: #9C27B0;">
+        <i class="fas fa-map-marker-alt"></i>
+      </div>
+      <div class="admin-stat-content">
+        <h3><%= @total_location_blocks %></h3>
+        <p>Localizações Bloqueadas</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="admin-dashboard-grid">
+    <!-- Recent Rents -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="fas fa-file-invoice-dollar"></i> Aluguéis Recentes</h2>
+        <%= link_to 'Ver Todos', admin_rents_path, class: 'admin-btn-sm admin-btn-outline' %>
+      </div>
+      <div class="admin-card-body">
+        <% if @recent_rents.any? %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Usuário</th>
+                <th>Outdoor</th>
+                <th>Período</th>
+                <th>Status</th>
+                <th>Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_rents.each do |rent| %>
+                <tr>
+                  <td><%= link_to "##{rent.id}", admin_rent_path(rent) %></td>
+                  <td><%= rent.user.email %></td>
+                  <td><%= rent.outdoor.outdoor_type&.titleize || '-' %></td>
+                  <td><%= rent.start_date.strftime('%d/%m/%Y') %> - <%= rent.end_date.strftime('%d/%m/%Y') %></td>
+                  <td><span class="admin-badge admin-badge-<%= rent.status %>"><%= rent.status %></span></td>
+                  <td>R$ <%= number_with_delimiter(rent.total_amount, delimiter: '.') %>,00</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="admin-empty-state">Nenhum aluguel registrado ainda.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Active Blocked Dates -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="fas fa-ban"></i> Bloqueios Ativos</h2>
+        <%= link_to 'Gerenciar', admin_outdoors_path, class: 'admin-btn-sm admin-btn-outline' %>
+      </div>
+      <div class="admin-card-body">
+        <% if @active_blocked_dates.any? %>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Outdoor</th>
+                <th>Período</th>
+                <th>Motivo</th>
+                <th>Bloqueado por</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @active_blocked_dates.each do |blocked| %>
+                <tr>
+                  <td><%= link_to "Outdoor ##{blocked.outdoor.id}", admin_outdoor_path(blocked.outdoor) %></td>
+                  <td><%= blocked.start_date.strftime('%d/%m/%Y') %> - <%= blocked.end_date.strftime('%d/%m/%Y') %></td>
+                  <td><%= blocked.reason || '-' %></td>
+                  <td><%= blocked.admin_user&.email || 'Sistema' %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <p class="admin-empty-state">Nenhum período bloqueado no momento.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

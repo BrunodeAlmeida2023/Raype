@@ -1,0 +1,92 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-ban"></i> Bloquear Datas - Outdoor #<%= @outdoor.id %></h1>
+    <%= link_to 'Voltar', admin_outdoor_path(@outdoor), class: 'admin-btn-secondary' %>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <%= form_with model: @blocked_date, url: admin_outdoor_blocked_dates_path(@outdoor), local: true, class: 'admin-form' do |f| %>
+        <% if @blocked_date.errors.any? %>
+          <div class="admin-alert admin-alert-error">
+            <h4><%= pluralize(@blocked_date.errors.count, "erro") %> impediram o bloqueio:</h4>
+            <ul>
+              <% @blocked_date.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="admin-form-grid">
+          <div class="admin-form-group">
+            <%= f.label :start_date, "Data Inicial:", class: "admin-form-label" %>
+            <%= f.date_field :start_date,
+                class: "admin-form-input",
+                required: true,
+                min: Date.today %>
+            <small class="admin-form-hint">Data a partir da qual o período será bloqueado</small>
+          </div>
+
+          <div class="admin-form-group">
+            <%= f.label :end_date, "Data Final:", class: "admin-form-label" %>
+            <%= f.date_field :end_date,
+                class: "admin-form-input",
+                required: true,
+                min: Date.today %>
+            <small class="admin-form-hint">Última data do período bloqueado</small>
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <%= f.label :reason, "Motivo do Bloqueio:", class: "admin-form-label" %>
+          <%= f.text_area :reason,
+              class: "admin-form-input",
+              rows: 3,
+              placeholder: "Ex: Aluguel presencial - Cliente João Silva" %>
+          <small class="admin-form-hint">Descreva o motivo do bloqueio (opcional)</small>
+        </div>
+
+        <div class="admin-form-alert">
+          <i class="fas fa-exclamation-triangle"></i>
+          <strong>Atenção:</strong> Ao bloquear este período, nenhum usuário poderá selecionar estas datas no sistema para aluguel online.
+        </div>
+
+        <div class="admin-form-actions">
+          <%= f.submit "Bloquear Período", class: "admin-btn-primary" %>
+          <%= link_to "Cancelar", admin_outdoor_path(@outdoor), class: "admin-btn-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Existing Blocked Dates -->
+  <% if @outdoor.blocked_dates.active.any? %>
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="fas fa-list"></i> Bloqueios Ativos Existentes</h2>
+      </div>
+      <div class="admin-card-body">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Período</th>
+              <th>Motivo</th>
+              <th>Bloqueado por</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @outdoor.blocked_dates.active.order(start_date: :asc).each do |blocked| %>
+              <tr>
+                <td><%= blocked.start_date.strftime('%d/%m/%Y') %> - <%= blocked.end_date.strftime('%d/%m/%Y') %></td>
+                <td><%= blocked.reason || '-' %></td>
+                <td><%= blocked.admin_user&.email || 'Sistema' %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>
+

@@ -5,6 +5,7 @@ class Outdoor < ApplicationRecord
   has_many_attached :art_files
 
   has_many :rents
+  has_many :blocked_dates, class_name: 'OutdoorBlockedDate', dependent: :destroy
 
   # Enum para tipo de outdoor
   enum :outdoor_type, {
@@ -31,6 +32,9 @@ class Outdoor < ApplicationRecord
 
   # Validações
   validates :user, presence: true
+
+  # Callback para garantir que custom_art_quantity seja salvo
+  before_save :ensure_custom_art_quantity
 
   # Scopes úteis
   scope :recent, -> { order(created_at: :desc) }
@@ -91,6 +95,17 @@ class Outdoor < ApplicationRecord
     rents.where(status: 'paid')
          .where('start_date <= ? AND end_date >= ?', date, date)
          .empty?
+  end
+
+  private
+
+  def ensure_custom_art_quantity
+    # Força Rails a reconhecer mudanças no custom_art_quantity
+    if art_quantity == 0 && custom_art_quantity.present?
+      self.custom_art_quantity = custom_art_quantity.to_i
+    elsif art_quantity != 0
+      self.custom_art_quantity = nil
+    end
   end
 end
 

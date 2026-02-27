@@ -44,9 +44,9 @@ module FinalizeBudgetHelper
     end_date = calculate_end_date(outdoor)
 
     {
-      outdoor_type: outdoor.outdoor_type&.titleize,
-      outdoor_size: outdoor.outdoor_size,
-      outdoor_location: outdoor.outdoor_location,
+      outdoor_type: outdoor.outdoor_type_label,
+      outdoor_size: outdoor.outdoor_size_label,
+      outdoor_location: outdoor.outdoor_location_label,
       start_date: outdoor.selected_start_date,
       end_date: end_date,
       months: budget[:months],

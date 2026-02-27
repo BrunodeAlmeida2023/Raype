@@ -1,0 +1,70 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-file-invoice-dollar"></i> Aluguéis</h1>
+  </div>
+
+  <!-- Filters -->
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <%= form_with url: admin_rents_path, method: :get, local: true, class: 'admin-filter-form' do |f| %>
+        <div style="display: flex; gap: 1rem; align-items: end;">
+          <div class="admin-form-group" style="margin-bottom: 0;">
+            <%= f.label :status, "Status:", class: "admin-form-label" %>
+            <%= f.select :status,
+                [['Todos', ''], ['Pendente', 'pending'], ['Pago', 'paid']],
+                { selected: params[:status] },
+                { class: "admin-form-input" } %>
+          </div>
+          <%= f.submit "Filtrar", class: "admin-btn-primary admin-btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <% if @rents.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuário</th>
+              <th>Outdoor</th>
+              <th>Período</th>
+              <th>Status</th>
+              <th>Método Pgto</th>
+              <th>Valor</th>
+              <th>Criado em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @rents.each do |rent| %>
+              <tr>
+                <td><strong>#<%= rent.id %></strong></td>
+                <td><%= rent.user.email %></td>
+                <td><%= rent.outdoor.outdoor_type&.titleize || '-' %></td>
+                <td><%= rent.start_date.strftime('%d/%m/%Y') %> - <%= rent.end_date.strftime('%d/%m/%Y') %></td>
+                <td><span class="admin-badge admin-badge-<%= rent.status %>"><%= rent.status %></span></td>
+                <td><%= rent.payment_method || '-' %></td>
+                <td>R$ <%= number_with_delimiter(rent.total_amount, delimiter: '.') %>,00</td>
+                <td><%= rent.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+                <td>
+                  <%= link_to 'Ver Detalhes', admin_rent_path(rent), class: 'admin-btn-sm admin-btn-primary' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="admin-empty-state">
+          <i class="fas fa-info-circle"></i>
+          Nenhum aluguel encontrado com os filtros aplicados.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+

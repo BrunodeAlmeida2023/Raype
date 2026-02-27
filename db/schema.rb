@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_10_013045) do
+ActiveRecord::Schema[7.2].define(version: 2026_02_26_123730) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,6 +58,27 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_10_013045) do
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
+  create_table "location_blocked_dates", force: :cascade do |t|
+    t.integer "outdoor_location"
+    t.date "start_date"
+    t.date "end_date"
+    t.string "reason"
+    t.integer "blocked_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "outdoor_blocked_dates", force: :cascade do |t|
+    t.bigint "outdoor_id", null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.string "reason"
+    t.integer "blocked_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["outdoor_id"], name: "index_outdoor_blocked_dates_on_outdoor_id"
+  end
+
   create_table "outdoors", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.integer "outdoor_type", default: 0
@@ -71,6 +92,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_10_013045) do
     t.date "selected_start_date"
     t.integer "selected_quantity_month"
     t.integer "art_quantity"
+    t.integer "custom_art_quantity"
     t.index ["outdoor_type"], name: "index_outdoors_on_outdoor_type"
     t.index ["status"], name: "index_outdoors_on_status"
     t.index ["user_id"], name: "index_outdoors_on_user_id"
@@ -115,6 +137,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_10_013045) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "outdoor_blocked_dates", "outdoors"
   add_foreign_key "outdoors", "users"
   add_foreign_key "rents", "outdoors"
   add_foreign_key "rents", "users"

@@ -11,6 +11,7 @@ class BudgetCalculator
   PRICE_PER_ART = 600
   INSTALLATION_FEE = 1200
   DESIGN_FEE = 800
+  CUSTOM_ART_FEE = 900 # Taxa por arte customizada criada pela equipe
 
   class << self
     # Calcula o valor total do orçamento
@@ -19,12 +20,14 @@ class BudgetCalculator
 
       monthly_rental = calculate_rental_cost(outdoor)
       art_cost = calculate_art_cost(outdoor)
+      custom_art_cost = calculate_custom_art_cost(outdoor)
       installation = INSTALLATION_FEE
-      design = outdoor.art_quantity.to_i > 0 ? DESIGN_FEE : 0
+      # Cobra taxa de design se tiver artes próprias OU artes customizadas
+      design = (outdoor.art_quantity.to_i > 0 || outdoor.custom_art_quantity.to_i > 0) ? DESIGN_FEE : 0
 
-      total = monthly_rental + art_cost + installation + design
+      total = monthly_rental + art_cost + custom_art_cost + installation + design
 
-      Rails.logger.info "📊 Breakdown: Rental=#{monthly_rental}, Art=#{art_cost}, Install=#{installation}, Design=#{design}, Total=#{total}"
+      Rails.logger.info "📊 Breakdown: Rental=#{monthly_rental}, Art=#{art_cost}, CustomArt=#{custom_art_cost}, Install=#{installation}, Design=#{design}, Total=#{total}"
 
       total
     end
@@ -46,6 +49,14 @@ class BudgetCalculator
       art_count * PRICE_PER_ART
     end
 
+    # Calcula custo de artes customizadas (criadas pela equipe)
+    def calculate_custom_art_cost(outdoor)
+      custom_art_count = outdoor.custom_art_quantity.to_i
+      return 0 if custom_art_count <= 0
+
+      custom_art_count * CUSTOM_ART_FEE
+    end
+
     # Retorna preço mensal baseado no tipo de outdoor
     def monthly_price_for_type(outdoor_type)
       type_key = outdoor_type.to_s.downcase
@@ -58,6 +69,7 @@ class BudgetCalculator
 
       months = outdoor.selected_quantity_month.to_i
       art_count = outdoor.art_quantity.to_i
+      custom_art_count = outdoor.custom_art_quantity.to_i
       monthly_price = monthly_price_for_type(outdoor.outdoor_type)
 
       {
@@ -67,8 +79,11 @@ class BudgetCalculator
         art_price_per_unit: PRICE_PER_ART,
         art_count: art_count,
         art_total: calculate_art_cost(outdoor),
+        custom_art_price_per_unit: CUSTOM_ART_FEE,
+        custom_art_count: custom_art_count,
+        custom_art_total: calculate_custom_art_cost(outdoor),
         installation_fee: INSTALLATION_FEE,
-        design_fee: art_count > 0 ? DESIGN_FEE : 0,
+        design_fee: (art_count > 0 || custom_art_count > 0) ? DESIGN_FEE : 0,
         total: calculate_total(outdoor)
       }
     end

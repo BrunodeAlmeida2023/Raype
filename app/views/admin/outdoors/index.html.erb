@@ -1,0 +1,66 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-rectangle-ad"></i> Gerenciar Outdoors</h1>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <% if @outdoors.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tipo</th>
+              <th>Localização</th>
+              <th>Tamanho</th>
+              <th>Usuário</th>
+              <th>Bloqueios</th>
+              <th>Aluguéis</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @outdoors.each do |outdoor| %>
+              <tr>
+                <td><strong>#<%= outdoor.id %></strong></td>
+                <td><%= outdoor.outdoor_type&.titleize || '-' %></td>
+                <td><%= outdoor.outdoor_location_label %></td>
+                <td><%= outdoor.outdoor_size || '-' %></td>
+                <td><%= outdoor.user.email %></td>
+                <td>
+                  <% if outdoor.blocked_dates.active.any? %>
+                    <span class="admin-badge admin-badge-danger">
+                      <%= outdoor.blocked_dates.active.count %> ativo(s)
+                    </span>
+                  <% else %>
+                    <span class="admin-badge admin-badge-secondary">0</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% paid_count = outdoor.rents.where(status: 'paid').count %>
+                  <% if paid_count > 0 %>
+                    <span class="admin-badge admin-badge-success"><%= paid_count %> pago(s)</span>
+                  <% else %>
+                    <span class="admin-badge admin-badge-secondary">0</span>
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to 'Ver Detalhes', admin_outdoor_path(outdoor), class: 'admin-btn-sm admin-btn-primary' %>
+                  <%= link_to 'Bloquear Datas', new_admin_outdoor_blocked_date_path(outdoor), class: 'admin-btn-sm admin-btn-danger' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="admin-empty-state">
+          <i class="fas fa-info-circle"></i>
+          Nenhum outdoor cadastrado ainda.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+

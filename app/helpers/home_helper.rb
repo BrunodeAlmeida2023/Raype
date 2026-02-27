@@ -6,15 +6,24 @@ module HomeHelper
   end
 
   def date_completed?(outdoor)
-    outdoor&.selected_start_date.present? &&
-    outdoor&.selected_quantity_month.present? &&
-    outdoor.selected_quantity_month > 0
+    return false unless outdoor&.selected_start_date.present? &&
+                        outdoor&.selected_quantity_month.present? &&
+                        outdoor.selected_quantity_month > 0
+
+    # Se as datas estão bloqueadas pelo admin, considera como incompleto
+    !outdoor_dates_blocked?(outdoor)
   end
 
   def art_completed?(outdoor)
-    outdoor&.art_quantity.present? &&
-    outdoor.art_quantity >= 0 &&
-    (outdoor.art_quantity == 0 || outdoor.art_files&.attached?)
+    return false unless outdoor&.art_quantity.present?
+
+    # Se art_quantity = 0 (sem arte), precisa ter custom_art_quantity
+    if outdoor.art_quantity == 0
+      return outdoor.custom_art_quantity.present? && outdoor.custom_art_quantity > 0
+    end
+
+    # Se tem art_quantity > 0, precisa ter os arquivos anexados
+    outdoor.art_quantity > 0 && outdoor.art_files&.attached?
   end
 
   def all_steps_completed?(outdoor)
@@ -43,5 +52,21 @@ module HomeHelper
     else
       ''
     end
+  end
+
+  # 🔒 Verifica se as datas salvas no outdoor estão bloqueadas por localização
+  def outdoor_dates_blocked?(outdoor)
+    return false unless outdoor&.outdoor_location.present? &&
+                        outdoor&.selected_start_date.present? &&
+                        outdoor&.selected_quantity_month.present? &&
+                        outdoor.selected_quantity_month > 0
+
+    end_date = outdoor.selected_start_date + outdoor.selected_quantity_month.months
+    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, outdoor.selected_start_date, end_date)
+  end
+
+  def month_quantity_options(selected = nil)
+    options = (1..24).map { |n| ["#{n} #{n == 1 ? 'mês' : 'meses'}", n] }
+    options_for_select(options, selected)
   end
 end

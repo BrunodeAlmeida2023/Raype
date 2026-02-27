@@ -38,6 +38,11 @@ module OrderStatusHelper
     end
   end
 
+  # Verifica se o rent pendente tem a localização bloqueada
+  def rent_location_blocked?(rent)
+    rent.pending? && rent.blocked_by_admin?
+  end
+
   def format_currency(amount)
     "R$ #{number_with_delimiter(amount.to_i, delimiter: '.')},00"
   end

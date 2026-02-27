@@ -31,6 +31,16 @@ Rails.application.routes.draw do
   get 'pedido/whatsapp/:id', to: 'home#redirect_whatsapp', as: :pedido_whatsapp
   post 'webhooks/asaas', to: 'webhooks#asaas'
 
+  # Área Administrativa
+  namespace :admin do
+    get '/', to: 'dashboard#index', as: 'dashboard'
+    resources :outdoors, only: [:index, :show] do
+      resources :blocked_dates, only: [:index, :new, :create, :destroy]
+    end
+    resources :rents, only: [:index, :show, :update]
+    resources :location_blocked_dates, only: [:index, :new, :create, :destroy]
+  end
+
   # Sidekiq Web UI - Requer autenticação admin
   authenticate :user, ->(user) { user.admin? } do
     mount Sidekiq::Web => '/sidekiq', as: :sidekiq

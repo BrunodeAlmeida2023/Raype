@@ -35,6 +35,17 @@
             %>
           </div>
 
+          <!-- Campo para quantidade de artes customizadas (aparece quando art_quantity = 0) -->
+          <div class="home-form-group custom-art-quantity-group" id="custom-art-quantity-group" style="<%= @outdoor&.art_quantity == 0 ? '' : 'display: none;' %>">
+            <%= f.label :custom_art_quantity, "Quantas artes deseja que criemos?", class: "home-form-label" %>
+            <%= f.select :custom_art_quantity,
+                custom_art_quantity_options(@outdoor&.custom_art_quantity),
+                {},
+                { class: "home-form-select", id: "custom_art_quantity", required: false }
+            %>
+            <p class="home-form-hint">Selecione quantas artes você precisa que criemos para seu outdoor.</p>
+          </div>
+
           <div id="upload-fields-container" class="upload-fields-grid">
             <!-- Campos de upload serão inseridos dinamicamente via JS -->
           </div>

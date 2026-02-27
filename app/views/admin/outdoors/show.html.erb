@@ -1,0 +1,142 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-rectangle-ad"></i> Outdoor #<%= @outdoor.id %></h1>
+    <%= link_to 'Voltar', admin_outdoors_path, class: 'admin-btn-secondary' %>
+  </div>
+
+  <!-- Outdoor Info -->
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2><i class="fas fa-info-circle"></i> Informações do Outdoor</h2>
+    </div>
+    <div class="admin-card-body">
+      <div class="admin-info-grid">
+        <div class="admin-info-item">
+          <strong>Tipo:</strong>
+          <span><%= @outdoor.outdoor_type&.titleize || '-' %></span>
+        </div>
+        <div class="admin-info-item">
+          <strong>Localização:</strong>
+          <span><%= @outdoor.outdoor_location_label %></span>
+        </div>
+        <div class="admin-info-item">
+          <strong>Tamanho:</strong>
+          <span><%= @outdoor.outdoor_size || '-' %></span>
+        </div>
+        <div class="admin-info-item">
+          <strong>Usuário:</strong>
+          <span><%= @outdoor.user.email %></span>
+        </div>
+        <div class="admin-info-item">
+          <strong>Criado em:</strong>
+          <span><%= @outdoor.created_at.strftime('%d/%m/%Y %H:%M') %></span>
+        </div>
+        <div class="admin-info-item">
+          <strong>Status:</strong>
+          <span class="admin-badge admin-badge-<%= @outdoor.status %>"><%= @outdoor.status %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blocked Dates -->
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2><i class="fas fa-ban"></i> Datas Bloqueadas</h2>
+      <%= link_to 'Nova Data Bloqueada', new_admin_outdoor_blocked_date_path(@outdoor), class: 'admin-btn-sm admin-btn-danger' %>
+    </div>
+    <div class="admin-card-body">
+      <% if @blocked_dates.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Período</th>
+              <th>Duração</th>
+              <th>Motivo</th>
+              <th>Bloqueado por</th>
+              <th>Criado em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @blocked_dates.each do |blocked| %>
+              <tr class="<%= 'admin-row-expired' if blocked.end_date < Date.today %>">
+                <td>
+                  <%= blocked.start_date.strftime('%d/%m/%Y') %> - <%= blocked.end_date.strftime('%d/%m/%Y') %>
+                  <% if blocked.end_date < Date.today %>
+                    <span class="admin-badge admin-badge-secondary">Expirado</span>
+                  <% elsif blocked.start_date <= Date.today && blocked.end_date >= Date.today %>
+                    <span class="admin-badge admin-badge-danger">Ativo</span>
+                  <% else %>
+                    <span class="admin-badge admin-badge-warning">Futuro</span>
+                  <% end %>
+                </td>
+                <td><%= blocked.duration_days %> dias</td>
+                <td><%= blocked.reason || '-' %></td>
+                <td><%= blocked.admin_user&.email || 'Sistema' %></td>
+                <td><%= blocked.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+                <td>
+                  <%= button_to 'Remover', admin_outdoor_blocked_date_path(@outdoor, blocked),
+                      method: :delete,
+                      data: { confirm: 'Tem certeza que deseja remover este bloqueio?' },
+                      class: 'admin-btn-sm admin-btn-danger' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="admin-empty-state">
+          <i class="fas fa-info-circle"></i>
+          Nenhuma data bloqueada para este outdoor.
+        </p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Rents -->
+  <div class="admin-card">
+    <div class="admin-card-header">
+      <h2><i class="fas fa-file-invoice-dollar"></i> Aluguéis</h2>
+    </div>
+    <div class="admin-card-body">
+      <% if @rents.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuário</th>
+              <th>Período</th>
+              <th>Status</th>
+              <th>Valor</th>
+              <th>Criado em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @rents.each do |rent| %>
+              <tr>
+                <td><strong>#<%= rent.id %></strong></td>
+                <td><%= rent.user.email %></td>
+                <td><%= rent.start_date.strftime('%d/%m/%Y') %> - <%= rent.end_date.strftime('%d/%m/%Y') %></td>
+                <td><span class="admin-badge admin-badge-<%= rent.status %>"><%= rent.status %></span></td>
+                <td>R$ <%= number_with_delimiter(rent.total_amount, delimiter: '.') %>,00</td>
+                <td><%= rent.created_at.strftime('%d/%m/%Y %H:%M') %></td>
+                <td>
+                  <%= link_to 'Ver', admin_rent_path(rent), class: 'admin-btn-sm admin-btn-primary' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="admin-empty-state">
+          <i class="fas fa-info-circle"></i>
+          Nenhum aluguel registrado para este outdoor.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+

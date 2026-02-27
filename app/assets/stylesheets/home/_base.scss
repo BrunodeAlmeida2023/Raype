@@ -27,6 +27,9 @@ body.orange-bg {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 * {

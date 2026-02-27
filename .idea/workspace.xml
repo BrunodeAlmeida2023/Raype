@@ -5,8 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/app/assets/stylesheets/admin.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/base_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/blocked_dates_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/dashboard_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/location_blocked_dates_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/outdoors_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/admin/rents_controller.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/controllers/concerns/admin_authentication.rb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/blocked_dates/new.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/dashboard/index.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/location_blocked_dates/index.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/location_blocked_dates/new.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/outdoors/index.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/outdoors/show.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/admin/rents/index.html.erb" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/layouts/admin.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/importmap.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/importmap.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/application.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/application.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_base.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_base.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_services.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_services.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/budget_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/budget_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/choose_art_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/choose_art_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/home_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/home_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/javascript/choose_art.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/choose_art.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/outdoor.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/outdoor.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/budget_calculator.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/budget_calculator.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/find_date.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/find_date.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/routes.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -227,7 +261,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-RM-253.30387.79" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-RM-253.31033.144" />
       </set>
     </attachedChunks>
   </component>
@@ -257,6 +291,7 @@
       <workItem from="1771503210209" duration="13000" />
       <workItem from="1771528968273" duration="6483000" />
       <workItem from="1771588901907" duration="3789000" />
+      <workItem from="1772104532805" duration="6010000" />
     </task>
     <servers />
   </component>
@@ -264,7 +299,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1771591687723" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
+    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1772104736662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

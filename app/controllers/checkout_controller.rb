@@ -11,6 +11,17 @@ class CheckoutController < ApplicationController
     end
 
     @outdoor = Outdoor.find(@checkout_data[:outdoor_id])
+
+    # 🔒 VALIDAÇÃO: Verifica se a localização foi bloqueada pelo admin
+    if @outdoor.outdoor_location.present? &&
+       LocationBlockedDate.location_blocked_for_period?(@outdoor.outdoor_location, @checkout_data[:start_date], @checkout_data[:end_date])
+      next_available = LocationBlockedDate.minimum_start_date_for_location(@outdoor.outdoor_location)
+      session.delete(:pending_checkout)
+      redirect_to find_date_home_path, alert: "Este período não está mais disponível. " \
+                                              "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. " \
+                                              "Por favor, selecione outra data e refaça o orçamento."
+      return
+    end
   end
 
   # Rota antiga para exibir checkout COM rent já criado
@@ -18,6 +29,16 @@ class CheckoutController < ApplicationController
     # Se o rent já foi pago, redireciona para a página de status
     if @rent.status == 'paid'
       redirect_to order_status_path(@rent.id), notice: "Este pedido já foi pago."
+      return
+    end
+
+    # 🔒 VALIDAÇÃO: Verifica se a localização foi bloqueada pelo admin
+    if @rent.blocked_by_admin?
+      next_available = LocationBlockedDate.minimum_start_date_for_location(@rent.outdoor.outdoor_location)
+      @rent.update!(status: 'canceled')
+      redirect_to root_path, alert: "Este período não está mais disponível para a localização selecionada. " \
+                                    "Seu orçamento foi cancelado automaticamente. " \
+                                    "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}."
       return
     end
 
@@ -67,6 +88,18 @@ class CheckoutController < ApplicationController
 
     # PRIMEIRO: Cria o rent (para ter o ID)
     @outdoor = Outdoor.find(@checkout_data[:outdoor_id])
+
+    # 🔒 VALIDAÇÃO: Verifica se a localização está bloqueada pelo admin antes de criar o rent
+    if @outdoor.outdoor_location.present? &&
+       LocationBlockedDate.location_blocked_for_period?(@outdoor.outdoor_location, @checkout_data[:start_date], @checkout_data[:end_date])
+      next_available = LocationBlockedDate.minimum_start_date_for_location(@outdoor.outdoor_location)
+      session.delete(:pending_checkout)
+      redirect_to find_date_home_path, alert: "Este período não está mais disponível. " \
+                                              "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. " \
+                                              "Por favor, selecione outra data e refaça o orçamento."
+      return
+    end
+
     @rent = Rent.new(
       user: current_user,
       outdoor: @outdoor,
@@ -152,6 +185,17 @@ class CheckoutController < ApplicationController
 
     Rails.logger.info "🔵 ENVIANDO PARA ASAAS: Método=#{actual_method} | Parcelas=#{installments}"
 
+    # 🔒 VALIDAÇÃO: Verifica se a localização foi bloqueada pelo admin após a criação do rent
+    if @rent.blocked_by_admin?
+      next_available = LocationBlockedDate.minimum_start_date_for_location(@rent.outdoor.outdoor_location)
+      @rent.update!(status: 'canceled')
+      redirect_to root_path, alert: "Este período não está mais disponível para a localização selecionada. " \
+                                    "Seu orçamento foi cancelado automaticamente. " \
+                                    "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. " \
+                                    "Por favor, crie um novo orçamento com outras datas."
+      return
+    end
+
     # URL de retorno
     url_retorno_whatsapp = pedido_whatsapp_url(@rent.id, host: request.base_url)
 
@@ -178,26 +222,29 @@ class CheckoutController < ApplicationController
   end
 
   def success
-    # Página de sucesso após o pagamento
-    @rent = Rent.find(params[:id]) if params[:id]
+    # 🔒 SEGURANÇA: Busca apenas nos rents do current_user
+    @rent = current_user.rents.find_by(id: params[:id]) if params[:id]
   end
 
   def order_status
-    # Página para verificar status do pedido
-    @rent = Rent.find(params[:id])
+    # 🔒 SEGURANÇA: Busca apenas nos rents do current_user
+    @rent = current_user.rents.find_by(id: params[:id])
 
-    # Permite visualizar apenas se for o dono do pedido ou admin
-    unless @rent.user_id == current_user.id || current_user.admin?
-      redirect_to root_path, alert: "Acesso negado."
+    unless @rent
+      redirect_to root_path, alert: "Pedido não encontrado."
+      return
     end
+
+    # Verifica se o rent pendente foi bloqueado pelo admin (localização bloqueada depois do orçamento)
+    @location_blocked = @rent.pending? && @rent.blocked_by_admin?
   end
 
   def cancel_order
-    @rent = Rent.find(params[:id])
+    # 🔒 SEGURANÇA: Busca apenas nos rents do current_user
+    @rent = current_user.rents.find_by(id: params[:id])
 
-    # Verifica se o rent pertence ao usuário atual
-    unless @rent.user_id == current_user.id
-      redirect_to root_path, alert: "Acesso negado."
+    unless @rent
+      redirect_to root_path, alert: "Pedido não encontrado."
       return
     end
 
@@ -227,11 +274,11 @@ class CheckoutController < ApplicationController
   end
 
   def set_rent
-    @rent = Rent.find(params[:rent_id])
+    # 🔒 SEGURANÇA: Busca apenas nos rents do current_user
+    @rent = current_user.rents.find_by(id: params[:rent_id])
 
-    # Verifica se o rent pertence ao usuário atual
-    unless @rent.user_id == current_user.id
-      redirect_to root_path, alert: "Acesso negado."
+    unless @rent
+      redirect_to root_path, alert: "Pedido não encontrado."
     end
   end
 end

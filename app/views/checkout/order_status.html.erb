@@ -26,12 +26,12 @@
 
       <div class="order-detail-item">
         <span class="order-label">Outdoor:</span>
-        <span class="order-value"><%= @rent.outdoor.outdoor_type&.titleize %></span>
+        <span class="order-value"><%= @rent.outdoor.outdoor_type_label %></span>
       </div>
 
       <div class="order-detail-item">
         <span class="order-label">Localização:</span>
-        <span class="order-value"><%= @rent.outdoor.outdoor_location %></span>
+        <span class="order-value"><%= @rent.outdoor.outdoor_location_label %></span>
       </div>
 
       <div class="order-detail-item">
@@ -72,18 +72,30 @@
         <p>Seu pagamento foi confirmado! Entre em contato conosco via WhatsApp para finalizar os detalhes.</p>
       </div>
     <% else %>
-      <div class="order-pending-message">
-        <i class="fas fa-hourglass-half"></i>
-        <p>Seu pedido está aguardando confirmação do pagamento. Isso pode levar alguns minutos para PIX ou até 3 dias úteis para boleto bancário.</p>
-      </div>
+      <% if @location_blocked %>
+        <div class="order-pending-message" style="background: #fff5f5; border-color: #dc3545;">
+          <i class="fas fa-exclamation-triangle" style="color: #dc3545;"></i>
+          <p style="color: #dc3545;">
+            <strong>⚠️ Período indisponível!</strong><br>
+            Este período não está mais disponível para a localização selecionada.
+            Seu link de pagamento está <strong>indisponível</strong>.
+            Cancele este orçamento e crie um novo com outra data ou localização.
+          </p>
+        </div>
+      <% else %>
+        <div class="order-pending-message">
+          <i class="fas fa-hourglass-half"></i>
+          <p>Seu pedido está aguardando confirmação do pagamento. Isso pode levar alguns minutos para PIX ou até 3 dias úteis para boleto bancário.</p>
+        </div>
+      <% end %>
 
       <div class="order-actions">
-        <% if @rent.asaas_payment_url.present? %>
+        <% if !@location_blocked && @rent.asaas_payment_url.present? %>
           <%= link_to @rent.asaas_payment_url, class: "order-payment-link-btn", target: "_blank", data: { turbo: false } do %>
             <i class="fas fa-credit-card"></i>
             Acessar Link de Pagamento
           <% end %>
-        <% else %>
+        <% elsif !@location_blocked && @rent.asaas_payment_url.blank? %>
           <div class="order-pending-message" style="margin-bottom: 20px;">
             <i class="fas fa-info-circle"></i>
             <p>Link de pagamento em processamento...</p>

@@ -33,6 +33,7 @@
       </div>
     <% end %>
 
+
     <%= form_with url: post_find_date_home_path, method: :post, class: "home-form-container", id: "date-form" do |f| %>
       <div class="home-form-content">
         <div class="home-form-group">
@@ -42,17 +43,17 @@
               class: "home-form-input",
               required: true,
               id: "start_date",
-              min: minimum_start_date %>
+              min: minimum_start_date(@outdoor) %>
         </div>
 
         <div class="home-form-group">
-          <%= f.label :selected_quantity_month, "Data Final:", class: "home-form-label" %>
-          <%= f.text_field :selected_quantity_month,
-              value: @outdoor&.selected_quantity_month,
-              class: "home-form-input",
-              required: true,
-              id: "quantity_month",
-              min: 1 %>
+          <%= f.label :selected_quantity_month, "Quantidade de meses:", class: "home-form-label" %>
+          <%= f.select :selected_quantity_month,
+              month_quantity_options(@outdoor&.selected_quantity_month),
+              {},
+              { class: "home-form-select",
+                required: true,
+                id: "quantity_month" } %>
         </div>
 
         <p class="home-form-hint"><%= date_form_hint %></p>

@@ -4,6 +4,8 @@ function initChooseArt() {
   const previewContainer = document.getElementById('outdoor-preview-container');
   const triedoDisplay = document.getElementById('triedo-display');
   const savedArtData = document.getElementById('saved-art-data');
+  const customArtQuantityGroup = document.getElementById('custom-art-quantity-group');
+  const customArtQuantitySelect = document.getElementById('custom_art_quantity');
 
   if (!artQuantitySelect || !uploadContainer) return;
 
@@ -26,6 +28,23 @@ function initChooseArt() {
   // Atualiza campos de upload baseado na quantidade selecionada
   artQuantitySelect.addEventListener('change', function() {
     const quantity = parseInt(this.value);
+
+    // Mostra/oculta campo de artes customizadas
+    if (customArtQuantityGroup) {
+      if (quantity === 0) {
+        customArtQuantityGroup.style.display = 'block';
+        if (customArtQuantitySelect) {
+          customArtQuantitySelect.setAttribute('required', 'required');
+        }
+      } else {
+        customArtQuantityGroup.style.display = 'none';
+        if (customArtQuantitySelect) {
+          customArtQuantitySelect.removeAttribute('required');
+          customArtQuantitySelect.value = '';
+        }
+      }
+    }
+
     updateUploadFields(quantity, []);
     resetPreview();
   });
@@ -185,11 +204,40 @@ function initChooseArt() {
   // Inicializa com o valor atual do select e artes salvas
   const initialQuantity = parseInt(artQuantitySelect.value) || 0;
 
+  // Mostra/oculta o campo de custom_art_quantity baseado no valor inicial
+  if (customArtQuantityGroup && initialQuantity === 0) {
+    customArtQuantityGroup.style.display = 'block';
+    if (customArtQuantitySelect) {
+      customArtQuantitySelect.setAttribute('required', 'required');
+    }
+  }
+
   // Se há artes salvas, carrega-as
   if (savedArts.length > 0 && savedQuantity > 0) {
     updateUploadFields(savedQuantity, savedArts);
   } else {
     updateUploadFields(initialQuantity, []);
+  }
+
+  // Validação do formulário antes de submeter
+  const form = document.getElementById('choose-art-form');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const artQty = parseInt(artQuantitySelect.value);
+
+      if (artQty === 0) {
+        // Se não tem arte própria, precisa selecionar quantidade de artes customizadas
+        if (customArtQuantitySelect) {
+          const customQty = customArtQuantitySelect.value;
+          if (!customQty || customQty === '' || customQty === '0') {
+            e.preventDefault();
+            alert('Por favor, selecione quantas artes você deseja que criemos para você.');
+            customArtQuantitySelect.focus();
+            return false;
+          }
+        }
+      }
+    });
   }
 }
 
