@@ -57,7 +57,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "sidekiq", "~> 8.1"
 gem "flipper", "~> 1.3"
 gem "flipper-ui", "~> 1.3"
