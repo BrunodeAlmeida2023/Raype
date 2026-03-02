@@ -78,9 +78,19 @@ Rails.application.configure do
   # caching is enabled.
   config.action_mailer.perform_caching = false
 
-  # Ignore bad email addresses and do not raise email delivery errors.
-  # Set this to true and configure the email server for immediate delivery to raise delivery errors.
-  # config.action_mailer.raise_delivery_errors = false
+  # Configuração do Action Mailer para produção com Resend
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :resend
+  config.action_mailer.default_url_options = {
+    host: ENV.fetch('APP_HOST', 'raype-production.up.railway.app'),
+    protocol: 'https'
+  }
+
+  # Configurações adicionais do mailer
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_options = {
+    from: ENV.fetch('MAILER_FROM_EMAIL', 'noreply@raype.com')
+  }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).

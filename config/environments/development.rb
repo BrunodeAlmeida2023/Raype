@@ -44,11 +44,14 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
-  # Configuração do Mailcatcher
-  config.action_mailer.delivery_method = :smtp
-  config.action_mailer.smtp_settings = {
-    address: 'localhost',
-    port: 1025
+  # Configuração do Resend para desenvolvimento (envia e-mails reais)
+  # Para evitar enviar e-mails reais durante desenvolvimento, você pode:
+  # 1. Não configurar RESEND_API_KEY (e-mails vão para log)
+  # 2. Usar :test ou :smtp com mailcatcher se preferir
+  config.action_mailer.delivery_method = :resend
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_options = {
+    from: ENV.fetch('MAILER_FROM_EMAIL', 'noreply@raype.com')
   }
 
   # Print deprecation notices to the Rails logger.

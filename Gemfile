@@ -67,3 +67,4 @@ gem "cssbundling-rails", "~> 1.4"
 gem "sassc-rails"
 gem 'rest-client'
 gem 'json'
+gem 'resend'
