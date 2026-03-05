@@ -240,8 +240,15 @@ class HomeController < ApplicationController
 
     # 4. Salva o outdoor
     if @outdoor.save
+      # Atualiza o status para art_uploaded
+      if @outdoor.status_date_selected?
+        @outdoor.status_art_uploaded!
+        Rails.logger.info "   ✅ Status atualizado para: art_uploaded"
+      end
+
       @outdoor.reload
       Rails.logger.info "   ✅ Outdoor salvo com sucesso!"
+      Rails.logger.info "      - status: #{@outdoor.status}"
       Rails.logger.info "      - has_own_art: #{@outdoor.has_own_art}"
       Rails.logger.info "      - selected_faces: #{@outdoor.selected_faces.inspect}"
       Rails.logger.info "      - total_arts_count: #{@outdoor.total_arts_count}"
