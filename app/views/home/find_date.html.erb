@@ -47,13 +47,19 @@
         </div>
 
         <div class="home-form-group">
-          <%= f.label :selected_quantity_month, "Quantidade de meses:", class: "home-form-label" %>
-          <%= f.select :selected_quantity_month,
-              month_quantity_options(@outdoor&.selected_quantity_month),
-              {},
-              { class: "home-form-select",
-                required: true,
-                id: "quantity_month" } %>
+          <%= f.label :selected_end_date, "Data Final:", class: "home-form-label" %>
+          <%= f.date_field :selected_end_date,
+              value: @outdoor&.selected_end_date,
+              class: "home-form-input",
+              required: true,
+              id: "end_date",
+              disabled: @outdoor&.selected_start_date.blank?,
+              min: minimum_start_date(@outdoor) %>
+          <% if @outdoor&.selected_start_date.blank? %>
+            <small class="date-hint" style="color: #888;">
+              ℹ️ Selecione primeiro a data inicial para habilitar este campo
+            </small>
+          <% end %>
         </div>
 
         <p class="home-form-hint"><%= date_form_hint %></p>

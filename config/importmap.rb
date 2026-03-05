@@ -15,5 +15,7 @@ pin "flash_messages"
 pin "date_validation"
 pin "choose_art"
 pin "location_map"
+pin "location_video"
 pin "checkout_payment"
 pin "order_status"
+

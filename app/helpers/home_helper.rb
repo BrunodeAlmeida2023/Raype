@@ -7,8 +7,7 @@ module HomeHelper
 
   def date_completed?(outdoor)
     return false unless outdoor&.selected_start_date.present? &&
-                        outdoor&.selected_quantity_month.present? &&
-                        outdoor.selected_quantity_month > 0
+                        outdoor&.selected_end_date.present?
 
     # Se as datas estão bloqueadas pelo admin, considera como incompleto
     !outdoor_dates_blocked?(outdoor)
@@ -58,15 +57,20 @@ module HomeHelper
   def outdoor_dates_blocked?(outdoor)
     return false unless outdoor&.outdoor_location.present? &&
                         outdoor&.selected_start_date.present? &&
-                        outdoor&.selected_quantity_month.present? &&
-                        outdoor.selected_quantity_month > 0
+                        outdoor&.selected_end_date.present?
 
-    end_date = outdoor.selected_start_date + outdoor.selected_quantity_month.months
-    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, outdoor.selected_start_date, end_date)
+    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, outdoor.selected_start_date, outdoor.selected_end_date)
   end
 
-  def month_quantity_options(selected = nil)
-    options = (1..24).map { |n| ["#{n} #{n == 1 ? 'mês' : 'meses'}", n] }
-    options_for_select(options, selected)
+  def date_range_options_for_select(start_date)
+    return [] unless start_date.is_a?(Date)
+
+    options = []
+    (1..3).each do |months|
+      end_date = start_date + months.months
+      label = "#{end_date.strftime('%d/%m/%Y')} (#{months} #{months == 1 ? 'mês' : 'meses'})"
+      options << [label, end_date.to_s]
+    end
+    options
   end
 end

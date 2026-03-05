@@ -57,6 +57,7 @@
     <orderEntry type="library" scope="PROVIDED" name="cpf_cnpj (v0.5.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="cssbundling-rails (v1.4.3, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="csv (v3.3.5, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="date (v3.5.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="TEST" name="debug (v1.11.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="devise (v4.9.4, asdf: 3.3.6) [gem]" level="application" />
@@ -72,6 +73,7 @@
     <orderEntry type="library" scope="PROVIDED" name="globalid (v1.3.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="http-accept (v1.7.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="http-cookie (v1.1.0, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="httparty (v0.24.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="i18n (v1.14.8, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="importmap-rails (v2.2.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="io-console (v0.8.2, asdf: 3.3.6) [gem]" level="application" />
@@ -90,6 +92,7 @@
     <orderEntry type="library" scope="PROVIDED" name="mini_mime (v1.1.5, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="minitest (v6.0.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="msgpack (v1.8.0, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="multi_xml (v0.8.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-imap (v0.6.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-pop (v0.1.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="net-protocol (v0.2.2, asdf: 3.3.6) [gem]" level="application" />
@@ -123,6 +126,7 @@
     <orderEntry type="library" scope="PROVIDED" name="redis-client (v0.26.2, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="regexp_parser (v2.11.3, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="reline (v0.6.3, asdf: 3.3.6) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="resend (v1.0.1, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="responders (v3.2.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rest-client (v2.1.0, asdf: 3.3.6) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="rexml (v3.4.4, asdf: 3.3.6) [gem]" level="application" />

@@ -8,7 +8,7 @@ class HomeController < ApplicationController
 
     # 🔒 Se o outdoor tem datas salvas que agora estão bloqueadas, limpa as datas automaticamente
     if @outdoor && outdoor_dates_blocked?(@outdoor)
-      @outdoor.update(selected_start_date: nil, selected_quantity_month: nil)
+      @outdoor.update(selected_start_date: nil, selected_end_date: nil)
       flash.now[:alert] = "As datas selecionadas não estão mais disponíveis. Por favor, selecione novas datas."
     end
   end
@@ -46,8 +46,8 @@ class HomeController < ApplicationController
 
     # 🔒 Se a data salva agora está bloqueada, limpa para forçar nova seleção
     if outdoor_dates_blocked?(@outdoor)
-      @outdoor.update(selected_start_date: nil, selected_quantity_month: nil)
-      flash.now[:alert] = "As datas selecionadas anteriormente não estão mais disponíveis. Por favor, selecione novas datas."
+      @outdoor.update(selected_start_date: nil, selected_end_date: nil)
+      flash.now[:alert] = "As datas selecionadas não estão mais disponíveis. Por favor, selecione novas datas."
     end
 
     # @outdoor já está setado pelo before_action
@@ -114,39 +114,67 @@ class HomeController < ApplicationController
     @outdoor = current_user.outdoor || current_user.build_outdoor
 
     start_date = params[:selected_start_date]
-    quantity_month = params[:selected_quantity_month]
+    end_date = params[:selected_end_date]
 
-    # Validação no backend: data final deve ser no mínimo 1 mês após a data inicial
-    if start_date.present? && quantity_month.present?
-      puts "Start Date: #{start_date}, Quantity Month: #{quantity_month.to_i}"
-      if quantity_month.to_i < 1
-        flash[:alert] = "A data final deve ser no mínimo 1 mês após a data inicial."
-        redirect_to find_date_home_path
-        return
-      end
-
-      # 🔒 VALIDAÇÃO: Verifica se o período está bloqueado (por outdoor individual)
-      start_date_parsed = Date.parse(start_date)
-      end_date_calculated = start_date_parsed + quantity_month.to_i.months
-
-      if OutdoorBlockedDate.blocked_between?(@outdoor.id, start_date_parsed, end_date_calculated)
-        flash[:alert] = "Este período não está disponível. Há datas bloqueadas no intervalo selecionado. Por favor, escolha outras datas."
-        redirect_to find_date_home_path
-        return
-      end
-
-      # 🔒 VALIDAÇÃO: Verifica se a LOCALIZAÇÃO está bloqueada pelo admin (clientes presenciais)
-      if @outdoor.outdoor_location.present? &&
-         LocationBlockedDate.location_blocked_for_period?(@outdoor.outdoor_location, start_date_parsed, end_date_calculated)
-        next_available = LocationBlockedDate.minimum_start_date_for_location(@outdoor.outdoor_location)
-        flash[:alert] = "Este período não está disponível para a localização selecionada. " \
-                        "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. Por favor, escolha outra data."
-        redirect_to find_date_home_path
-        return
-      end
+    # Validação no backend: ambas as datas devem estar presentes
+    if start_date.blank? || end_date.blank?
+      flash[:alert] = "Por favor, selecione ambas as datas (inicial e final)."
+      redirect_to find_date_home_path
+      return
     end
 
-    if @outdoor.update(selected_start_date: start_date, selected_quantity_month: quantity_month)
+    begin
+      start_date_parsed = Date.parse(start_date)
+      end_date_parsed = Date.parse(end_date)
+    rescue ArgumentError
+      flash[:alert] = "Datas inválidas. Por favor, verifique os valores informados."
+      redirect_to find_date_home_path
+      return
+    end
+
+    # Validação: data final deve ser posterior à inicial
+    if end_date_parsed <= start_date_parsed
+      flash[:alert] = "A data final deve ser posterior à data inicial."
+      redirect_to find_date_home_path
+      return
+    end
+
+    # Validação: deve ter o mesmo dia do mês
+    if start_date_parsed.day != end_date_parsed.day
+      flash[:alert] = "A data final deve ter o mesmo dia do mês que a data inicial (dia #{start_date_parsed.day})."
+      redirect_to find_date_home_path
+      return
+    end
+
+    # Validação: calcula diferença de meses
+    months_diff = (end_date_parsed.year - start_date_parsed.year) * 12 +
+                  (end_date_parsed.month - start_date_parsed.month)
+
+    # Validação: deve ser pelo menos 1 mês
+    if months_diff < 1
+      flash[:alert] = "O período deve ser de no mínimo 1 mês."
+      redirect_to find_date_home_path
+      return
+    end
+
+    # 🔒 VALIDAÇÃO: Verifica se o período está bloqueado (por outdoor individual)
+    if OutdoorBlockedDate.blocked_between?(@outdoor.id, start_date_parsed, end_date_parsed)
+      flash[:alert] = "Este período não está disponível. Há datas bloqueadas no intervalo selecionado. Por favor, escolha outras datas."
+      redirect_to find_date_home_path
+      return
+    end
+
+    # 🔒 VALIDAÇÃO: Verifica se a LOCALIZAÇÃO está bloqueada pelo admin (clientes presenciais)
+    if @outdoor.outdoor_location.present? &&
+       LocationBlockedDate.location_blocked_for_period?(@outdoor.outdoor_location, start_date_parsed, end_date_parsed)
+      next_available = LocationBlockedDate.minimum_start_date_for_location(@outdoor.outdoor_location)
+      flash[:alert] = "Este período não está disponível para a localização selecionada. " \
+                      "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. Por favor, escolha outra data."
+      redirect_to find_date_home_path
+      return
+    end
+
+    if @outdoor.update(selected_start_date: start_date_parsed, selected_end_date: end_date_parsed)
       flash[:notice] = "Data salva com sucesso!"
       redirect_to root_path
     else
@@ -240,14 +268,14 @@ class HomeController < ApplicationController
       return
     end
 
-    # Validação: Outdoor deve estar completo
-    unless @outdoor.outdoor_type.present? && @outdoor.selected_start_date.present? && @outdoor.selected_quantity_month.present?
+    # Verifica se todas as etapas foram concluídas
+    unless @outdoor.outdoor_type.present? && @outdoor.selected_start_date.present? && @outdoor.selected_end_date.present?
       redirect_to root_path, alert: "Complete todas as etapas antes de finalizar o orçamento."
       return
     end
 
-    # 🔒 VALIDAÇÃO: Verifica se a localização está bloqueada pelo admin (clientes presenciais)
-    end_date = @outdoor.selected_start_date + @outdoor.selected_quantity_month.months
+    # 🔒 VALIDAÇÃO: Verifica se as datas foram bloqueadas pelo admin
+    end_date = @outdoor.selected_end_date
     if @outdoor.outdoor_location.present? &&
        LocationBlockedDate.location_blocked_for_period?(@outdoor.outdoor_location, @outdoor.selected_start_date, end_date)
       next_available = LocationBlockedDate.minimum_start_date_for_location(@outdoor.outdoor_location)
@@ -266,8 +294,7 @@ class HomeController < ApplicationController
     session[:pending_checkout] = {
       outdoor_id: @outdoor.id,
       start_date: @outdoor.selected_start_date.to_s,
-      end_date: (@outdoor.selected_start_date + @outdoor.selected_quantity_month.months).to_s,
-      quantity_months: @outdoor.selected_quantity_month,
+      end_date: @outdoor.selected_end_date.to_s,
       total_amount: total_amount
     }
 
@@ -308,11 +335,9 @@ class HomeController < ApplicationController
   def outdoor_dates_blocked?(outdoor)
     return false unless outdoor&.outdoor_location.present? &&
                         outdoor&.selected_start_date.present? &&
-                        outdoor&.selected_quantity_month.present? &&
-                        outdoor.selected_quantity_month > 0
+                        outdoor&.selected_end_date.present?
 
-    end_date = outdoor.selected_start_date + outdoor.selected_quantity_month.months
-    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, outdoor.selected_start_date, end_date)
+    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, outdoor.selected_start_date, outdoor.selected_end_date)
   end
 end
 

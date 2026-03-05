@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Vídeo por Localização</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        .location-video-container {
+            width: 100%;
+            margin: 1.5rem 0;
+            opacity: 0;
+            display: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .location-video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            background-color: #000;
+        }
+
+        .location-video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎥 Teste de Vídeo por Localização</h1>
+
+    <div class="form-group">
+        <label for="outdoor_location_select">Escolha o local do outdoor:</label>
+        <select id="outdoor_location_select">
+            <option value="">Selecione uma opção</option>
+            <option value="outdoor_01">Morro da coruja</option>
+            <option value="outdoor_02">Outra localização (sem vídeo)</option>
+        </select>
+    </div>
+
+    <!-- Debug: Video mapping = {"outdoor_01":"https://www.youtube.com/embed/NbcZ4hq7Xbk"} -->
+    <div class="location-video-container"
+         id="location-video-container"
+         data-videos='{"outdoor_01":"https://www.youtube.com/embed/NbcZ4hq7Xbk"}'>
+        <div class="location-video-wrapper">
+            <iframe id="location-video-iframe"
+                    src=""
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        // Gerencia a exibição de vídeos por localização de outdoor
+        function initLocationVideo() {
+            const locationSelect = document.getElementById("outdoor_location_select");
+            const videoContainer = document.getElementById("location-video-container");
+            const videoIframe = document.getElementById("location-video-iframe");
+
+            console.log("🎥 Iniciando location_video.js");
+            console.log("Select encontrado:", !!locationSelect);
+            console.log("Container encontrado:", !!videoContainer);
+            console.log("Iframe encontrado:", !!videoIframe);
+
+            if (!locationSelect || !videoContainer || !videoIframe) {
+                console.log("❌ Elementos não encontrados, abortando");
+                return;
+            }
+
+            // Parse o mapeamento de vídeos do data attribute
+            let locationVideos = {};
+            try {
+                const videosData = videoContainer.getAttribute("data-videos");
+                console.log("📹 Data-videos raw:", videosData);
+                if (videosData) {
+                    locationVideos = JSON.parse(videosData);
+                    console.log("📹 Mapeamento de vídeos:", locationVideos);
+                }
+            } catch (error) {
+                console.error("❌ Erro ao parsear mapeamento de vídeos:", error);
+                return;
+            }
+
+            function updateVideoDisplay() {
+                const selectedLocation = locationSelect.value;
+                console.log("🎯 Localização selecionada:", selectedLocation);
+                console.log("🎯 Vídeo disponível para essa localização:", locationVideos[selectedLocation]);
+
+                // Verifica se a localização selecionada tem vídeo
+                if (selectedLocation && locationVideos[selectedLocation]) {
+                    console.log("✅ Mostrando vídeo");
+                    // Atualiza o src do iframe
+                    videoIframe.src = locationVideos[selectedLocation];
+
+                    // Exibe o container com animação suave
+                    videoContainer.style.display = "block";
+
+                    // Força reflow para animação
+                    setTimeout(() => {
+                        videoContainer.style.opacity = "1";
+                    }, 10);
+                } else {
+                    console.log("❌ Ocultando vídeo");
+                    // Oculta o container
+                    videoContainer.style.opacity = "0";
+
+                    // Aguarda a animação antes de esconder
+                    setTimeout(() => {
+                        videoContainer.style.display = "none";
+                        videoIframe.src = ""; // Limpa o vídeo para parar reprodução
+                    }, 300);
+                }
+            }
+
+            // Verificar estado inicial (caso já tenha algo selecionado)
+            updateVideoDisplay();
+
+            // Ouvir mudanças no select
+            locationSelect.addEventListener("change", updateVideoDisplay);
+        }
+
+        // Inicializar quando o DOM estiver pronto
+        document.addEventListener("DOMContentLoaded", initLocationVideo);
+    </script>
+</body>
+</html>
+

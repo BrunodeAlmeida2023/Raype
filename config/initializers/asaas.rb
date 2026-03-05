@@ -1,5 +1,11 @@
 # config/initializers/asaas.rb
+# Configuração do Asaas via variáveis de ambiente
 Rails.configuration.asaas = {
-  api_key: '$aact_prod_000MzkwODA2MWY2OGM3MWRlMDU2NWM3MzJlNzZmNGZhZGY6OjY2YWQwYzkzLTI2OGMtNDI1Mi04ZjhmLTc4MTVjOGYzN2Q0Nzo6JGFhY2hfYTU1MjcxN2UtM2I5ZC00YWU1LThmNWQtYTE5YzhkOGM4MWY0',
-  url: 'https://api.asaas.com/v3'
+  api_key: ENV.fetch('ASAAS_API_KEY', ''),
+  url: ENV.fetch('ASAAS_API_URL', 'https://api.asaas.com/v3')
 }
+
+# Validação em produção
+if Rails.env.production? && Rails.configuration.asaas[:api_key].blank?
+  Rails.logger.error "⚠️  ASAAS_API_KEY não configurada! Pagamentos não funcionarão."
+end

@@ -21,6 +21,6 @@ module FindDateHelper
   end
 
   def date_form_hint
-    "* A data final deve ser no mínimo 1 mês após a data inicial."
+    "* A data final deve ser no mínimo 1 mês após a data inicial, sempre no mesmo dia do mês."
   end
 end

@@ -596,3 +596,47 @@ body.orange-bg .home-services {
   }
 }
 
+/* ===== DATE HINT STYLES ===== */
+.date-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #666;
+  line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.date-hint.success {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.date-hint i {
+  margin-right: 5px;
+}
+
+/* Date input disabled state */
+.home-form-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Highlight valid date selection */
+.home-form-input.valid-date {
+  border-color: #28a745;
+  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Highlight invalid date selection */
+.home-form-input.invalid-date {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}

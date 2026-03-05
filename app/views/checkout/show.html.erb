@@ -45,7 +45,7 @@
           <div class="checkout-summary-item">
             <span class="checkout-summary-label">Duração:</span>
             <span class="checkout-summary-value">
-              <%= @outdoor.selected_quantity_month %> <%= @outdoor.selected_quantity_month == 1 ? 'mês' : 'meses' %>
+              <%= @outdoor.duration_in_months %> <%= @outdoor.duration_in_months == 1 ? 'mês' : 'meses' %>
             </span>
           </div>
 
@@ -83,7 +83,7 @@
           <%= hidden_field_tag :payment_type, '', id: 'selected-payment-type' %>
           <%= hidden_field_tag :installments, 1, id: 'selected-installments' %>
 
-          <% max_installments = @outdoor.selected_quantity_month.to_i %>
+          <% max_installments = @outdoor.duration_in_months %>
 
           <!-- PIX ou Boleto Bancário -->
           <div class="payment-method-card" data-method="PIX_BOLETO">

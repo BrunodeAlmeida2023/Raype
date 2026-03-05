@@ -32,9 +32,16 @@ class BudgetCalculator
       total
     end
 
+    # Calcula a quantidade de meses baseado nas datas selecionadas
+    def calculate_months_from_dates(outdoor)
+      return 0 unless outdoor&.selected_start_date.present? && outdoor&.selected_end_date.present?
+
+      outdoor.duration_in_months
+    end
+
     # Calcula custo do aluguel mensal
     def calculate_rental_cost(outdoor)
-      months = outdoor.selected_quantity_month.to_i
+      months = calculate_months_from_dates(outdoor)
       return 0 if months <= 0
 
       price_per_month = monthly_price_for_type(outdoor.outdoor_type)
@@ -67,7 +74,7 @@ class BudgetCalculator
     def breakdown(outdoor)
       return {} unless outdoor
 
-      months = outdoor.selected_quantity_month.to_i
+      months = calculate_months_from_dates(outdoor)
       art_count = outdoor.art_quantity.to_i
       custom_art_count = outdoor.custom_art_quantity.to_i
       monthly_price = monthly_price_for_type(outdoor.outdoor_type)

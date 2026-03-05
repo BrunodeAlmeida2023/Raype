@@ -5,21 +5,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/DEPLOY_AGORA.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IMPLEMENTATION_SUMMARY.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config/initializers/resend.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/RAILWAY_RESEND_DEPLOY.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/RESEND_SETUP.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_location_video.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/javascript/location_video.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/public/test_video.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/Raype.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Raype.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/mailers/application_mailer.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/mailers/application_mailer.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/environments/development.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/environments/development.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/environments/production.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/environments/production.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/initializers/devise.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/initializers/devise.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/config/manifest.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/config/manifest.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/finalize_budget_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/finalize_budget_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/find_date_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/find_date_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/find_outdoor_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/find_outdoor_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/home_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/home_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/javascript/application.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/application.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/javascript/date_validation.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/date_validation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/outdoor.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/outdoor.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/asaas_service.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/asaas_service.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/services/budget_calculator.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/budget_calculator.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/checkout/show.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/checkout/show.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/find_date.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/find_date.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/find_outdoor.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/find_outdoor.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/importmap.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/importmap.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/initializers/asaas.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/initializers/asaas.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,36 +80,39 @@
   &quot;associatedIndex&quot;: 2
 }</component>
   <component name="ProjectId" id="38xELwsdaG5gOAyJHGBvmpF3f08" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Rails.Raype.executor": "Debug",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "/home/bruno/code/Raype/public",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "yarn",
-    "ruby.structure.view.model.defaults.configured": "true",
-    "settings.editor.selected.configurable": "com.github.copilot.settings.customization.CustomizationConfigurable",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Rails.Raype.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/bruno/code/Raype/public&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
+    &quot;ruby.structure.view.model.defaults.configured&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.customization.CustomizationConfigurable&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "postgresql"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;postgresql&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/public" />
@@ -273,6 +287,13 @@
       <workItem from="1771588901907" duration="3789000" />
       <workItem from="1772104532805" duration="6010000" />
       <workItem from="1772461671883" duration="2603000" />
+      <workItem from="1772548951288" duration="2885000" />
+      <workItem from="1772559995681" duration="483000" />
+      <workItem from="1772574536857" duration="591000" />
+      <workItem from="1772575444289" duration="3086000" />
+      <workItem from="1772627929476" duration="130000" />
+      <workItem from="1772676088904" duration="2622000" />
+      <workItem from="1772708483064" duration="925000" />
     </task>
     <servers />
   </component>
@@ -280,7 +301,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1772104736662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
+    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1772676148591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

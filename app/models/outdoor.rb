@@ -32,6 +32,7 @@ class Outdoor < ApplicationRecord
 
   # Validações
   validates :user, presence: true
+  validate :validate_end_date_period
 
   # Callback para garantir que custom_art_quantity seja salvo
   before_save :ensure_custom_art_quantity
@@ -44,22 +45,19 @@ class Outdoor < ApplicationRecord
   # Métodos de classe para retornar opções para select
   def self.outdoor_type_options
     [
-      ['Outdoor Triedo', 'triedo'],
-      ['Outdoor LED', 'led']
+      ['Outdoor Triedo', 'triedo']
+      # ['Outdoor LED', 'led']
     ]
   end
 
   def self.outdoor_location_options
     [
-      ['Logo frente ao no ponto super mercado', 'outdoor_01'],
-      ['Proximo ao Dogão Sul', 'outdoor_02'],
-      ['Sobre guarita das pontes DV', 'outdoor_03']
+      ['Morro da coruja', 'outdoor_01']
     ]
   end
 
   def self.outdoor_size_options
     [
-      ['Pequeno (3x2m)', 'pequeno'],
       ['Médio (5x3m)', 'medio']
     ]
   end
@@ -97,7 +95,48 @@ class Outdoor < ApplicationRecord
          .empty?
   end
 
+  # Calcula a duração em meses entre selected_start_date e selected_end_date
+  def duration_in_months
+    return 0 unless selected_start_date.present? && selected_end_date.present?
+
+    (selected_end_date.year - selected_start_date.year) * 12 +
+    (selected_end_date.month - selected_start_date.month)
+  end
+
   private
+
+  def validate_end_date_period
+    # Só valida se ambas as datas estiverem preenchidas
+    return unless selected_start_date.present? && selected_end_date.present?
+
+    # 1. Data final deve ser posterior à inicial
+    if selected_end_date <= selected_start_date
+      errors.add(:selected_end_date, "deve ser posterior à data inicial")
+      return
+    end
+
+    # 2. Deve ter o mesmo dia do mês (meses completos)
+    if selected_start_date.day != selected_end_date.day
+      errors.add(:selected_end_date, "deve ter o mesmo dia do mês que a data inicial (dia #{selected_start_date.day})")
+      return
+    end
+
+    # 3. Deve ser pelo menos 1 mês de diferença
+    months_diff = duration_in_months
+    if months_diff < 1
+      errors.add(:selected_end_date, "deve ser no mínimo 1 mês após a data inicial")
+      return
+    end
+
+    # 4. Verifica se o período está bloqueado pela localização (se já tiver location definida)
+    if outdoor_location.present?
+      if LocationBlockedDate.location_blocked_for_period?(outdoor_location, selected_start_date, selected_end_date)
+        next_available = LocationBlockedDate.minimum_start_date_for_location(outdoor_location)
+        errors.add(:base, "Este período não está disponível para a localização selecionada. " \
+                          "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}")
+      end
+    end
+  end
 
   def ensure_custom_art_quantity
     # Força Rails a reconhecer mudanças no custom_art_quantity

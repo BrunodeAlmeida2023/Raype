@@ -25,12 +25,6 @@ module FinalizeBudgetHelper
     end
   end
 
-  # Calcula a data final baseada na data inicial e quantidade de meses
-  def calculate_end_date(outdoor)
-    return nil unless outdoor&.selected_start_date&.present? && outdoor&.selected_quantity_month&.present?
-    outdoor.selected_start_date + outdoor.selected_quantity_month.months
-  end
-
   # Formata o valor com delimitador
   def format_budget_value(amount)
     number_with_delimiter(amount.to_i, delimiter: '.')
@@ -41,14 +35,13 @@ module FinalizeBudgetHelper
     return {} unless outdoor
 
     budget = BudgetCalculator.breakdown(outdoor)
-    end_date = calculate_end_date(outdoor)
 
     {
       outdoor_type: outdoor.outdoor_type_label,
       outdoor_size: outdoor.outdoor_size_label,
       outdoor_location: outdoor.outdoor_location_label,
       start_date: outdoor.selected_start_date,
-      end_date: end_date,
+      end_date: outdoor.selected_end_date,
       months: budget[:months],
       art_quantity: outdoor.art_quantity || 0,
       budget: budget

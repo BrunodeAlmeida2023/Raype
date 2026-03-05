@@ -9,12 +9,17 @@ class AsaasService
     @api_key = config[:api_key].to_s.strip
     @base_url = config[:url]
 
-    # 2. Debug Inicial (Apenas no console do servidor)
-    puts "\n--- Inicializando AsaasService ---"
-    if @api_key.present?
-      puts "🔑 Chave identificada: #{@api_key[0..5]}...******"
-    else
-      puts "❌ ERRO: Chave de API não encontrada em Rails.configuration.asaas"
+    # 2. Debug Inicial (apenas em desenvolvimento)
+    if Rails.env.development?
+      puts "\n--- Inicializando AsaasService ---"
+      if @api_key.present?
+        puts "🔑 Chave identificada: #{@api_key[0..10]}...******"
+      else
+        puts "❌ ERRO: Chave de API não encontrada em Rails.configuration.asaas"
+        puts "💡 Configure ASAAS_API_KEY no arquivo .env"
+      end
+    elsif @api_key.blank?
+      Rails.logger.error "❌ ASAAS_API_KEY não configurada. Verifique variáveis de ambiente."
     end
   end
 
