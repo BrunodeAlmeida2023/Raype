@@ -1,10 +1,14 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initDateValidation() {
   const startDateInput = document.getElementById('start_date');
   const endDateInput = document.getElementById('end_date');
   const form = document.getElementById('date-form');
 
   // Verifica se os elementos existem na página
   if (!startDateInput || !endDateInput || !form) return;
+
+  // Verifica se já foi inicializado
+  if (startDateInput.dataset.initialized === 'true') return;
+  startDateInput.dataset.initialized = 'true';
 
   let selectedDay = null; // Armazena o dia selecionado na data inicial
 
@@ -206,5 +210,10 @@ document.addEventListener('DOMContentLoaded', function() {
   if (startDateInput.value) {
     startDateInput.dispatchEvent(new Event('change'));
   }
-});
+}
+
+// Inicializar em múltiplos eventos para garantir funcionamento
+document.addEventListener('DOMContentLoaded', initDateValidation);
+document.addEventListener('turbo:load', initDateValidation);
+document.addEventListener('turbo:render', initDateValidation);
 

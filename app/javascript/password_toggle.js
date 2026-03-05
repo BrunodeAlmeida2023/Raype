@@ -1,8 +1,17 @@
 // Password Toggle Functionality
-document.addEventListener('turbo:load', function() {
+function initPasswordToggle() {
+  // Remove event listeners antigos para evitar duplicação
   const passwordToggles = document.querySelectorAll('.auth-password-toggle');
 
   passwordToggles.forEach(toggle => {
+    // Remove a flag de inicializado se existir
+    if (toggle.dataset.initialized === 'true') {
+      return; // Já foi inicializado, não duplicar
+    }
+
+    // Marcar como inicializado
+    toggle.dataset.initialized = 'true';
+
     // Função para alternar a visibilidade da senha
     const togglePassword = function(event) {
       // Prevenir comportamento padrão e propagação do evento
@@ -10,9 +19,13 @@ document.addEventListener('turbo:load', function() {
       event.stopPropagation();
 
       const wrapper = this.closest('.auth-password-wrapper');
+      if (!wrapper) return;
+
       const passwordField = wrapper.querySelector('.auth-password-field');
       const eyeClosed = this.querySelector('.eye-closed');
       const eyeOpen = this.querySelector('.eye-open');
+
+      if (!passwordField || !eyeClosed || !eyeOpen) return;
 
       if (passwordField.type === 'password') {
         // Show password
@@ -47,5 +60,13 @@ document.addEventListener('turbo:load', function() {
       event.preventDefault();
     });
   });
-});
+}
+
+// Inicializar em múltiplos eventos para garantir que funcione sempre
+document.addEventListener('turbo:load', initPasswordToggle);
+document.addEventListener('turbo:render', initPasswordToggle);
+document.addEventListener('DOMContentLoaded', initPasswordToggle);
+
+// Também reinicializar após frames do Turbo
+document.addEventListener('turbo:frame-load', initPasswordToggle);
 

@@ -11,6 +11,10 @@ function initChooseArt() {
 
   if (!hasOwnArtSelect || !facesSelectionGroup) return;
 
+  // Proteção contra duplicação
+  if (hasOwnArtSelect.dataset.initialized === 'true') return;
+  hasOwnArtSelect.dataset.initialized = 'true';
+
   let uploadedImages = [];
   let currentImageIndex = 0;
   let rotationInterval = null;

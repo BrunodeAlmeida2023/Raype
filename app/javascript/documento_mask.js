@@ -1,12 +1,18 @@
 // Máscaras de CPF e CNPJ
-document.addEventListener('turbo:load', initDocumentMask);
-document.addEventListener('DOMContentLoaded', initDocumentMask);
-
 function initDocumentMask() {
   const tipoSelect = document.getElementById('documento_tipo_select');
   const numeroInput = document.getElementById('documento_numero_input');
 
   if (!tipoSelect || !numeroInput) return;
+
+  // Verificar se já foi inicializado para evitar duplicação
+  if (numeroInput.dataset.initialized === 'true') {
+    return;
+  }
+
+  // Marcar como inicializado
+  numeroInput.dataset.initialized = 'true';
+  tipoSelect.dataset.initialized = 'true';
 
   function updatePlaceholder() {
     if (tipoSelect.value === 'cpf') {
@@ -16,7 +22,8 @@ function initDocumentMask() {
       numeroInput.placeholder = '00.000.000/0000-00';
       numeroInput.maxLength = 18; // CNPJ: 14 dígitos + 4 caracteres de formatação
     }
-    numeroInput.value = '';
+    // Não limpar o valor quando atualizar o placeholder (para manter após erros)
+    // numeroInput.value = '';
   }
 
   function formatCPF(value) {
@@ -50,7 +57,21 @@ function initDocumentMask() {
     return value;
   }
 
-  tipoSelect.addEventListener('change', updatePlaceholder);
+  // Aplicar máscara no valor inicial (caso venha preenchido após erro)
+  function applyInitialMask() {
+    if (numeroInput.value) {
+      if (tipoSelect.value === 'cpf') {
+        numeroInput.value = formatCPF(numeroInput.value);
+      } else {
+        numeroInput.value = formatCNPJ(numeroInput.value);
+      }
+    }
+  }
+
+  tipoSelect.addEventListener('change', function() {
+    updatePlaceholder();
+    applyInitialMask();
+  });
 
   numeroInput.addEventListener('input', function() {
     if (tipoSelect.value === 'cpf') {
@@ -60,7 +81,16 @@ function initDocumentMask() {
     }
   });
 
-  // Definir placeholder inicial
+  // Definir placeholder inicial e aplicar máscara se já houver valor
   updatePlaceholder();
+  applyInitialMask();
 }
+
+// Inicializar em múltiplos eventos para garantir que funcione sempre
+document.addEventListener('turbo:load', initDocumentMask);
+document.addEventListener('turbo:render', initDocumentMask);
+document.addEventListener('DOMContentLoaded', initDocumentMask);
+
+// Também reinicializar após frames do Turbo
+document.addEventListener('turbo:frame-load', initDocumentMask);
 
