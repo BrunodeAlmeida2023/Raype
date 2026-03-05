@@ -14,7 +14,7 @@ module FindOutdoorHelper
 
   def location_videos_mapping
     {
-      "outdoor_01" => "https://youtube.com/shorts/x00PJHSeEFQ?feature=share",
+      "outdoor_01" => "https://www.youtube.com/embed/x00PJHSeEFQ",
     }
   end
 end
