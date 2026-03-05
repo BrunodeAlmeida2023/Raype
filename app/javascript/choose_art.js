@@ -1,153 +1,245 @@
 function initChooseArt() {
-  const artQuantitySelect = document.getElementById('art_quantity');
+  const hasOwnArtSelect = document.getElementById('has_own_art');
+  const facesSelectionGroup = document.getElementById('faces-selection-group');
   const uploadContainer = document.getElementById('upload-fields-container');
+  const noArtMessage = document.getElementById('no-art-message');
   const previewContainer = document.getElementById('outdoor-preview-container');
   const triedoDisplay = document.getElementById('triedo-display');
-  const savedArtData = document.getElementById('saved-art-data');
-  const customArtQuantityGroup = document.getElementById('custom-art-quantity-group');
-  const customArtQuantitySelect = document.getElementById('custom_art_quantity');
+  const facesCountHint = document.getElementById('faces-count-hint');
+  const form = document.getElementById('choose-art-form');
+  const dataContainer = document.getElementById('choose-art-data');
 
-  if (!artQuantitySelect || !uploadContainer) return;
+  if (!hasOwnArtSelect || !facesSelectionGroup) return;
 
   let uploadedImages = [];
   let currentImageIndex = 0;
   let rotationInterval = null;
+  let selectedFaces = [];
 
-  // Carrega dados das artes já salvas
-  let savedArts = [];
-  let savedQuantity = 0;
-  if (savedArtData) {
-    savedQuantity = parseInt(savedArtData.dataset.artQuantity) || 0;
+  // Carrega dados salvos
+  if (dataContainer) {
     try {
-      savedArts = JSON.parse(savedArtData.dataset.savedArts || '[]');
+      const hasOwnArtValue = dataContainer.dataset.hasOwnArt;
+      const hasOwnArt = hasOwnArtValue === 'true';
+      selectedFaces = JSON.parse(dataContainer.dataset.selectedFaces || '[]');
+      const savedArts = JSON.parse(dataContainer.dataset.savedArts || '[]');
+
+      console.log('🔄 Carregando dados salvos:', {
+        hasOwnArtValue,
+        hasOwnArt,
+        selectedFaces,
+        savedArts
+      });
+
+      // Se já tem valor de hasOwnArt definido, restaura
+      if (hasOwnArtValue && hasOwnArtValue !== '') {
+        hasOwnArtSelect.value = hasOwnArtValue;
+        showFacesSelection();
+
+        // Restaura checkboxes selecionados
+        if (selectedFaces.length > 0) {
+          selectedFaces.forEach(faceNum => {
+            const checkbox = document.getElementById(`face_${faceNum}`);
+            if (checkbox) {
+              checkbox.checked = true;
+            }
+          });
+          updateFacesDisplay();
+
+          // Mostra conteúdo apropriado
+          if (hasOwnArt) {
+            // Se tem arte própria, prepara arrays de imagens
+            if (savedArts.length > 0) {
+              // Preenche uploadedImages no índice correto para cada face
+              uploadedImages = [];
+              selectedFaces.forEach((faceNum, index) => {
+                if (savedArts[index]) {
+                  uploadedImages[index] = savedArts[index];
+                }
+              });
+              console.log('📷 Imagens carregadas:', uploadedImages);
+            }
+
+            showUploadFields();
+            updateUploadFields();
+
+            // Mostra preview se tem imagens
+            if (savedArts.length > 0) {
+              setTimeout(() => {
+                updateTriedoPreview();
+              }, 100);
+            }
+          } else {
+            // Não tem arte própria
+            showNoArtMessage();
+          }
+        }
+      }
     } catch (e) {
-      savedArts = [];
+      console.error('❌ Erro ao carregar dados:', e);
     }
   }
 
-  // Atualiza campos de upload baseado na quantidade selecionada
-  artQuantitySelect.addEventListener('change', function() {
-    const quantity = parseInt(this.value);
+  // Listener para seleção de arte própria
+  hasOwnArtSelect.addEventListener('change', function() {
+    const value = this.value;
 
-    // Mostra/oculta campo de artes customizadas
-    if (customArtQuantityGroup) {
-      if (quantity === 0) {
-        customArtQuantityGroup.style.display = 'block';
-        if (customArtQuantitySelect) {
-          customArtQuantitySelect.setAttribute('required', 'required');
-        }
-      } else {
-        customArtQuantityGroup.style.display = 'none';
-        if (customArtQuantitySelect) {
-          customArtQuantitySelect.removeAttribute('required');
-          customArtQuantitySelect.value = '';
-        }
-      }
-    }
-
-    updateUploadFields(quantity, []);
-    resetPreview();
-  });
-
-  function updateUploadFields(quantity, existingArts = []) {
-    uploadContainer.innerHTML = '';
-    uploadedImages = [];
-
-    if (quantity === 0) {
-      uploadContainer.innerHTML = `
-        <div class="no-art-message">
-          <p>Não se preocupe! Nossa equipe criará uma arte incrível para você.</p>
-        </div>
-      `;
-      if (previewContainer) previewContainer.style.display = 'none';
+    if (value === '') {
+      hideFacesSelection();
       return;
     }
 
-    if (previewContainer) previewContainer.style.display = 'block';
+    showFacesSelection();
+    resetFaces();
+  });
 
-    for (let i = 1; i <= quantity; i++) {
-      const existingArt = existingArts[i - 1];
-      const hasExistingArt = existingArt && existingArt.length > 0;
+  // Listeners para checkboxes de faces
+  const faceCheckboxes = document.querySelectorAll('.face-checkbox');
+  faceCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      updateSelectedFaces();
+      updateFacesDisplay();
+
+      const hasOwnArt = hasOwnArtSelect.value === 'true';
+      if (selectedFaces.length > 0) {
+        if (hasOwnArt) {
+          showUploadFields();
+          updateUploadFields();
+        } else {
+          showNoArtMessage();
+        }
+      } else {
+        hideAllContent();
+      }
+    });
+  });
+
+  function showFacesSelection() {
+    facesSelectionGroup.style.display = 'block';
+  }
+
+  function hideFacesSelection() {
+    facesSelectionGroup.style.display = 'none';
+    hideAllContent();
+    resetFaces();
+  }
+
+  function resetFaces() {
+    const checkboxes = document.querySelectorAll('.face-checkbox');
+    checkboxes.forEach(cb => cb.checked = false);
+    selectedFaces = [];
+    updateFacesDisplay();
+    hideAllContent();
+  }
+
+  function updateSelectedFaces() {
+    const checkboxes = document.querySelectorAll('.face-checkbox:checked');
+    selectedFaces = Array.from(checkboxes).map(cb => parseInt(cb.value));
+  }
+
+  function updateFacesDisplay() {
+    if (!facesCountHint) return;
+
+    if (selectedFaces.length === 0) {
+      facesCountHint.textContent = 'Selecione pelo menos uma face';
+      facesCountHint.style.color = '#dc3545';
+      facesCountHint.style.borderColor = '#dc3545';
+    } else {
+      const facesText = selectedFaces.length === 1 ? 'face' : 'faces';
+      const artsText = selectedFaces.length === 1 ? 'arte' : 'artes';
+      facesCountHint.textContent = `${selectedFaces.length} ${facesText} selecionada(s) = ${selectedFaces.length} ${artsText}`;
+      facesCountHint.style.color = '#ff6b00';
+      facesCountHint.style.borderColor = '#ff6b00';
+    }
+  }
+
+  function showUploadFields() {
+    if (uploadContainer) uploadContainer.style.display = 'grid';
+    if (noArtMessage) noArtMessage.style.display = 'none';
+    if (previewContainer) previewContainer.style.display = 'block';
+  }
+
+  function showNoArtMessage() {
+    if (uploadContainer) uploadContainer.style.display = 'none';
+    if (noArtMessage) noArtMessage.style.display = 'block';
+    if (previewContainer) previewContainer.style.display = 'none';
+  }
+
+  function hideAllContent() {
+    if (uploadContainer) uploadContainer.style.display = 'none';
+    if (noArtMessage) noArtMessage.style.display = 'none';
+    if (previewContainer) previewContainer.style.display = 'none';
+    uploadedImages = [];
+    resetPreview();
+  }
+
+  function updateUploadFields() {
+    if (!uploadContainer) return;
+
+    uploadContainer.innerHTML = '';
+
+    const facesCount = selectedFaces.length;
+    if (facesCount === 0) return;
+
+    for (let i = 0; i < facesCount; i++) {
+      const faceNumber = selectedFaces[i];
+      const hasExistingArt = uploadedImages[i] && uploadedImages[i].length > 0;
 
       const fieldHtml = `
         <div class="home-form-group upload-field">
-          <label for="art_file_${i}" class="home-form-label">Arte ${i}:</label>
+          <label for="art_file_${faceNumber}" class="home-form-label">Arte para Face ${faceNumber}:</label>
           <input type="file" 
                  name="art_files[]" 
-                 id="art_file_${i}" 
-                 accept="image/*" 
-                 class="home-form-file-input"
-                 data-index="${i}"
+                 id="art_file_${faceNumber}" 
+                 class="home-form-input file-input" 
+                 accept="image/*"
+                 data-face="${faceNumber}"
                  ${hasExistingArt ? '' : 'required'}>
-          <div class="upload-preview" id="preview_${i}">
-            ${hasExistingArt 
-              ? `<img src="${existingArt}" alt="Arte ${i} salva" class="upload-thumb">
-                 <p class="saved-art-label">Arte atual salva</p>` 
-              : '<span class="upload-placeholder">Clique para selecionar uma imagem</span>'}
-          </div>
-          ${hasExistingArt ? '<p class="art-hint">* Selecione um novo arquivo apenas se quiser trocar a arte</p>' : ''}
+          ${hasExistingArt ? '<p class="file-hint">✓ Arte já carregada anteriormente</p>' : ''}
         </div>
       `;
       uploadContainer.insertAdjacentHTML('beforeend', fieldHtml);
-
-      // Se tem arte salva, adiciona ao array de imagens para preview
-      if (hasExistingArt) {
-        uploadedImages[i - 1] = existingArt;
-      }
     }
 
-    // Adiciona listeners aos novos campos
-    document.querySelectorAll('input[name="art_files[]"]').forEach(input => {
+    // Adiciona listeners aos novos inputs
+    const fileInputs = uploadContainer.querySelectorAll('.file-input');
+    fileInputs.forEach(input => {
       input.addEventListener('change', handleFileSelect);
     });
-
-    // Atualiza o preview com as artes existentes
-    if (existingArts.length > 0) {
-      updateTriedoPreview();
-    }
   }
 
   function handleFileSelect(event) {
     const file = event.target.files[0];
-    const index = parseInt(event.target.dataset.index);
-    const previewDiv = document.getElementById(`preview_${index}`);
+    if (!file) return;
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        previewDiv.innerHTML = `<img src="${e.target.result}" alt="Preview ${index}" class="upload-thumb">
-                               <p class="saved-art-label" style="color: #28a745;">Nova arte selecionada</p>`;
-        uploadedImages[index - 1] = e.target.result;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const faceNumber = parseInt(event.target.dataset.face);
+      const faceIndex = selectedFaces.indexOf(faceNumber);
+
+      if (faceIndex !== -1) {
+        uploadedImages[faceIndex] = e.target.result;
         updateTriedoPreview();
-      };
-      reader.readAsDataURL(file);
-    }
+      }
+    };
+    reader.readAsDataURL(file);
   }
 
   function updateTriedoPreview() {
-    const validImages = uploadedImages.filter(img => img);
-
     if (!triedoDisplay) return;
 
+    const validImages = uploadedImages.filter(img => img && img.length > 0);
+
     if (validImages.length === 0) {
-      triedoDisplay.innerHTML = `
-        <div class="triedo-placeholder">
-          <p>Faça upload das suas artes para visualizar</p>
-        </div>
-      `;
-      stopRotation();
+      resetPreview();
       return;
     }
 
-    // Renderiza a primeira imagem
-    currentImageIndex = 0;
-    renderTriedoImage(validImages[currentImageIndex]);
-
-    // Se tiver mais de uma imagem, inicia a rotação
-    if (validImages.length > 1) {
-      startRotation(validImages);
+    if (validImages.length === 1) {
+      renderTriedoImage(validImages[0]);
     } else {
-      stopRotation();
+      renderTriedoImage(validImages[0]);
+      startRotation(validImages);
     }
   }
 
@@ -201,48 +293,67 @@ function initChooseArt() {
     }
   }
 
-  // Inicializa com o valor atual do select e artes salvas
-  const initialQuantity = parseInt(artQuantitySelect.value) || 0;
-
-  // Mostra/oculta o campo de custom_art_quantity baseado no valor inicial
-  if (customArtQuantityGroup && initialQuantity === 0) {
-    customArtQuantityGroup.style.display = 'block';
-    if (customArtQuantitySelect) {
-      customArtQuantitySelect.setAttribute('required', 'required');
-    }
-  }
-
-  // Se há artes salvas, carrega-as
-  if (savedArts.length > 0 && savedQuantity > 0) {
-    updateUploadFields(savedQuantity, savedArts);
-  } else {
-    updateUploadFields(initialQuantity, []);
-  }
-
-  // Validação do formulário antes de submeter
-  const form = document.getElementById('choose-art-form');
+  // Validação do formulário
   if (form) {
     form.addEventListener('submit', function(e) {
-      const artQty = parseInt(artQuantitySelect.value);
+      const hasOwnArtValue = hasOwnArtSelect.value;
 
-      if (artQty === 0) {
-        // Se não tem arte própria, precisa selecionar quantidade de artes customizadas
-        if (customArtQuantitySelect) {
-          const customQty = customArtQuantitySelect.value;
-          if (!customQty || customQty === '' || customQty === '0') {
-            e.preventDefault();
-            alert('Por favor, selecione quantas artes você deseja que criemos para você.');
-            customArtQuantitySelect.focus();
-            return false;
+      if (hasOwnArtValue === '') {
+        e.preventDefault();
+        alert('Por favor, selecione se você tem artes prontas ou não.');
+        hasOwnArtSelect.focus();
+        hasOwnArtSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return false;
+      }
+
+      const checkedFaces = document.querySelectorAll('.face-checkbox:checked');
+      if (checkedFaces.length === 0) {
+        e.preventDefault();
+        alert('Por favor, selecione pelo menos uma face do outdoor.');
+        if (facesSelectionGroup) {
+          facesSelectionGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return false;
+      }
+
+      // Se tem arte própria, verifica se os arquivos foram selecionados
+      if (hasOwnArtValue === 'true') {
+        if (!uploadContainer) {
+          e.preventDefault();
+          alert('Erro ao processar formulário. Recarregue a página.');
+          return false;
+        }
+
+        const fileInputs = uploadContainer.querySelectorAll('.file-input[required]');
+        let allFilled = true;
+
+        fileInputs.forEach(input => {
+          if (!input.files || input.files.length === 0) {
+            allFilled = false;
           }
+        });
+
+        if (!allFilled) {
+          e.preventDefault();
+          alert('Por favor, faça upload das artes para todas as faces selecionadas.');
+          return false;
         }
       }
+
+      // Se não tem arte própria, pode enviar normalmente
+      return true;
     });
   }
 }
 
-// Suporte para Turbo (Rails 7) e carregamento normal
+// Inicialização
 document.addEventListener('DOMContentLoaded', initChooseArt);
 document.addEventListener('turbo:load', initChooseArt);
 document.addEventListener('turbo:render', initChooseArt);
+
+
+
+
+
+
 

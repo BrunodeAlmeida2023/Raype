@@ -1,0 +1,92 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-th-large"></i> Bloqueios de Faces por Localização</h1>
+    <%= link_to 'Novo Bloqueio de Faces', new_admin_location_blocked_face_path, class: 'admin-btn-danger' %>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <div class="admin-info-box" style="background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin-bottom: 1.5rem;">
+        <strong><i class="fas fa-info-circle"></i> Sobre Bloqueios de Faces:</strong>
+        <p style="margin: 0.5rem 0 0 0; color: #856404;">
+          Ao bloquear <strong>faces específicas</strong> de uma localização, os usuários não poderão selecionar estas faces durante o período especificado.
+          Use esta funcionalidade quando apenas algumas faces do outdoor foram vendidas presencialmente.
+        </p>
+        <p style="margin: 0.5rem 0 0 0; color: #856404;">
+          <i class="fas fa-exclamation-triangle"></i> <strong>Exemplo:</strong> Se bloquear as faces 1 e 2 do "Morro da Coruja", os usuários só poderão alugar a face 3 no período bloqueado.
+        </p>
+      </div>
+
+      <% if @location_blocked_faces.any? %>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Localização</th>
+              <th>Faces Bloqueadas</th>
+              <th>Período</th>
+              <th>Duração</th>
+              <th>Motivo</th>
+              <th>Bloqueado por</th>
+              <th>Status</th>
+              <th>Criado em</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @location_blocked_faces.each do |blocked| %>
+              <%
+                location_label = Outdoor.outdoor_location_options.find { |opt| opt[1] == blocked.outdoor_location }&.first || blocked.outdoor_location
+                faces_text = blocked.blocked_faces.join(', ')
+              %>
+              <tr class="<%= 'admin-row-expired' if blocked.end_date < Date.today %>">
+                <td>
+                  <strong><%= location_label %></strong>
+                </td>
+                <td>
+                  <span class="admin-badge admin-badge-info">Faces: <%= faces_text %></span>
+                </td>
+                <td>
+                  <%= blocked.start_date.strftime('%d/%m/%Y') %> - <%= blocked.end_date.strftime('%d/%m/%Y') %>
+                </td>
+                <td>
+                  <%= ((blocked.end_date - blocked.start_date).to_i + 1) %> dias
+                </td>
+                <td>
+                  <%= blocked.reason || '-' %>
+                </td>
+                <td>
+                  <%= blocked.admin_user&.email || 'Sistema' %>
+                </td>
+                <td>
+                  <% if blocked.end_date < Date.today %>
+                    <span class="admin-badge admin-badge-secondary">Expirado</span>
+                  <% elsif blocked.start_date <= Date.today && blocked.end_date >= Date.today %>
+                    <span class="admin-badge admin-badge-danger">Ativo</span>
+                  <% else %>
+                    <span class="admin-badge admin-badge-warning">Futuro</span>
+                  <% end %>
+                </td>
+                <td>
+                  <%= blocked.created_at.strftime('%d/%m/%Y %H:%M') %>
+                </td>
+                <td>
+                  <%= link_to 'Editar', edit_admin_location_blocked_face_path(blocked), class: 'admin-btn-sm admin-btn-primary' %>
+                  <%= button_to 'Remover', admin_location_blocked_face_path(blocked),
+                      method: :delete,
+                      data: { confirm: 'Tem certeza que deseja remover este bloqueio de faces?' },
+                      class: 'admin-btn-sm admin-btn-danger' %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="admin-empty-state">
+          <i class="fas fa-info-circle"></i>
+          Nenhuma face bloqueada no momento.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>
+

@@ -1,5 +1,10 @@
 /* Admin Styles */
 
+// Imports de módulos
+@import './admin/dashboard';
+@import './admin/buttons';
+@import './admin/tables';
+
 .admin-body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: #f5f7fa;

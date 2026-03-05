@@ -1,0 +1,139 @@
+/* Admin Tables - Estilos de tabelas */
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+
+  thead {
+    background: #f8f9fa;
+
+    th {
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 700;
+      color: #2c3e50;
+      border-bottom: 2px solid #dee2e6;
+      font-size: 0.9em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #e9ecef;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 12px 15px;
+      color: #495057;
+      vertical-align: middle;
+
+      a {
+        color: #ff6b00;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: #ff8c33;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+/* Badges */
+.admin-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.85em;
+  font-weight: 700;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.admin-badge-pending {
+  background: #ffc107;
+  color: #856404;
+}
+
+.admin-badge-paid {
+  background: #28a745;
+  color: #ffffff;
+}
+
+.admin-badge-cancelled {
+  background: #dc3545;
+  color: #ffffff;
+}
+
+.admin-badge-secondary {
+  background: #6c757d;
+  color: #ffffff;
+}
+
+.admin-badge-warning {
+  background: #ffc107;
+  color: #856404;
+}
+
+.admin-badge-danger {
+  background: #dc3545;
+  color: #ffffff;
+}
+
+.admin-badge-info {
+  background: #17a2b8;
+  color: #ffffff;
+}
+
+/* Row States */
+.admin-row-expired {
+  opacity: 0.6;
+  background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-table {
+    font-size: 0.85em;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+
+    thead th,
+    tbody td {
+      padding: 10px 12px;
+    }
+  }
+
+  .admin-badge {
+    font-size: 0.75em;
+    padding: 3px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-table {
+    font-size: 0.8em;
+
+    thead th,
+    tbody td {
+      padding: 8px 10px;
+    }
+  }
+}
+

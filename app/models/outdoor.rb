@@ -7,6 +7,9 @@ class Outdoor < ApplicationRecord
   has_many :rents
   has_many :blocked_dates, class_name: 'OutdoorBlockedDate', dependent: :destroy
 
+  # Serialização para array de faces selecionadas
+  serialize :selected_faces, type: Array, coder: JSON
+
   # Enum para tipo de outdoor
   enum :outdoor_type, {
     triedo: 0,
@@ -33,9 +36,11 @@ class Outdoor < ApplicationRecord
   # Validações
   validates :user, presence: true
   validate :validate_end_date_period
+  validate :validate_selected_faces
 
-  # Callback para garantir que custom_art_quantity seja salvo
+  # Callbacks
   before_save :ensure_custom_art_quantity
+  before_save :ensure_selected_faces_array
 
   # Scopes úteis
   scope :recent, -> { order(created_at: :desc) }
@@ -103,6 +108,26 @@ class Outdoor < ApplicationRecord
     (selected_end_date.month - selected_start_date.month)
   end
 
+  # Retorna o número total de artes baseado nas faces selecionadas
+  def total_arts_count
+    return 0 if selected_faces.blank?
+    selected_faces.size
+  end
+
+  # Verifica se o usuário tem arte própria ou precisa de criação
+  def needs_art_creation?
+    has_own_art == false
+  end
+
+  # Retorna faces disponíveis para seleção (não bloqueadas)
+  def self.available_faces_for_location(location, start_date, end_date)
+    all_faces = [1, 2, 3]
+    return all_faces if start_date.blank? || end_date.blank?
+
+    blocked = LocationBlockedFace.blocked_faces_in_period(location, start_date, end_date)
+    all_faces - blocked
+  end
+
   private
 
   def validate_end_date_period
@@ -144,6 +169,37 @@ class Outdoor < ApplicationRecord
       self.custom_art_quantity = custom_art_quantity.to_i
     elsif art_quantity != 0
       self.custom_art_quantity = nil
+    end
+  end
+
+  def ensure_selected_faces_array
+    # Garante que selected_faces seja sempre um array
+    self.selected_faces = [] if selected_faces.nil?
+    self.selected_faces = selected_faces.compact.uniq.sort
+  end
+
+  def validate_selected_faces
+    return if selected_faces.blank?
+
+    # Valida se as faces são números válidos (1, 2 ou 3)
+    invalid_faces = selected_faces.reject { |face| [1, 2, 3].include?(face) }
+    if invalid_faces.any?
+      errors.add(:selected_faces, 'contém números de face inválidos')
+      return
+    end
+
+    # Verifica se as faces estão disponíveis (não bloqueadas) no período selecionado
+    if outdoor_location.present? && selected_start_date.present? && selected_end_date.present?
+      blocked_faces = LocationBlockedFace.blocked_faces_in_period(
+        outdoor_location,
+        selected_start_date,
+        selected_end_date
+      )
+
+      blocked_selected = selected_faces & blocked_faces
+      if blocked_selected.any?
+        errors.add(:selected_faces, "Face(s) #{blocked_selected.join(', ')} não disponível(is) para o período selecionado")
+      end
     end
   end
 end

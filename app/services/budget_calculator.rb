@@ -22,8 +22,9 @@ class BudgetCalculator
       art_cost = calculate_art_cost(outdoor)
       custom_art_cost = calculate_custom_art_cost(outdoor)
       installation = INSTALLATION_FEE
-      # Cobra taxa de design se tiver artes próprias OU artes customizadas
-      design = (outdoor.art_quantity.to_i > 0 || outdoor.custom_art_quantity.to_i > 0) ? DESIGN_FEE : 0
+      # Cobra taxa de design se tiver selecionado faces (artes)
+      has_arts = outdoor.total_arts_count > 0
+      design = has_arts ? DESIGN_FEE : 0
 
       total = monthly_rental + art_cost + custom_art_cost + installation + design
 
@@ -48,20 +49,18 @@ class BudgetCalculator
       price_per_month * months
     end
 
-    # Calcula custo das artes
+    # Calcula custo das artes (quando usuário tem arte própria)
     def calculate_art_cost(outdoor)
-      art_count = outdoor.art_quantity.to_i
-      return 0 if art_count <= 0
+      return 0 unless outdoor&.has_own_art && outdoor.total_arts_count > 0
 
-      art_count * PRICE_PER_ART
+      outdoor.total_arts_count * PRICE_PER_ART
     end
 
     # Calcula custo de artes customizadas (criadas pela equipe)
     def calculate_custom_art_cost(outdoor)
-      custom_art_count = outdoor.custom_art_quantity.to_i
-      return 0 if custom_art_count <= 0
+      return 0 unless outdoor && !outdoor.has_own_art && outdoor.total_arts_count > 0
 
-      custom_art_count * CUSTOM_ART_FEE
+      outdoor.total_arts_count * CUSTOM_ART_FEE
     end
 
     # Retorna preço mensal baseado no tipo de outdoor
@@ -75,8 +74,13 @@ class BudgetCalculator
       return {} unless outdoor
 
       months = calculate_months_from_dates(outdoor)
-      art_count = outdoor.art_quantity.to_i
-      custom_art_count = outdoor.custom_art_quantity.to_i
+      total_arts = outdoor.total_arts_count
+      has_own_art = outdoor.has_own_art
+
+      # Se tem arte própria, conta como art_count; caso contrário, como custom_art_count
+      art_count = has_own_art ? total_arts : 0
+      custom_art_count = has_own_art ? 0 : total_arts
+
       monthly_price = monthly_price_for_type(outdoor.outdoor_type)
 
       {
@@ -90,7 +94,7 @@ class BudgetCalculator
         custom_art_count: custom_art_count,
         custom_art_total: calculate_custom_art_cost(outdoor),
         installation_fee: INSTALLATION_FEE,
-        design_fee: (art_count > 0 || custom_art_count > 0) ? DESIGN_FEE : 0,
+        design_fee: (total_arts > 0) ? DESIGN_FEE : 0,
         total: calculate_total(outdoor)
       }
     end

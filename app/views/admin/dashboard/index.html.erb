@@ -127,6 +127,32 @@
         <% end %>
       </div>
     </div>
+
+    <!-- Location Blocked Dates -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="fas fa-map-marker-alt"></i> Bloqueios por Localização</h2>
+        <%= link_to 'Gerenciar', admin_location_blocked_dates_path, class: 'admin-btn-sm admin-btn-danger' %>
+      </div>
+      <div class="admin-card-body">
+        <p class="admin-info-text">
+          Bloqueie localizações inteiras para aluguéis presenciais.
+        </p>
+      </div>
+    </div>
+
+    <!-- Location Blocked Faces -->
+    <div class="admin-card">
+      <div class="admin-card-header">
+        <h2><i class="fas fa-th-large"></i> Bloqueios de Faces por Localização</h2>
+        <%= link_to 'Gerenciar', admin_location_blocked_faces_path, class: 'admin-btn-sm admin-btn-danger' %>
+      </div>
+      <div class="admin-card-body">
+        <p class="admin-info-text">
+          Bloqueie faces específicas de um outdoor quando vendidas presencialmente.
+        </p>
+      </div>
+    </div>
   </div>
 </div>
 

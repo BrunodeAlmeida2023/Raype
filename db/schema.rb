@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_03_222256) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_05_112754) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -68,6 +68,19 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_03_222256) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "location_blocked_faces", force: :cascade do |t|
+    t.integer "outdoor_location"
+    t.text "blocked_faces", default: "[]"
+    t.date "start_date"
+    t.date "end_date"
+    t.string "reason"
+    t.integer "blocked_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["outdoor_location"], name: "index_location_blocked_faces_on_outdoor_location"
+    t.index ["start_date", "end_date"], name: "index_location_blocked_faces_on_start_date_and_end_date"
+  end
+
   create_table "outdoor_blocked_dates", force: :cascade do |t|
     t.bigint "outdoor_id", null: false
     t.date "start_date"
@@ -93,6 +106,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_03_222256) do
     t.integer "art_quantity"
     t.integer "custom_art_quantity"
     t.date "selected_end_date"
+    t.boolean "has_own_art", default: true
+    t.text "selected_faces", default: "[]"
     t.index ["outdoor_type"], name: "index_outdoors_on_outdoor_type"
     t.index ["status"], name: "index_outdoors_on_status"
     t.index ["user_id"], name: "index_outdoors_on_user_id"

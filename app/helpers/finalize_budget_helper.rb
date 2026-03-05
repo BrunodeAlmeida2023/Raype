@@ -43,7 +43,9 @@ module FinalizeBudgetHelper
       start_date: outdoor.selected_start_date,
       end_date: outdoor.selected_end_date,
       months: budget[:months],
-      art_quantity: outdoor.art_quantity || 0,
+      art_quantity: outdoor.has_own_art ? outdoor.total_arts_count : 0,
+      custom_art_quantity: outdoor.has_own_art ? 0 : outdoor.total_arts_count,
+      selected_faces: outdoor.selected_faces || [],
       budget: budget
     }
   end

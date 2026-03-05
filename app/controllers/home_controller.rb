@@ -188,53 +188,69 @@ class HomeController < ApplicationController
 
     # Log dos parâmetros recebidos
     Rails.logger.info "🎨 post_choose_art - Params recebidos:"
-    Rails.logger.info "   art_quantity: #{params[:art_quantity]}"
-    Rails.logger.info "   custom_art_quantity: #{params[:custom_art_quantity]}"
+    Rails.logger.info "   has_own_art: #{params[:has_own_art]}"
+    Rails.logger.info "   selected_faces: #{params[:selected_faces]}"
 
-    # Salva a quantidade de artes
-    art_qty = params[:art_quantity].to_i
-    @outdoor.art_quantity = art_qty
+    # 1. Valida e salva se o usuário tem arte própria
+    has_own_art = params[:has_own_art]
+    if has_own_art.blank?
+      flash[:alert] = "Por favor, selecione se você tem artes prontas ou não."
+      redirect_to choose_art_home_path
+      return
+    end
 
-    # Salva a quantidade de artes customizadas se art_quantity = 0
-    if art_qty == 0
-      custom_qty = params[:custom_art_quantity].to_s.strip
-      Rails.logger.info "   custom_art_quantity (stripped): '#{custom_qty}'"
+    @outdoor.has_own_art = (has_own_art == 'true')
 
-      if custom_qty.present? && custom_qty != '' && custom_qty.to_i > 0
-        @outdoor.custom_art_quantity = custom_qty.to_i
-        Rails.logger.info "   ✅ custom_art_quantity será salvo como: #{@outdoor.custom_art_quantity}"
-      else
-        # Se não selecionou, mostra erro
-        Rails.logger.warn "   ❌ custom_art_quantity não fornecido ou inválido"
-        flash[:alert] = "Por favor, selecione quantas artes você deseja que criemos para você."
+    # 2. Valida e salva as faces selecionadas
+    selected_faces = params[:selected_faces]
+    if selected_faces.blank? || selected_faces.reject(&:blank?).empty?
+      flash[:alert] = "Por favor, selecione pelo menos uma face do outdoor."
+      redirect_to choose_art_home_path
+      return
+    end
+
+    # Converte para array de inteiros e remove valores vazios
+    faces_array = selected_faces.reject(&:blank?).map(&:to_i).uniq.sort
+    @outdoor.selected_faces = faces_array
+
+    Rails.logger.info "   ✅ Faces selecionadas: #{faces_array.inspect}"
+    Rails.logger.info "   ✅ Total de artes: #{faces_array.size}"
+
+    # 3. Se tem arte própria, processa os uploads
+    if @outdoor.has_own_art
+      if params[:art_files].present?
+        # Remove artes antigas antes de adicionar novas
+        @outdoor.art_files.purge if @outdoor.art_files.attached?
+
+        params[:art_files].each do |art_file|
+          @outdoor.art_files.attach(art_file) if art_file.present?
+        end
+        Rails.logger.info "   📎 #{params[:art_files].size} arte(s) anexada(s)"
+      elsif !@outdoor.art_files.attached?
+        # Se não tem arquivos anexados e não enviou novos
+        flash[:alert] = "Por favor, faça upload das artes para as faces selecionadas."
         redirect_to choose_art_home_path
         return
       end
     else
-      # Se art_quantity > 0, limpa custom_art_quantity
-      @outdoor.custom_art_quantity = nil
-      Rails.logger.info "   ℹ️  custom_art_quantity será limpo (art_quantity > 0)"
-    end
-
-    # Anexa as artes se foram enviadas
-    if params[:art_files].present?
-      # Remove artes antigas antes de adicionar novas
+      # Se não tem arte própria, limpa arquivos anexados
       @outdoor.art_files.purge if @outdoor.art_files.attached?
-
-      params[:art_files].each do |art_file|
-        @outdoor.art_files.attach(art_file) if art_file.present?
-      end
-      Rails.logger.info "   📎 Artes anexadas"
+      Rails.logger.info "   ℹ️  Sem arte própria - artes serão criadas pela equipe"
     end
 
+    # 4. Salva o outdoor
     if @outdoor.save
       @outdoor.reload
-      Rails.logger.info "   ✅ Outdoor salvo! custom_art_quantity final: #{@outdoor.custom_art_quantity.inspect}"
-      flash[:notice] = "Arte salva com sucesso!"
+      Rails.logger.info "   ✅ Outdoor salvo com sucesso!"
+      Rails.logger.info "      - has_own_art: #{@outdoor.has_own_art}"
+      Rails.logger.info "      - selected_faces: #{@outdoor.selected_faces.inspect}"
+      Rails.logger.info "      - total_arts_count: #{@outdoor.total_arts_count}"
+
+      flash[:notice] = "Arte(s) configurada(s) com sucesso!"
       redirect_to root_path
     else
       Rails.logger.error "   ❌ Erro ao salvar: #{@outdoor.errors.full_messages.join(', ')}"
-      flash[:alert] = "Erro ao salvar arte: #{@outdoor.errors.full_messages.join(', ')}"
+      flash[:alert] = "Erro ao salvar: #{@outdoor.errors.full_messages.join(', ')}"
       redirect_to choose_art_home_path
     end
   end

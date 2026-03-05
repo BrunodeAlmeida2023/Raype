@@ -15,3 +15,7 @@ import "location_video"
 import "checkout_payment"
 import "order_status"
 
+// Admin modules
+import "admin_dashboard"
+import "admin_validations"
+

@@ -1,0 +1,106 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-th-large"></i> Novo Bloqueio de Faces</h1>
+    <%= link_to 'Voltar', admin_location_blocked_faces_path, class: 'admin-btn-secondary' %>
+  </div>
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <%= form_with model: @location_blocked_face, url: admin_location_blocked_faces_path, local: true, class: 'admin-form' do |f| %>
+        <div class="admin-form-group">
+          <%= f.label :outdoor_location, "Localização:", class: "admin-form-label" %>
+          <%= f.select :outdoor_location,
+              Outdoor.outdoor_location_options.map { |label, value| [label, value] },
+              { prompt: 'Selecione' },
+              { class: "admin-form-input", required: true } %>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-label">Faces a Bloquear:</label>
+          <p class="admin-form-hint" style="margin-bottom: 10px;">Selecione uma ou mais faces que deseja bloquear (use Ctrl/Cmd para seleção múltipla)</p>
+          <div class="admin-checkbox-group">
+            <label class="admin-checkbox-label">
+              <%= check_box_tag 'location_blocked_face[blocked_faces][]', 1, false, id: 'face_1' %>
+              <span>Face 1</span>
+            </label>
+            <label class="admin-checkbox-label">
+              <%= check_box_tag 'location_blocked_face[blocked_faces][]', 2, false, id: 'face_2' %>
+              <span>Face 2</span>
+            </label>
+            <label class="admin-checkbox-label">
+              <%= check_box_tag 'location_blocked_face[blocked_faces][]', 3, false, id: 'face_3' %>
+              <span>Face 3</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-form-grid">
+          <div class="admin-form-group">
+            <%= f.label :start_date, "Data Inicial:", class: "admin-form-label" %>
+            <%= f.date_field :start_date, class: "admin-form-input", required: true, min: Date.today %>
+          </div>
+          <div class="admin-form-group">
+            <%= f.label :end_date, "Data Final:", class: "admin-form-label" %>
+            <%= f.date_field :end_date, class: "admin-form-input", required: true, min: Date.today %>
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <%= f.label :reason, "Motivo:", class: "admin-form-label" %>
+          <%= f.text_area :reason, class: "admin-form-input", rows: 3, placeholder: "Ex: Vendido presencialmente ao cliente X" %>
+        </div>
+
+        <div class="admin-form-actions">
+          <%= f.submit "Bloquear Faces", class: "admin-btn-danger" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<style>
+.admin-checkbox-group {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.admin-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background: #f8f9fa;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-checkbox-label:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.admin-checkbox-label:has(input:checked) {
+  background: #d1ecf1;
+  border-color: #17a2b8;
+}
+
+.admin-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.admin-checkbox-label span {
+  font-weight: 600;
+  color: #495057;
+}
+
+.admin-form-hint {
+  font-size: 0.9em;
+  color: #6c757d;
+  font-style: italic;
+}
+</style>
+

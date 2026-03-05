@@ -21,7 +21,7 @@ module BudgetHelper
 
   def calculate_design_fee(outdoor)
     return 0 unless outdoor
-    (outdoor.art_quantity.to_i > 0 || outdoor.custom_art_quantity.to_i > 0) ? BudgetCalculator::DESIGN_FEE : 0
+    outdoor.total_arts_count > 0 ? BudgetCalculator::DESIGN_FEE : 0
   end
 
   def calculate_total_budget(outdoor)

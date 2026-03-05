@@ -19,3 +19,7 @@ pin "location_video"
 pin "checkout_payment"
 pin "order_status"
 
+# Admin modules
+pin "admin_dashboard"
+pin "admin_validations"
+
