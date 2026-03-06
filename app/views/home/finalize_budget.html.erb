@@ -76,40 +76,31 @@
             <h3>Artes Gráficas</h3>
           </div>
           <div class="budget-card-body">
-            <% if data[:art_quantity] > 0 %>
+            <% if budget[:art_count] > 0 %>
               <div class="budget-info-row">
-                <span class="budget-label">Artes Fornecidas:</span>
-                <span class="budget-value"><%= data[:art_quantity] %> <%= pluralize_arts(data[:art_quantity]) %></span>
+                <span class="budget-label">Quantidade de Artes:</span>
+                <span class="budget-value"><%= budget[:art_count] %> <%= pluralize_arts(budget[:art_count]) %></span>
               </div>
               <div class="budget-info-row">
                 <span class="budget-label">Valor por Arte:</span>
                 <span class="budget-value">R$ <%= format_budget_value(budget[:art_price_per_unit]) %>,00</span>
               </div>
-              <div class="budget-arts-preview">
-                <% @outdoor.art_files.each_with_index do |art, index| %>
-                  <div class="budget-art-thumb">
-                    <%= image_tag art, alt: "Arte #{index + 1}" %>
-                  </div>
-                <% end %>
-              </div>
-            <% end %>
 
-            <% if budget[:custom_art_count] > 0 %>
-              <div class="budget-info-row">
-                <span class="budget-label">Artes Customizadas:</span>
-                <span class="budget-value highlight"><%= budget[:custom_art_count] %> <%= pluralize_arts(budget[:custom_art_count]) %></span>
-              </div>
-              <div class="budget-info-row">
-                <span class="budget-label">Valor por Arte Customizada:</span>
-                <span class="budget-value">R$ <%= format_budget_value(budget[:custom_art_price_per_unit]) %>,00</span>
-              </div>
-              <div class="budget-info-note">
-                <i class="fas fa-paintbrush"></i>
-                <p>Artes serão criadas pela nossa equipe de design profissional</p>
-              </div>
-            <% end %>
-
-            <% if data[:art_quantity] == 0 && budget[:custom_art_count] == 0 %>
+              <% if @outdoor.has_own_art && @outdoor.art_files.attached? %>
+                <div class="budget-arts-preview">
+                  <% @outdoor.art_files.each_with_index do |art, index| %>
+                    <div class="budget-art-thumb">
+                      <%= image_tag art, alt: "Arte #{index + 1}" %>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="budget-info-note">
+                  <i class="fas fa-paintbrush"></i>
+                  <p>Artes serão criadas pela nossa equipe de design profissional</p>
+                </div>
+              <% end %>
+            <% else %>
               <div class="budget-info-note">
                 <i class="fas fa-info-circle"></i>
                 <p>Nenhuma arte selecionada</p>
@@ -136,11 +127,11 @@
               </div>
             </div>
 
-            <!-- Artes Gráficas (fornecidas pelo usuário) -->
+            <!-- Artes Gráficas -->
             <% if budget[:art_count] > 0 %>
               <div class="budget-summary-item">
                 <div class="budget-summary-item-header">
-                  <span class="budget-summary-label">Artes Fornecidas (<%= budget[:art_count] %> <%= pluralize_arts(budget[:art_count]) %>)</span>
+                  <span class="budget-summary-label">Artes (<%= budget[:art_count] %> <%= pluralize_arts(budget[:art_count]) %>)</span>
                   <span class="budget-summary-calc"><%= budget[:art_count] %> × R$ <%= format_budget_value(budget[:art_price_per_unit]) %></span>
                 </div>
                 <div class="budget-summary-value">
@@ -149,37 +140,15 @@
               </div>
             <% end %>
 
-            <!-- Artes Customizadas (criadas pela equipe) -->
-            <% if budget[:custom_art_count] > 0 %>
-              <div class="budget-summary-item">
-                <div class="budget-summary-item-header">
-                  <span class="budget-summary-label">Artes Customizadas (<%= budget[:custom_art_count] %> <%= pluralize_arts(budget[:custom_art_count]) %>)</span>
-                  <span class="budget-summary-calc"><%= budget[:custom_art_count] %> × R$ <%= format_budget_value(budget[:custom_art_price_per_unit]) %></span>
-                </div>
-                <div class="budget-summary-value">
-                  R$ <%= format_budget_value(budget[:custom_art_total]) %>,00
-                </div>
-              </div>
-            <% end %>
-
             <!-- Taxa de Instalação -->
-            <div class="budget-summary-item">
-              <div class="budget-summary-item-header">
-                <span class="budget-summary-label">Instalação</span>
-              </div>
-              <div class="budget-summary-value">
-                R$ <%= format_budget_value(budget[:installation_fee]) %>,00
-              </div>
-            </div>
-
-            <!-- Taxa de Design (se aplicável) -->
-            <% if budget[:design_fee] > 0 %>
+            <% if budget[:installation_fee] > 0 %>
               <div class="budget-summary-item">
                 <div class="budget-summary-item-header">
-                  <span class="budget-summary-label">Design</span>
+                  <span class="budget-summary-label">Instalação</span>
+                  <span class="budget-summary-hint">(Cobrada para períodos menores que 2 meses)</span>
                 </div>
                 <div class="budget-summary-value">
-                  R$ <%= format_budget_value(budget[:design_fee]) %>,00
+                  R$ <%= format_budget_value(budget[:installation_fee]) %>,00
                 </div>
               </div>
             <% end %>

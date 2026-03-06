@@ -11,17 +11,9 @@ module BudgetHelper
     BudgetCalculator.calculate_art_cost(outdoor)
   end
 
-  def calculate_custom_art_price(outdoor)
-    BudgetCalculator.calculate_custom_art_cost(outdoor)
-  end
-
-  def calculate_installation_fee
-    BudgetCalculator::INSTALLATION_FEE
-  end
-
-  def calculate_design_fee(outdoor)
-    return 0 unless outdoor
-    outdoor.total_arts_count > 0 ? BudgetCalculator::DESIGN_FEE : 0
+  def calculate_installation_fee(outdoor)
+    months = BudgetCalculator.calculate_months_from_dates(outdoor)
+    (months < 2) ? BudgetCalculator::INSTALLATION_FEE : 0
   end
 
   def calculate_total_budget(outdoor)
