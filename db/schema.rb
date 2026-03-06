@@ -105,9 +105,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_05_190933) do
     t.date "selected_start_date"
     t.integer "art_quantity"
     t.integer "custom_art_quantity"
-    t.date "selected_end_date"
     t.boolean "has_own_art", default: true
     t.text "selected_faces", default: "[]"
+    t.date "selected_end_date"
     t.index ["outdoor_type"], name: "index_outdoors_on_outdoor_type"
     t.index ["status"], name: "index_outdoors_on_status"
     t.index ["user_id"], name: "index_outdoors_on_user_id"

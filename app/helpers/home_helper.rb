@@ -14,15 +14,18 @@ module HomeHelper
   end
 
   def art_completed?(outdoor)
-    return false unless outdoor&.art_quantity.present?
+    return false unless outdoor.present?
 
-    # Se art_quantity = 0 (sem arte), precisa ter custom_art_quantity
-    if outdoor.art_quantity == 0
-      return outdoor.custom_art_quantity.present? && outdoor.custom_art_quantity > 0
+    # ✅ NOVA LÓGICA: Verifica selected_faces
+    return false if outdoor.selected_faces.blank? || outdoor.selected_faces.empty?
+
+    # Se tem arte própria (has_own_art = true), precisa ter arquivos anexados
+    if outdoor.has_own_art
+      return outdoor.art_files&.attached? && outdoor.art_files.count >= outdoor.selected_faces.size
     end
 
-    # Se tem art_quantity > 0, precisa ter os arquivos anexados
-    outdoor.art_quantity > 0 && outdoor.art_files&.attached?
+    # Se não tem arte própria (has_own_art = false), apenas ter faces selecionadas já é suficiente
+    true
   end
 
   def all_steps_completed?(outdoor)

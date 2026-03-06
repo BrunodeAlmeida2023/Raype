@@ -239,19 +239,41 @@ class HomeController < ApplicationController
     end
 
     # 4. Salva o outdoor
-    if @outdoor.save
-      # Atualiza o status para art_uploaded
-      if @outdoor.status_date_selected?
-        @outdoor.status_art_uploaded!
-        Rails.logger.info "   ✅ Status atualizado para: art_uploaded"
-      end
+    Rails.logger.info "   🔍 Antes de salvar:"
+    Rails.logger.info "      - outdoor_type: #{@outdoor.outdoor_type}"
+    Rails.logger.info "      - selected_start_date: #{@outdoor.selected_start_date}"
+    Rails.logger.info "      - selected_end_date: #{@outdoor.selected_end_date}"
+    Rails.logger.info "      - selected_faces: #{@outdoor.selected_faces.inspect}"
+    Rails.logger.info "      - status atual: #{@outdoor.status}"
 
-      @outdoor.reload
+    if @outdoor.save
       Rails.logger.info "   ✅ Outdoor salvo com sucesso!"
-      Rails.logger.info "      - status: #{@outdoor.status}"
       Rails.logger.info "      - has_own_art: #{@outdoor.has_own_art}"
       Rails.logger.info "      - selected_faces: #{@outdoor.selected_faces.inspect}"
       Rails.logger.info "      - total_arts_count: #{@outdoor.total_arts_count}"
+      Rails.logger.info "      - status após save: #{@outdoor.status}"
+
+      # ✅ ATUALIZA O STATUS PARA ART_UPLOADED se as condições forem atendidas
+      if @outdoor.outdoor_type.present? &&
+         @outdoor.selected_start_date.present? &&
+         @outdoor.selected_end_date.present? &&
+         @outdoor.selected_faces.present? &&
+         @outdoor.selected_faces.any?
+
+        Rails.logger.info "   🚀 Todas condições atendidas! Atualizando status..."
+        # Usa o método enum para atualizar o status
+        @outdoor.status_art_uploaded!
+        Rails.logger.info "   ✅ Status atualizado para: art_uploaded (#{@outdoor.status})"
+      else
+        Rails.logger.warn "   ⚠️  Condições não atendidas para status art_uploaded:"
+        Rails.logger.warn "      - outdoor_type: #{@outdoor.outdoor_type.present?}"
+        Rails.logger.warn "      - selected_start_date: #{@outdoor.selected_start_date.present?}"
+        Rails.logger.warn "      - selected_end_date: #{@outdoor.selected_end_date.present?}"
+        Rails.logger.warn "      - selected_faces.any?: #{@outdoor.selected_faces.present? && @outdoor.selected_faces.any?}"
+      end
+
+      @outdoor.reload
+      Rails.logger.info "   ✅ Status final após reload: #{@outdoor.status}"
 
       flash[:notice] = "Arte(s) configurada(s) com sucesso!"
       redirect_to root_path

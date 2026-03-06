@@ -5,18 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/CHECKLIST_JAVASCRIPT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CORRECAO_JAVASCRIPT.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CORRECAO_JAVASCRIPT_COMPLETA.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/db/migrate/20260305190933_replace_quantity_month_with_end_date.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/helpers/find_outdoor_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/find_outdoor_helper.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/choose_art.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/choose_art.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/date_validation.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/date_validation.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/documento_mask.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/documento_mask.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/javascript/password_toggle.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/password_toggle.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/devise/shared/_auth_branding.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/devise/shared/_auth_branding.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/index.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/home_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/home_helper.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -32,9 +23,9 @@
   <component name="CopilotUserSelectedModel">
     <selectedModels>
       <entry key="edit-panel" value="GPT-5 mini" />
+      <entry key="inline" value="Claude Sonnet 4.5" />
       <entry key="chat-panel" value="Claude Sonnet 4.5" />
       <entry key="agent-panel" value="Claude Sonnet 4.5" />
-      <entry key="inline" value="Claude Sonnet 4.5" />
     </selectedModels>
   </component>
   <component name="Git.Settings">
@@ -284,6 +275,7 @@
       <workItem from="1772708483064" duration="1412000" />
       <workItem from="1772709974094" duration="4741000" />
       <workItem from="1772748431054" duration="1687000" />
+      <workItem from="1772799866949" duration="1853000" />
     </task>
     <servers />
   </component>
@@ -291,7 +283,7 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1772748560883" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
+    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1772800366347" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
