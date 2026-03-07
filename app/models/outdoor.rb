@@ -175,9 +175,12 @@ class Outdoor < ApplicationRecord
 
   def ensure_custom_art_quantity
     # Força Rails a reconhecer mudanças no custom_art_quantity
-    if art_quantity == 0 && custom_art_quantity.present?
+    # Usa total_arts_count que nunca é nil (ao invés de art_quantity deprecated)
+    arts_count = total_arts_count || 0
+
+    if arts_count == 0 && custom_art_quantity.present?
       self.custom_art_quantity = custom_art_quantity.to_i
-    elsif art_quantity != 0
+    elsif arts_count != 0
       self.custom_art_quantity = nil
     end
   end
