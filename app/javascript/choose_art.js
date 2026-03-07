@@ -100,7 +100,7 @@ function initChooseArt() {
   // Listeners para checkboxes de faces
   const faceCheckboxes = document.querySelectorAll('.face-checkbox');
   faceCheckboxes.forEach(checkbox => {
-    // Suporte para click e touch
+    // Handler unificado para change
     const handler = function() {
       // Pequeno delay para garantir que o estado do checkbox foi atualizado
       setTimeout(() => {
@@ -121,20 +121,8 @@ function initChooseArt() {
       }, 50);
     };
 
+    // Evento principal de mudança
     checkbox.addEventListener('change', handler);
-
-    // 📱 Suporte adicional para mobile
-    const label = checkbox.closest('.face-checkbox-label');
-    if (label) {
-      label.addEventListener('touchend', function(e) {
-        // Previne comportamento duplicado no mobile
-        if (e.cancelable) {
-          e.preventDefault();
-        }
-        checkbox.checked = !checkbox.checked;
-        handler();
-      });
-    }
   });
 
   function showFacesSelection() {
@@ -357,24 +345,35 @@ function initChooseArt() {
   if (form) {
     let isSubmitting = false;
 
+    // Handler de submit - SIMPLIFICADO
     form.addEventListener('submit', function(e) {
+      console.log('🔵 Submit triggered!');
+
       // Previne múltiplos submits
       if (isSubmitting) {
+        console.log('⚠️ Já está processando...');
         e.preventDefault();
         return false;
       }
 
-      const hasOwnArtValue = hasOwnArtSelect.value;
+      const hasOwnArtValue = hasOwnArtSelect ? hasOwnArtSelect.value : '';
+      console.log('🎨 hasOwnArt:', hasOwnArtValue);
 
+      // Validação 1: Selecionou opção de arte?
       if (hasOwnArtValue === '') {
         e.preventDefault();
         alert('Por favor, selecione se você tem artes prontas ou não.');
-        hasOwnArtSelect.focus();
-        hasOwnArtSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (hasOwnArtSelect) {
+          hasOwnArtSelect.focus();
+          hasOwnArtSelect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         return false;
       }
 
+      // Validação 2: Selecionou faces?
       const checkedFaces = document.querySelectorAll('.face-checkbox:checked');
+      console.log('✅ Faces selecionadas:', checkedFaces.length);
+
       if (checkedFaces.length === 0) {
         e.preventDefault();
         alert('Por favor, selecione pelo menos uma face do outdoor.');
@@ -384,41 +383,42 @@ function initChooseArt() {
         return false;
       }
 
-      // Se tem arte própria, verifica se os arquivos foram selecionados
+      // Validação 3: Se tem arte própria, tem arquivos?
       if (hasOwnArtValue === 'true') {
-        if (!uploadContainer) {
-          e.preventDefault();
-          alert('Erro ao processar formulário. Recarregue a página.');
-          return false;
-        }
-
-        const fileInputs = uploadContainer.querySelectorAll('.file-input[required]');
-        let allFilled = true;
+        const fileInputs = document.querySelectorAll('.file-input[required]');
+        let missingFiles = false;
 
         fileInputs.forEach(input => {
           if (!input.files || input.files.length === 0) {
-            allFilled = false;
+            missingFiles = true;
           }
         });
 
-        if (!allFilled) {
+        if (missingFiles) {
           e.preventDefault();
           alert('Por favor, faça upload das artes para todas as faces selecionadas.');
           return false;
         }
       }
 
-      // Tudo válido - mostra loading
+      // ✅ Tudo válido - permite submit
+      console.log('✅ Validações OK! Enviando formulário...');
       isSubmitting = true;
-      const submitBtn = form.querySelector('#submit-choose-art');
+
+      // Mostra loading
+      const submitBtn = document.getElementById('submit-choose-art');
       if (submitBtn) {
         submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Processando...';
-        submitBtn.style.opacity = '0.7';
-        submitBtn.style.cursor = 'not-allowed';
+        // Não muda o texto aqui - Rails faz isso com data-disable-with
       }
 
-      // Se não tem arte própria, pode enviar normalmente
+      const spinner = document.getElementById('loading-spinner');
+      if (spinner) {
+        spinner.style.display = 'flex';
+      }
+
+      // Permite o submit normal do formulário
+      console.log('🚀 Submit permitido!');
       return true;
     });
   }

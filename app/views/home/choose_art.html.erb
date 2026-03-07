@@ -24,7 +24,7 @@
          class="hidden-data">
     </div>
 
-    <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container choose-art-form", id: "choose-art-form" do |f| %>
+    <%= form_with url: post_choose_art_home_path, method: :post, multipart: true, class: "home-form-container choose-art-form", id: "choose-art-form", data: { turbo: false } do |f| %>
       <div class="choose-art-layout">
         <div class="choose-art-left">
 
@@ -98,7 +98,11 @@
         </div>
 
         <div class="home-form-actions choose-art-actions">
-          <%= f.submit "Continuar", class: "home-submit-btn", id: "submit-choose-art" %>
+          <%= f.submit "Continuar",
+              class: "home-submit-btn",
+              id: "submit-choose-art",
+              type: "submit",
+              data: { disable_with: "⏳ Processando..." } %>
           <div class="loading-spinner" id="loading-spinner" style="display: none;">
             <div class="spinner"></div>
             <p>Processando suas artes... Por favor, aguarde.</p>
