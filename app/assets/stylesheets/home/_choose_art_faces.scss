@@ -118,6 +118,10 @@
   color: #2c3e50;
   min-width: 150px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 
   &:hover {
     background: #e9ecef;
@@ -298,7 +302,14 @@
   .face-checkbox-label {
     width: 100%;
     min-width: auto;
-    padding: 18px 25px;
+    padding: 22px 25px; /* 📱 Maior área de toque para mobile */
+    font-size: 1.1em;
+    min-height: 65px; /* 📱 Altura mínima confortável para toque */
+  }
+
+  .face-checkbox {
+    width: 28px; /* 📱 Checkbox maior no mobile */
+    height: 28px;
   }
 
   .faces-hint {
@@ -333,6 +344,15 @@
   .upload-field {
     padding: 20px 15px;
   }
+
+  /* 📱 Melhor suporte para botão de submit no mobile */
+  .home-submit-btn {
+    padding: 18px 40px !important;
+    font-size: 1.1em !important;
+    min-height: 60px;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -362,6 +382,54 @@
 
   .upload-field {
     padding: 15px;
+  }
+}
+
+/* 🎨 Loading Spinner */
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+
+  p {
+    color: #ff6b00;
+    font-weight: 700;
+    font-size: 1.1em;
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff6b00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Botão desabilitado durante loading */
+.home-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #999 !important;
+
+  &:hover {
+    transform: none !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
   }
 }
 

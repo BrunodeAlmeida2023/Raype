@@ -6,8 +6,16 @@
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gemfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_choose_art_faces.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_choose_art_faces.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/home_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/home_controller.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/helpers/choose_art_helper.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/helpers/choose_art_helper.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/javascript/choose_art.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/javascript/choose_art.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models/outdoor.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/outdoor.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/views/checkout/new.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/checkout/new.html.erb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/views/checkout/show.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/checkout/show.html.erb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,7 +283,7 @@
       <workItem from="1772709974094" duration="4741000" />
       <workItem from="1772748431054" duration="1687000" />
       <workItem from="1772799866949" duration="3282000" />
-      <workItem from="1772886406870" duration="346000" />
+      <workItem from="1772886406870" duration="1550000" />
     </task>
     <servers />
   </component>

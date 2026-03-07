@@ -219,13 +219,24 @@ class HomeController < ApplicationController
     # 3. Se tem arte própria, processa os uploads
     if @outdoor.has_own_art
       if params[:art_files].present?
+        # 🚀 OTIMIZAÇÃO: Valida tamanho dos arquivos antes de processar
+        max_file_size = 5.megabytes
+        oversized_files = params[:art_files].select { |f| f.size > max_file_size }
+
+        if oversized_files.any?
+          flash[:alert] = "Alguns arquivos são muito grandes (máximo 5MB por arquivo). Por favor, reduza o tamanho das imagens."
+          redirect_to choose_art_home_path
+          return
+        end
+
         # Remove artes antigas antes de adicionar novas
         @outdoor.art_files.purge if @outdoor.art_files.attached?
 
-        params[:art_files].each do |art_file|
-          @outdoor.art_files.attach(art_file) if art_file.present?
-        end
-        Rails.logger.info "   📎 #{params[:art_files].size} arte(s) anexada(s)"
+        # 🚀 OTIMIZAÇÃO: Anexa arquivos em batch (mais rápido)
+        valid_files = params[:art_files].select(&:present?)
+        @outdoor.art_files.attach(valid_files) if valid_files.any?
+
+        Rails.logger.info "   📎 #{valid_files.size} arte(s) anexada(s)"
       elsif !@outdoor.art_files.attached?
         # Se não tem arquivos anexados e não enviou novos
         flash[:alert] = "Por favor, faça upload das artes para as faces selecionadas."

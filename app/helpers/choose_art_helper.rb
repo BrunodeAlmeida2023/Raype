@@ -1,7 +1,17 @@
 module ChooseArtHelper
+  # 🚀 OTIMIZAÇÃO: Carrega URLs apenas se necessário
   def saved_art_urls(outdoor)
     return [] unless outdoor&.art_files&.attached?
-    outdoor.art_files.map { |art_file| url_for(art_file) }
+    return [] unless outdoor.has_own_art # Não precisa carregar se não tem arte própria
+
+    # Usa variant thumb para preview (mais rápido)
+    outdoor.art_files.map do |art_file|
+      begin
+        url_for(art_file.variant(:thumb))
+      rescue
+        url_for(art_file) # Fallback para original se variant falhar
+      end
+    end
   end
 
   def choose_art_ownership_value(outdoor)

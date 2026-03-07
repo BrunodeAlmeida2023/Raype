@@ -49,11 +49,11 @@
             </span>
           </div>
 
-          <% if @outdoor.total_arts_count > 0 %>
+          <% if @outdoor.art_quantity > 0 %>
             <div class="checkout-summary-item">
-              <span class="checkout-summary-label">Faces do Outdoor:</span>
+              <span class="checkout-summary-label">Artes Gráficas:</span>
               <span class="checkout-summary-value">
-                <%= @outdoor.total_arts_count %> <%= pluralize_checkout_arts(@outdoor.total_arts_count) %>
+                <%= @outdoor.art_quantity %> <%= pluralize_checkout_arts(@outdoor.art_quantity) %>
               </span>
             </div>
           <% end %>

@@ -100,22 +100,41 @@ function initChooseArt() {
   // Listeners para checkboxes de faces
   const faceCheckboxes = document.querySelectorAll('.face-checkbox');
   faceCheckboxes.forEach(checkbox => {
-    checkbox.addEventListener('change', function() {
-      updateSelectedFaces();
-      updateFacesDisplay();
+    // Suporte para click e touch
+    const handler = function() {
+      // Pequeno delay para garantir que o estado do checkbox foi atualizado
+      setTimeout(() => {
+        updateSelectedFaces();
+        updateFacesDisplay();
 
-      const hasOwnArt = hasOwnArtSelect.value === 'true';
-      if (selectedFaces.length > 0) {
-        if (hasOwnArt) {
-          showUploadFields();
-          updateUploadFields();
+        const hasOwnArt = hasOwnArtSelect.value === 'true';
+        if (selectedFaces.length > 0) {
+          if (hasOwnArt) {
+            showUploadFields();
+            updateUploadFields();
+          } else {
+            showNoArtMessage();
+          }
         } else {
-          showNoArtMessage();
+          hideAllContent();
         }
-      } else {
-        hideAllContent();
-      }
-    });
+      }, 50);
+    };
+
+    checkbox.addEventListener('change', handler);
+
+    // 📱 Suporte adicional para mobile
+    const label = checkbox.closest('.face-checkbox-label');
+    if (label) {
+      label.addEventListener('touchend', function(e) {
+        // Previne comportamento duplicado no mobile
+        if (e.cancelable) {
+          e.preventDefault();
+        }
+        checkbox.checked = !checkbox.checked;
+        handler();
+      });
+    }
   });
 
   function showFacesSelection() {
@@ -216,6 +235,24 @@ function initChooseArt() {
     const file = event.target.files[0];
     if (!file) return;
 
+    // 🚀 OTIMIZAÇÃO: Limita tamanho do arquivo para melhor performance
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert('⚠️ Arquivo muito grande! Por favor, selecione uma imagem menor que 5MB.');
+      event.target.value = '';
+      return;
+    }
+
+    // Mostra feedback visual
+    const fieldGroup = event.target.closest('.upload-field');
+    if (fieldGroup) {
+      const hint = fieldGroup.querySelector('.file-hint');
+      if (hint) {
+        hint.textContent = '⏳ Processando...';
+        hint.style.color = '#ff6b00';
+      }
+    }
+
     const reader = new FileReader();
     reader.onload = function(e) {
       const faceNumber = parseInt(event.target.dataset.face);
@@ -223,9 +260,28 @@ function initChooseArt() {
 
       if (faceIndex !== -1) {
         uploadedImages[faceIndex] = e.target.result;
-        updateTriedoPreview();
+
+        // Atualiza feedback
+        if (fieldGroup) {
+          const hint = fieldGroup.querySelector('.file-hint');
+          if (hint) {
+            hint.textContent = '✓ Arquivo selecionado';
+            hint.style.color = '#28a745';
+          }
+        }
+
+        // 🚀 OTIMIZAÇÃO: Usa requestAnimationFrame para não bloquear UI
+        requestAnimationFrame(() => {
+          updateTriedoPreview();
+        });
       }
     };
+
+    reader.onerror = function() {
+      alert('❌ Erro ao ler o arquivo. Tente novamente.');
+      event.target.value = '';
+    };
+
     reader.readAsDataURL(file);
   }
 
@@ -299,7 +355,15 @@ function initChooseArt() {
 
   // Validação do formulário
   if (form) {
+    let isSubmitting = false;
+
     form.addEventListener('submit', function(e) {
+      // Previne múltiplos submits
+      if (isSubmitting) {
+        e.preventDefault();
+        return false;
+      }
+
       const hasOwnArtValue = hasOwnArtSelect.value;
 
       if (hasOwnArtValue === '') {
@@ -342,6 +406,16 @@ function initChooseArt() {
           alert('Por favor, faça upload das artes para todas as faces selecionadas.');
           return false;
         }
+      }
+
+      // Tudo válido - mostra loading
+      isSubmitting = true;
+      const submitBtn = form.querySelector('#submit-choose-art');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = '⏳ Processando...';
+        submitBtn.style.opacity = '0.7';
+        submitBtn.style.cursor = 'not-allowed';
       }
 
       // Se não tem arte própria, pode enviar normalmente

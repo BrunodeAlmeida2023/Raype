@@ -2,7 +2,17 @@ class Outdoor < ApplicationRecord
   belongs_to :user
 
   # Attachments para as artes do outdoor (até 3 artes)
-  has_many_attached :art_files
+  has_many_attached :art_files do |attachable|
+    attachable.variant :thumb, resize_to_limit: [200, 200]
+    attachable.variant :medium, resize_to_limit: [800, 800]
+  end
+
+  # 🔒 Validações de segurança para arquivos
+  validates :art_files,
+            content_type: { in: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/webp'],
+                           message: 'deve ser uma imagem válida (PNG, JPG, JPEG, GIF ou WebP)' },
+            size: { less_than: 5.megabytes, message: 'deve ser menor que 5MB' },
+            if: -> { art_files.attached? }
 
   has_many :rents
   has_many :blocked_dates, class_name: 'OutdoorBlockedDate', dependent: :destroy
