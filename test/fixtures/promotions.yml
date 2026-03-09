@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  outdoor_location: 1
+  promotion_type: 1
+  original_price: 9.99
+  promotional_price: 9.99
+  active: false
+  start_date: 2026-03-09
+  end_date: 2026-03-09
+  description: MyText
+  created_by: 1
+
+two:
+  outdoor_location: 1
+  promotion_type: 1
+  original_price: 9.99
+  promotional_price: 9.99
+  active: false
+  start_date: 2026-03-09
+  end_date: 2026-03-09
+  description: MyText
+  created_by: 1

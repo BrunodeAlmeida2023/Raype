@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_05_190933) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_09_030913) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,24 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_05_190933) do
     t.index ["outdoor_type"], name: "index_outdoors_on_outdoor_type"
     t.index ["status"], name: "index_outdoors_on_status"
     t.index ["user_id"], name: "index_outdoors_on_user_id"
+  end
+
+  create_table "promotions", force: :cascade do |t|
+    t.integer "outdoor_location"
+    t.integer "promotion_type"
+    t.decimal "original_price", precision: 10, scale: 2
+    t.decimal "promotional_price", precision: 10, scale: 2
+    t.boolean "active", default: true
+    t.date "start_date"
+    t.date "end_date"
+    t.text "description"
+    t.integer "created_by"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_promotions_on_active"
+    t.index ["outdoor_location"], name: "index_promotions_on_outdoor_location"
+    t.index ["promotion_type"], name: "index_promotions_on_promotion_type"
+    t.index ["start_date", "end_date"], name: "index_promotions_on_start_date_and_end_date"
   end
 
   create_table "rents", force: :cascade do |t|

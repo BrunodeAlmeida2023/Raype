@@ -119,10 +119,23 @@
             <!-- Aluguel Mensal -->
             <div class="budget-summary-item">
               <div class="budget-summary-item-header">
-                <span class="budget-summary-label">Aluguel (<%= budget[:months] %> <%= pluralize_months(budget[:months]) %>)</span>
-                <span class="budget-summary-calc"><%= budget[:months] %> × R$ <%= format_budget_value(budget[:monthly_price]) %></span>
+                <span class="budget-summary-label">
+                  Aluguel (<%= budget[:months] %> <%= pluralize_months(budget[:months]) %>)
+                  <% if budget[:has_monthly_promotion] %>
+                    <span class="promotion-badge">PROMOÇÃO</span>
+                  <% end %>
+                </span>
+                <% if budget[:has_monthly_promotion] %>
+                  <span class="budget-summary-calc">
+                    <%= budget[:months] %> ×
+                    <span style="text-decoration: line-through; color: #999;">R$ <%= format_budget_value(budget[:monthly_price]) %></span>
+                    <span style="color: #28a745; font-weight: bold;">R$ <%= format_budget_value(budget[:promotional_monthly_price]) %></span>
+                  </span>
+                <% else %>
+                  <span class="budget-summary-calc"><%= budget[:months] %> × R$ <%= format_budget_value(budget[:monthly_price]) %></span>
+                <% end %>
               </div>
-              <div class="budget-summary-value">
+              <div class="budget-summary-value" style="<%= 'color: #28a745;' if budget[:has_monthly_promotion] %>">
                 R$ <%= format_budget_value(budget[:rental_total]) %>,00
               </div>
             </div>
@@ -141,14 +154,26 @@
             <% end %>
 
             <!-- Taxa de Instalação -->
-            <% if budget[:installation_fee] > 0 %>
+            <% if budget[:installation_fee] > 0 || budget[:has_installation_promotion] %>
               <div class="budget-summary-item">
                 <div class="budget-summary-item-header">
-                  <span class="budget-summary-label">Instalação</span>
-                  <span class="budget-summary-hint">(Cobrada para períodos menores que 2 meses)</span>
+                  <span class="budget-summary-label">
+                    Instalação
+                    <% if budget[:has_installation_promotion] %>
+                      <span class="promotion-badge">PROMOÇÃO</span>
+                    <% end %>
+                  </span>
+                  <% if budget[:has_installation_promotion] %>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                      <span class="budget-summary-hint">(Cobrada para períodos menores que 2 meses)</span>
+                      <span style="text-decoration: line-through; color: #999;">R$ <%= format_budget_value(budget[:installation_fee]) %>,00</span>
+                    </div>
+                  <% else %>
+                    <span class="budget-summary-hint">(Cobrada para períodos menores que 2 meses)</span>
+                  <% end %>
                 </div>
-                <div class="budget-summary-value">
-                  R$ <%= format_budget_value(budget[:installation_fee]) %>,00
+                <div class="budget-summary-value" style="<%= 'color: #28a745;' if budget[:has_installation_promotion] %>">
+                  R$ <%= format_budget_value(budget[:final_installation_fee]) %>,00
                 </div>
               </div>
             <% end %>
@@ -163,6 +188,34 @@
               R$ <%= format_budget_value(budget[:total]) %>,00
             </span>
           </div>
+
+          <style>
+            .promotion-badge {
+              display: inline-block;
+              background: #28a745;
+              color: white;
+              font-size: 0.65rem;
+              font-weight: bold;
+              padding: 2px 8px;
+              border-radius: 12px;
+              margin-left: 8px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              vertical-align: middle;
+              animation: pulse-promotion 2s ease-in-out infinite;
+            }
+
+            @keyframes pulse-promotion {
+              0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+              }
+              50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+              }
+            }
+          </style>
 
 
           <!-- Nota sobre disponibilidade -->

@@ -102,11 +102,14 @@
               class: "home-submit-btn",
               id: "submit-choose-art",
               type: "submit",
-              data: { disable_with: "⏳ Processando..." } %>
-          <div class="loading-spinner" id="loading-spinner" style="display: none;">
+              data: { disable_with: "Processando..." } %>
+        </div>
+
+        <div class="loading-spinner" id="loading-spinner" style="display: none;">
+          <div class="spinner-wrapper">
             <div class="spinner"></div>
-            <p>Processando suas artes... Por favor, aguarde.</p>
           </div>
+          <p class="loading-message">Processando suas artes...<br><span class="loading-submessage">Por favor, aguarde</span></p>
         </div>
       </div>
     <% end %>

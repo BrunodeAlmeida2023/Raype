@@ -40,6 +40,11 @@ Rails.application.routes.draw do
     resources :rents, only: [:index, :show, :update]
     resources :location_blocked_dates, only: [:index, :new, :create, :destroy]
     resources :location_blocked_faces, only: [:index, :new, :create, :edit, :update, :destroy]
+    resources :promotions do
+      member do
+        patch :toggle_active
+      end
+    end
   end
 
   # Sidekiq Web UI - Requer autenticação admin

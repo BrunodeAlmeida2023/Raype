@@ -6,6 +6,7 @@ class Rent < ApplicationRecord
   validates :start_date, :end_date, :total_amount, presence: true
   validate :outdoor_available_in_period, on: :create
   validate :location_not_blocked, on: :create
+  validate :faces_not_blocked, on: :create
 
   # Enum para facilitar o status (opcional, mas recomendado)
   # pending: aguardando pagto, paid: pago/ativo, finished: acabou o prazo
@@ -14,11 +15,31 @@ class Rent < ApplicationRecord
   # Escopo útil: Aluguéis ativos AGORA
   scope :active, -> { where(status: 'paid').where('end_date >= ?', Date.today) }
 
-  # Verifica se este rent está em conflito com bloqueio de localização do admin
+  # Verifica se este rent está em conflito com bloqueio de localização ou faces do admin
   def blocked_by_admin?
     return false unless outdoor&.outdoor_location.present? && start_date && end_date
 
-    LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, start_date, end_date)
+    # Verifica bloqueio de localização completa
+    location_blocked = LocationBlockedDate.location_blocked_for_period?(outdoor.outdoor_location, start_date, end_date)
+    return true if location_blocked
+
+    # Verifica bloqueio de faces específicas
+    faces_blocked_by_admin?
+  end
+
+  # Verifica se as faces específicas deste rent estão bloqueadas
+  def faces_blocked_by_admin?
+    return false unless outdoor&.outdoor_location.present? && outdoor.selected_faces.present?
+    return false unless start_date && end_date
+
+    blocked_faces = LocationBlockedFace.blocked_faces_in_period(
+      outdoor.outdoor_location,
+      start_date,
+      end_date
+    )
+
+    # Verifica se alguma das faces selecionadas está bloqueada
+    (outdoor.selected_faces & blocked_faces).any?
   end
 
   private
@@ -47,6 +68,24 @@ class Rent < ApplicationRecord
       errors.add(:base, "Este período não está disponível para a localização selecionada. " \
                         "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. " \
                         "Por favor, escolha outras datas.")
+    end
+  end
+
+  def faces_not_blocked
+    return unless outdoor&.outdoor_location.present? && outdoor.selected_faces.present?
+    return unless start_date && end_date
+
+    blocked_faces = LocationBlockedFace.blocked_faces_in_period(
+      outdoor.outdoor_location,
+      start_date,
+      end_date
+    )
+
+    blocked_selected = outdoor.selected_faces & blocked_faces
+    if blocked_selected.any?
+      errors.add(:base, "Face(s) #{blocked_selected.join(', ')} do outdoor não está(ão) disponível(is) para o período selecionado. " \
+                        "Essas faces foram bloqueadas pelo administrador. " \
+                        "Por favor, selecione outras faces ou escolha outro período.")
     end
   end
 end

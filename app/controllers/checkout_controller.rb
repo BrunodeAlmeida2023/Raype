@@ -32,14 +32,31 @@ class CheckoutController < ApplicationController
       return
     end
 
-    # 🔒 VALIDAÇÃO: Verifica se a localização foi bloqueada pelo admin
+    # 🔒 VALIDAÇÃO: Verifica se a localização ou faces foram bloqueadas pelo admin
     if @rent.blocked_by_admin?
-      next_available = LocationBlockedDate.minimum_start_date_for_location(@rent.outdoor.outdoor_location)
       @rent.update!(status: 'canceled')
-      redirect_to root_path, alert: "Este período não está mais disponível para a localização selecionada. " \
-                                    "Seu orçamento foi cancelado automaticamente. " \
-                                    "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}."
-      return
+
+      # Verifica se é bloqueio de faces específicas
+      if @rent.faces_blocked_by_admin?
+        blocked_faces = LocationBlockedFace.blocked_faces_in_period(
+          @rent.outdoor.outdoor_location,
+          @rent.start_date,
+          @rent.end_date
+        )
+        selected_blocked = @rent.outdoor.selected_faces & blocked_faces
+
+        redirect_to root_path, alert: "As face(s) #{selected_blocked.join(', ')} do outdoor selecionado não estão mais disponíveis. " \
+                                      "Seu orçamento foi cancelado automaticamente. " \
+                                      "Por favor, selecione outras faces ou outro período."
+        return
+      else
+        # Bloqueio de localização completa
+        next_available = LocationBlockedDate.minimum_start_date_for_location(@rent.outdoor.outdoor_location)
+        redirect_to root_path, alert: "Este período não está mais disponível para a localização selecionada. " \
+                                      "Seu orçamento foi cancelado automaticamente. " \
+                                      "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}."
+        return
+      end
     end
 
     # Exibe a página de checkout com os métodos de pagamento
@@ -98,6 +115,23 @@ class CheckoutController < ApplicationController
                                               "Próxima data disponível: #{next_available.strftime('%d/%m/%Y')}. " \
                                               "Por favor, selecione outra data e refaça o orçamento."
       return
+    end
+
+    # 🔒 VALIDAÇÃO: Verifica se as faces específicas estão bloqueadas pelo admin
+    if @outdoor.outdoor_location.present? && @outdoor.selected_faces.present?
+      blocked_faces = LocationBlockedFace.blocked_faces_in_period(
+        @outdoor.outdoor_location,
+        @checkout_data[:start_date],
+        @checkout_data[:end_date]
+      )
+
+      selected_blocked = @outdoor.selected_faces & blocked_faces
+      if selected_blocked.any?
+        session.delete(:pending_checkout)
+        redirect_to find_date_home_path, alert: "Face(s) #{selected_blocked.join(', ')} não está(ão) mais disponível(is). " \
+                                                "Por favor, selecione outras faces e refaça o orçamento."
+        return
+      end
     end
 
     @rent = Rent.new(

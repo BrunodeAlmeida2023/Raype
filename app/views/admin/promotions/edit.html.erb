@@ -1,0 +1,89 @@
+<div class="admin-page">
+  <div class="admin-page-header">
+    <h1 class="admin-page-title"><i class="fas fa-edit"></i> Editar Promoção</h1>
+    <%= link_to 'Voltar', admin_promotions_path, class: 'admin-btn-secondary' %>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card-body">
+      <%= form_with model: @promotion, url: admin_promotion_path(@promotion), method: :patch, local: true, class: 'admin-form' do |f| %>
+        <% if @promotion.errors.any? %>
+          <div class="admin-alert admin-alert-error">
+            <h4><%= pluralize(@promotion.errors.count, "erro") %> impediram a atualização:</h4>
+            <ul>
+              <% @promotion.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="admin-form-group">
+          <%= f.label :outdoor_location, "Localização do Outdoor:", class: "admin-form-label" %>
+          <%= f.select :outdoor_location,
+              Outdoor.outdoor_location_options.map { |label, value| [label, value] },
+              { prompt: 'Selecione a localização' },
+              { class: "admin-form-input", required: true } %>
+          <p class="admin-form-hint">Selecione a localização do outdoor que terá a promoção</p>
+        </div>
+
+        <div class="admin-form-group">
+          <%= f.label :promotion_type, "Tipo de Promoção:", class: "admin-form-label" %>
+          <%= f.select :promotion_type,
+              [['Mensalidade', 'monthly'], ['Instalação', 'installation']],
+              { prompt: 'Selecione o tipo' },
+              { class: "admin-form-input", required: true } %>
+          <p class="admin-form-hint">Escolha se a promoção é para mensalidade ou taxa de instalação</p>
+        </div>
+
+        <div class="admin-form-grid">
+          <div class="admin-form-group">
+            <%= f.label :original_price, "Preço Original (R$):", class: "admin-form-label" %>
+            <%= f.number_field :original_price, step: 0.01, min: 0, class: "admin-form-input", required: true %>
+            <p class="admin-form-hint">Preço padrão sem promoção</p>
+          </div>
+
+          <div class="admin-form-group">
+            <%= f.label :promotional_price, "Preço Promocional (R$):", class: "admin-form-label" %>
+            <%= f.number_field :promotional_price, step: 0.01, min: 0, class: "admin-form-input", required: true %>
+            <p class="admin-form-hint">Preço com desconto</p>
+          </div>
+        </div>
+
+        <div class="admin-form-grid">
+          <div class="admin-form-group">
+            <%= f.label :start_date, "Data Inicial:", class: "admin-form-label" %>
+            <%= f.date_field :start_date, class: "admin-form-input" %>
+            <p class="admin-form-hint">Quando a promoção começa</p>
+          </div>
+
+          <div class="admin-form-group">
+            <%= f.label :end_date, "Data Final:", class: "admin-form-label" %>
+            <%= f.date_field :end_date, class: "admin-form-input" %>
+            <p class="admin-form-hint">Deixe em branco para promoção sem data de término</p>
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <%= f.label :description, "Descrição:", class: "admin-form-label" %>
+          <%= f.text_area :description, class: "admin-form-input", rows: 3 %>
+          <p class="admin-form-hint">Descrição interna da promoção (opcional)</p>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-form-checkbox">
+            <%= f.check_box :active %>
+            <span>Promoção ativa</span>
+          </label>
+          <p class="admin-form-hint">Marque para ativar a promoção</p>
+        </div>
+
+        <div class="admin-form-actions">
+          <%= link_to 'Cancelar', admin_promotions_path, class: "admin-btn-secondary" %>
+          <%= f.submit "Salvar Alterações", class: "admin-btn-success" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
