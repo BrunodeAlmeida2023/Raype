@@ -343,7 +343,15 @@ class HomeController < ApplicationController
     # ✅ SEGURANÇA: Calcula valor no BACKEND (não aceita do frontend)
     total_amount = BudgetCalculator.calculate_total(@outdoor)
 
+    # Calcula a quantidade de meses para o parcelamento
+    quantity_months = (@outdoor.selected_end_date.year - @outdoor.selected_start_date.year) * 12 +
+                      (@outdoor.selected_end_date.month - @outdoor.selected_start_date.month)
+    
+    # Garante mínimo de 1 mês
+    quantity_months = [quantity_months, 1].max
+
     Rails.logger.info "🔒 Total calculado no backend: R$ #{total_amount}"
+    Rails.logger.info "🔒 Quantidade de meses: #{quantity_months}"
     Rails.logger.info "🔒 Outdoor pertence ao usuário: #{current_user.id}"
 
     # Salva os dados na session (NÃO cria rent ainda)
@@ -351,7 +359,8 @@ class HomeController < ApplicationController
       outdoor_id: @outdoor.id,
       start_date: @outdoor.selected_start_date.to_s,
       end_date: @outdoor.selected_end_date.to_s,
-      total_amount: total_amount
+      total_amount: total_amount,
+      quantity_months: quantity_months
     }
 
     redirect_to new_checkout_path

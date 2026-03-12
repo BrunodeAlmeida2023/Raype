@@ -102,11 +102,6 @@
           </div>
         <% end %>
 
-        <button type="button" class="order-refresh-btn">
-          <i class="fas fa-sync-alt"></i>
-          Atualizar Status
-        </button>
-
         <%= button_to cancel_order_path(@rent.id), method: :delete, class: "order-cancel-btn", form: { data: { turbo: false, turbo_confirm: "Tem certeza que deseja cancelar este orçamento? Esta ação não pode ser desfeita." } } do %>
           <i class="fas fa-times-circle"></i>
           Cancelar Orçamento

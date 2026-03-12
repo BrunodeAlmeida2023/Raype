@@ -25,8 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
     submitButton: !!submitButton
   });
 
-  let currentPaymentMethod = ''; // PIX_BOLETO ou CARD
-  let currentPaymentType = ''; // PIX, BOLETO, CREDIT_CARD, DEBIT_CARD
+  let currentPaymentMethod = ''; // PIX, BOLETO ou CARD
   let currentInstallments = 1;
 
   // Função para resetar seleção
@@ -34,18 +33,15 @@ document.addEventListener('DOMContentLoaded', function() {
     paymentCards.forEach(c => c.classList.remove('selected'));
 
     // Esconde todos os containers de opções
-    const pixBoletoOptions = document.getElementById('pix-boleto-options');
-    const cardOptions = document.getElementById('card-options');
-    const pixBoletoGrid = document.getElementById('pix-boleto-installments-grid');
+    const pixOptions = document.getElementById('pix-options');
+    const boletoOptions = document.getElementById('boleto-options');
+    const pixGrid = document.getElementById('pix-installments-grid');
+    const boletoGrid = document.getElementById('boleto-installments-grid');
 
-    if (pixBoletoOptions) pixBoletoOptions.classList.add('hidden-data');
-    if (cardOptions) cardOptions.classList.add('hidden-data');
-    if (pixBoletoGrid) pixBoletoGrid.classList.add('hidden-data');
-
-    // Resetar cards de tipo de pagamento
-    document.querySelectorAll('.payment-type-option-card').forEach(card => {
-      card.classList.remove('active');
-    });
+    if (pixOptions) pixOptions.classList.add('hidden-data');
+    if (boletoOptions) boletoOptions.classList.add('hidden-data');
+    if (pixGrid) pixGrid.classList.add('hidden-data');
+    if (boletoGrid) boletoGrid.classList.add('hidden-data');
 
     // Resetar cards de modo de pagamento
     document.querySelectorAll('.payment-mode-card').forEach(card => {
@@ -62,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     submitButton.classList.remove('enabled');
   }
 
-  // Selecionar método de pagamento principal (PIX_BOLETO ou CARD)
+  // Selecionar método de pagamento principal (PIX ou BOLETO)
   paymentCards.forEach(card => {
     card.addEventListener('click', function() {
       const method = this.getAttribute('data-method');
@@ -76,25 +72,22 @@ document.addEventListener('DOMContentLoaded', function() {
       currentPaymentMethod = method;
 
       // Mostra opções específicas
-      if (method === 'PIX_BOLETO') {
-        console.log('💰 Mostrando opções de PIX/BOLETO');
-        const pixBoletoOptions = document.getElementById('pix-boleto-options');
-        console.log('📦 Container pix-boleto-options:', pixBoletoOptions);
+      if (method === 'PIX') {
+        console.log('💰 Mostrando opções de PIX');
+        const pixOptions = document.getElementById('pix-options');
 
-        if (pixBoletoOptions) {
-          console.log('✅ Removendo classe hidden-data');
-          pixBoletoOptions.classList.remove('hidden-data');
+        if (pixOptions) {
+          pixOptions.classList.remove('hidden-data');
         } else {
-          console.error('❌ Container pix-boleto-options não encontrado!');
+          console.error('❌ Container pix-options não encontrado!');
         }
 
-        // Define BOLETO como padrão (será usado no backend)
-        currentPaymentType = 'BOLETO';
-        paymentTypeInput.value = 'BOLETO';
-        paymentMethodInput.value = 'BOLETO';
+        // Define PIX no campo hidden
+        paymentMethodInput.value = 'PIX';
+        paymentTypeInput.value = 'PIX';
 
         // Ativa "À Vista" por padrão
-        const avistaCard = document.querySelector('.payment-mode-card[data-mode="avista"][data-payment-type="pix-boleto"]');
+        const avistaCard = document.querySelector('.payment-mode-card[data-mode="avista"][data-payment-type="pix"]');
         if (avistaCard) avistaCard.classList.add('active');
 
         currentInstallments = 1;
@@ -104,19 +97,28 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.disabled = false;
         submitButton.classList.add('enabled');
 
-      } else if (method === 'CARD') {
-        const cardOptions = document.getElementById('card-options');
-        if (cardOptions) cardOptions.classList.remove('hidden-data');
+      } else if (method === 'BOLETO') {
+        console.log('💰 Mostrando opções de BOLETO');
+        const boletoOptions = document.getElementById('boleto-options');
 
-        // Define CREDIT_CARD como padrão (Asaas decide crédito ou débito)
-        currentPaymentType = 'CREDIT_CARD';
-        paymentTypeInput.value = 'CREDIT_CARD';
-        paymentMethodInput.value = 'CREDIT_CARD';
+        if (boletoOptions) {
+          boletoOptions.classList.remove('hidden-data');
+        } else {
+          console.error('❌ Container boleto-options não encontrado!');
+        }
+
+        // Define BOLETO no campo hidden
+        paymentMethodInput.value = 'BOLETO';
+        paymentTypeInput.value = 'BOLETO';
+
+        // Ativa "À Vista" por padrão
+        const avistaCard = document.querySelector('.payment-mode-card[data-mode="avista"][data-payment-type="boleto"]');
+        if (avistaCard) avistaCard.classList.add('active');
 
         currentInstallments = 1;
         installmentsInput.value = 1;
 
-        // Habilita botão imediatamente
+        // Habilita botão já que tem seleção padrão
         submitButton.disabled = false;
         submitButton.classList.add('enabled');
       }
@@ -125,17 +127,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Event listener para tipo de cartão REMOVIDO - não existe mais na UI
-
-  // Selecionar modo de pagamento (À Vista ou Parcelado) para PIX/BOLETO
-  document.querySelectorAll('.payment-mode-card[data-payment-type="pix-boleto"]').forEach(modeCard => {
+  // Selecionar modo de pagamento (À Vista ou Parcelado) para PIX
+  document.querySelectorAll('.payment-mode-card[data-payment-type="pix"]').forEach(modeCard => {
     modeCard.addEventListener('click', function(e) {
       e.stopPropagation();
 
       const mode = this.getAttribute('data-mode');
       const paymentType = this.getAttribute('data-payment-type');
 
-      // Remove active de todos os cards do mesmo tipo
+      // Remove active de todos os cards PIX
       document.querySelectorAll(`.payment-mode-card[data-payment-type="${paymentType}"]`).forEach(c => {
         c.classList.remove('active');
       });
@@ -143,27 +143,62 @@ document.addEventListener('DOMContentLoaded', function() {
       // Adiciona active no clicado
       this.classList.add('active');
 
-      // Mostra/esconde grid de parcelas
-      const pixBoletoGrid = document.getElementById('pix-boleto-installments-grid');
+      // Mostra/esconde grid de parcelas PIX
+      const pixGrid = document.getElementById('pix-installments-grid');
 
-      if (mode === 'parcelado' && pixBoletoGrid) {
-        pixBoletoGrid.classList.remove('hidden-data');
+      if (mode === 'parcelado' && pixGrid) {
+        pixGrid.classList.remove('hidden-data');
         setTimeout(() => {
-          pixBoletoGrid.style.opacity = '1';
-          pixBoletoGrid.style.transform = 'translateY(0)';
+          pixGrid.style.opacity = '1';
+          pixGrid.style.transform = 'translateY(0)';
         }, 10);
-      } else if (pixBoletoGrid) {
-        pixBoletoGrid.classList.add('hidden-data');
+      } else if (pixGrid) {
+        pixGrid.classList.add('hidden-data');
         currentInstallments = 1;
         installmentsInput.value = 1;
       }
 
-      console.log('📋 Modo:', mode);
+      console.log('📋 Modo PIX:', mode);
     });
   });
 
-  // Selecionar parcela específica
-  document.querySelectorAll('.installment-card[data-payment-type="pix-boleto"]').forEach(installmentCard => {
+  // Selecionar modo de pagamento (À Vista ou Parcelado) para BOLETO
+  document.querySelectorAll('.payment-mode-card[data-payment-type="boleto"]').forEach(modeCard => {
+    modeCard.addEventListener('click', function(e) {
+      e.stopPropagation();
+
+      const mode = this.getAttribute('data-mode');
+      const paymentType = this.getAttribute('data-payment-type');
+
+      // Remove active de todos os cards BOLETO
+      document.querySelectorAll(`.payment-mode-card[data-payment-type="${paymentType}"]`).forEach(c => {
+        c.classList.remove('active');
+      });
+
+      // Adiciona active no clicado
+      this.classList.add('active');
+
+      // Mostra/esconde grid de parcelas BOLETO
+      const boletoGrid = document.getElementById('boleto-installments-grid');
+
+      if (mode === 'parcelado' && boletoGrid) {
+        boletoGrid.classList.remove('hidden-data');
+        setTimeout(() => {
+          boletoGrid.style.opacity = '1';
+          boletoGrid.style.transform = 'translateY(0)';
+        }, 10);
+      } else if (boletoGrid) {
+        boletoGrid.classList.add('hidden-data');
+        currentInstallments = 1;
+        installmentsInput.value = 1;
+      }
+
+      console.log('📋 Modo BOLETO:', mode);
+    });
+  });
+
+  // Selecionar parcela específica para PIX
+  document.querySelectorAll('.installment-card[data-payment-type="pix"]').forEach(installmentCard => {
     installmentCard.addEventListener('click', function(e) {
       e.stopPropagation();
 
@@ -187,7 +222,36 @@ document.addEventListener('DOMContentLoaded', function() {
         this.style.transform = 'scale(1)';
       }, 150);
 
-      console.log('💰 Parcelas selecionadas:', installments);
+      console.log('💰 Parcelas PIX selecionadas:', installments);
+    });
+  });
+
+  // Selecionar parcela específica para BOLETO
+  document.querySelectorAll('.installment-card[data-payment-type="boleto"]').forEach(installmentCard => {
+    installmentCard.addEventListener('click', function(e) {
+      e.stopPropagation();
+
+      const installments = this.getAttribute('data-installments');
+      const paymentType = this.getAttribute('data-payment-type');
+
+      // Remove seleção anterior
+      document.querySelectorAll(`.installment-card[data-payment-type="${paymentType}"]`).forEach(c => {
+        c.classList.remove('selected');
+      });
+
+      // Adiciona seleção
+      this.classList.add('selected');
+
+      currentInstallments = parseInt(installments);
+      installmentsInput.value = installments;
+
+      // Feedback visual
+      this.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        this.style.transform = 'scale(1)';
+      }, 150);
+
+      console.log('💰 Parcelas BOLETO selecionadas:', installments);
     });
   });
 

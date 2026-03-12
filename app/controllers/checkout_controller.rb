@@ -71,37 +71,29 @@ class CheckoutController < ApplicationController
     end
 
     payment_method = params[:payment_method].to_s.upcase
-    payment_type = params[:payment_type].to_s.upcase
     installments = params[:installments].to_i > 0 ? params[:installments].to_i : 1
 
-    Rails.logger.info "🔵 PROCESSANDO: Método=#{payment_method} | Tipo=#{payment_type} | Parcelas=#{installments}"
-
-    # Se veio como método agrupado, usa o tipo específico
-    actual_method = if ['PIX_BOLETO', 'CARD'].include?(payment_method)
-                      payment_type.present? ? payment_type : 'BOLETO'
-                    else
-                      payment_method
-                    end
-
-    Rails.logger.info "🔵 MÉTODO FINAL: #{actual_method}"
+    Rails.logger.info "🔵 PROCESSANDO: Método=#{payment_method} | Parcelas=#{installments}"
 
     # Valida método
     valid_methods = ['PIX', 'BOLETO', 'CREDIT_CARD', 'DEBIT_CARD']
-    unless valid_methods.include?(actual_method)
-      redirect_to new_checkout_path, alert: "Método inválido." and return
+    unless valid_methods.include?(payment_method)
+      redirect_to new_checkout_path, alert: "Método de pagamento inválido." and return
     end
 
     # Regras específicas por método
-    case actual_method
+    case payment_method
     when 'CREDIT_CARD', 'DEBIT_CARD'
       installments = 1
     when 'BOLETO'
       installments = 12 if installments > 12
     when 'PIX'
       # PIX: Mantém o installments para suportar PIX parcelado
+      max_allowed = @checkout_data[:quantity_months].to_i
+      installments = max_allowed if installments > max_allowed
     end
 
-    Rails.logger.info "🔵 ENVIANDO PARA ASAAS: Método=#{actual_method} | Parcelas=#{installments}"
+    Rails.logger.info "🔵 ENVIANDO PARA ASAAS: Método=#{payment_method} | Parcelas=#{installments}"
 
     # PRIMEIRO: Cria o rent (para ter o ID)
     @outdoor = Outdoor.find(@checkout_data[:outdoor_id])
@@ -161,7 +153,7 @@ class CheckoutController < ApplicationController
       "Aluguel Outdoor ##{@rent.id} - #{@outdoor.outdoor_type}",
       @rent.id, # USA O ID DO RENT COMO EXTERNAL REFERENCE
       url_retorno_whatsapp,
-      actual_method,
+      payment_method,
       installments
     )
 
@@ -187,37 +179,31 @@ class CheckoutController < ApplicationController
   # Ação antiga para processar pagamento COM rent existente
   def process_payment
     payment_method = params[:payment_method].to_s.upcase
-    payment_type = params[:payment_type].to_s.upcase
     installments = params[:installments].to_i > 0 ? params[:installments].to_i : 1
 
-    Rails.logger.info "🔵 PROCESSANDO: Método=#{payment_method} | Tipo=#{payment_type} | Parcelas=#{installments}"
-
-    # Se veio como método agrupado, usa o tipo específico
-    actual_method = if ['PIX_BOLETO', 'CARD'].include?(payment_method)
-                      payment_type.present? ? payment_type : 'BOLETO'
-                    else
-                      payment_method
-                    end
-
-    Rails.logger.info "🔵 MÉTODO FINAL: #{actual_method}"
+    Rails.logger.info "🔵 PROCESSANDO: Método=#{payment_method} | Parcelas=#{installments}"
 
     # Valida método
     valid_methods = ['PIX', 'BOLETO', 'CREDIT_CARD', 'DEBIT_CARD']
-    unless valid_methods.include?(actual_method)
-      redirect_to checkout_path(@rent.id), alert: "Método inválido." and return
+    unless valid_methods.include?(payment_method)
+      redirect_to checkout_path(@rent.id), alert: "Método de pagamento inválido." and return
     end
 
     # Regras específicas por método
-    case actual_method
+    case payment_method
     when 'CREDIT_CARD', 'DEBIT_CARD'
       installments = 1
     when 'BOLETO'
       installments = 12 if installments > 12
     when 'PIX'
       # PIX: Mantém o installments para suportar PIX parcelado
+      # Calcula o limite baseado no período do rent
+      months_rented = ((@rent.end_date.year * 12 + @rent.end_date.month) - (@rent.start_date.year * 12 + @rent.start_date.month))
+      max_allowed = [months_rented, 12].min
+      installments = max_allowed if installments > max_allowed
     end
 
-    Rails.logger.info "🔵 ENVIANDO PARA ASAAS: Método=#{actual_method} | Parcelas=#{installments}"
+    Rails.logger.info "🔵 ENVIANDO PARA ASAAS: Método=#{payment_method} | Parcelas=#{installments}"
 
     # 🔒 VALIDAÇÃO: Verifica se a localização foi bloqueada pelo admin após a criação do rent
     if @rent.blocked_by_admin?
@@ -241,7 +227,7 @@ class CheckoutController < ApplicationController
       "Aluguel Outdoor ##{@rent.id}",
       @rent.id,
       url_retorno_whatsapp,
-      actual_method,
+      payment_method,
       installments
     )
 

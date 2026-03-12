@@ -83,69 +83,43 @@
           <%= hidden_field_tag :payment_type, '', id: 'selected-payment-type' %>
           <%= hidden_field_tag :installments, 1, id: 'selected-installments' %>
 
-          <% max_installments = @outdoor.duration_in_months %>
+          <%
+            # Calcula o máximo de parcelas baseado na duração do aluguel
+            max_installments = @outdoor.duration_in_months
+            # Garante mínimo de 1 parcela como fallback de segurança
+            max_installments = 1 if max_installments < 1
+            # Limita a 12 parcelas no máximo
+            max_installments = [max_installments, 12].min
+          %>
 
-          <!-- PIX ou Boleto Bancário -->
-          <div class="payment-method-card" data-method="PIX_BOLETO">
+          <!-- PIX -->
+          <div class="payment-method-card" data-method="PIX">
             <div class="payment-method-header">
-              <div class="payment-method-icon pix-boleto-icon">
+              <div class="payment-method-icon pix-icon">
                 <i class="fas fa-qrcode"></i>
-                <i class="fas fa-barcode"></i>
               </div>
               <div class="payment-method-info">
-                <h4 class="payment-method-name">PIX ou Boleto Bancário</h4>
-                <p class="payment-method-desc">Escolha entre PIX ou Boleto</p>
+                <h4 class="payment-method-name">PIX</h4>
+                <p class="payment-method-desc">Pagamento instantâneo</p>
               </div>
             </div>
-            <div class="payment-method-badge instant-badge">Aprovação rápida</div>
+            <div class="payment-method-badge instant-badge">Aprovação imediata</div>
 
-            <!-- Opções de PIX ou Boleto + Parcelamento -->
-            <div class="installments-container" id="pix-boleto-options" style="display: none;">
-              <!-- Seleção PIX ou Boleto -->
-              <div class="payment-type-selector">
-                <h4 class="payment-type-title">Escolha o tipo de pagamento</h4>
-                <div class="payment-type-options-grid">
-                  <div class="payment-type-option-card" data-type="PIX">
-                    <div class="payment-type-icon">
-                      <i class="fas fa-qrcode"></i>
-                    </div>
-                    <div class="payment-type-content">
-                      <h5>PIX</h5>
-                      <p>Aprovação imediata</p>
-                    </div>
-                    <div class="payment-type-check">
-                      <i class="fas fa-check-circle"></i>
-                    </div>
-                  </div>
-
-                  <div class="payment-type-option-card active" data-type="BOLETO">
-                    <div class="payment-type-icon">
-                      <i class="fas fa-barcode"></i>
-                    </div>
-                    <div class="payment-type-content">
-                      <h5>Boleto</h5>
-                      <p>Confirmação em 3 dias</p>
-                    </div>
-                    <div class="payment-type-check">
-                      <i class="fas fa-check-circle"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+            <!-- Opções: À Vista ou Parcelado para PIX -->
+            <div class="installments-container hidden-data" id="pix-options">
               <!-- Opções de Pagamento: À Vista ou Parcelado -->
               <div class="payment-mode-selector">
                 <h4 class="payment-mode-title">Como deseja pagar?</h4>
                 <div class="payment-mode-options">
                   <!-- À Vista -->
-                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix-boleto">
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix">
                     <div class="payment-mode-icon">
                       <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="payment-mode-content">
                       <h5>À Vista</h5>
                       <p class="payment-mode-value">R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></p>
-                      <span class="payment-mode-benefit">Pagamento único</span>
+                      <span class="payment-mode-benefit">Pagamento único via PIX</span>
                     </div>
                     <div class="payment-mode-check">
                       <i class="fas fa-check-circle"></i>
@@ -153,14 +127,14 @@
                   </div>
 
                   <!-- Parcelado -->
-                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix-boleto">
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix">
                     <div class="payment-mode-icon">
                       <i class="fas fa-calendar-alt"></i>
                     </div>
                     <div class="payment-mode-content">
                       <h5>Parcelado</h5>
                       <p class="payment-mode-value">Até <%= max_installments %>x</p>
-                      <span class="payment-mode-benefit">Parcelas mensais</span>
+                      <span class="payment-mode-benefit">Parcelas mensais via PIX</span>
                     </div>
                     <div class="payment-mode-check">
                       <i class="fas fa-check-circle"></i>
@@ -169,8 +143,8 @@
                 </div>
               </div>
 
-              <!-- Grid de Parcelas -->
-              <div class="installments-grid-container" id="pix-boleto-installments-grid" style="display: none;">
+              <!-- Grid de Parcelas PIX -->
+              <div class="installments-grid-container hidden-data" id="pix-installments-grid">
                 <h4 class="installments-grid-title">
                   <i class="fas fa-hand-pointer"></i>
                   Escolha a quantidade de parcelas
@@ -178,7 +152,79 @@
                 <div class="installments-grid-modern">
                   <% (1..max_installments).each do |i| %>
                     <% installment_value = (@rent.total_amount / i).round(2) %>
-                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix-boleto">
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix">
+                      <div class="installment-number"><%= i %>x</div>
+                      <div class="installment-value">R$ <%= number_with_precision(installment_value, precision: 2, delimiter: '.', separator: ',') %></div>
+                      <div class="installment-total">Total: R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></div>
+                      <div class="installment-check"><i class="fas fa-check"></i></div>
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- BOLETO -->
+          <div class="payment-method-card" data-method="BOLETO">
+            <div class="payment-method-header">
+              <div class="payment-method-icon boleto-icon">
+                <i class="fas fa-barcode"></i>
+              </div>
+              <div class="payment-method-info">
+                <h4 class="payment-method-name">Boleto Bancário</h4>
+                <p class="payment-method-desc">Pague em qualquer banco</p>
+              </div>
+            </div>
+            <div class="payment-method-badge instant-badge">Vencimento em 1 dia</div>
+
+            <!-- Opções: À Vista ou Parcelado para BOLETO -->
+            <div class="installments-container hidden-data" id="boleto-options">
+              <!-- Opções de Pagamento: À Vista ou Parcelado -->
+              <div class="payment-mode-selector">
+                <h4 class="payment-mode-title">Como deseja pagar?</h4>
+                <div class="payment-mode-options">
+                  <!-- À Vista -->
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>À Vista</h5>
+                      <p class="payment-mode-value">R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></p>
+                      <span class="payment-mode-benefit">Pagamento único via Boleto</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+
+                  <!-- Parcelado -->
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>Parcelado</h5>
+                      <p class="payment-mode-value">Até <%= max_installments %>x</p>
+                      <span class="payment-mode-benefit">Carnê de boletos mensais</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grid de Parcelas BOLETO -->
+              <div class="installments-grid-container hidden-data" id="boleto-installments-grid">
+                <h4 class="installments-grid-title">
+                  <i class="fas fa-hand-pointer"></i>
+                  Escolha a quantidade de parcelas
+                </h4>
+                <div class="installments-grid-modern">
+                  <% (1..max_installments).each do |i| %>
+                    <% installment_value = (@rent.total_amount / i).round(2) %>
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="boleto">
                       <div class="installment-number"><%= i %>x</div>
                       <div class="installment-value">R$ <%= number_with_precision(installment_value, precision: 2, delimiter: '.', separator: ',') %></div>
                       <div class="installment-total">Total: R$ <%= number_with_precision(@rent.total_amount, precision: 2, delimiter: '.', separator: ',') %></div>

@@ -55,14 +55,20 @@ class AsaasService
       return create_boleto_installments(customer_id, value_float, description, external_id, installments)
     end
 
-    # 5. Validação de valor mínimo
+    # 5. Tratamento ESPECIAL: PIX Parcelado (Carnê de PIX)
+    if raw_method == 'PIX' && installments > 1
+      Rails.logger.info "📱 Criando carnê de PIX: #{installments}x"
+      return create_pix_installments(customer_id, value_float, description, external_id, installments)
+    end
+
+    # 6. Validação de valor mínimo
     min_value = (billing_type == 'PIX') ? 0.50 : 5.00
     if value_float < min_value
       Rails.logger.error "❌ Valor R$ #{value_float} abaixo do mínimo (R$ #{min_value})"
       return nil
     end
 
-    # 6. Monta payload
+    # 7. Monta payload
     payload = {
       customer: customer_id,
       billingType: billing_type,
@@ -80,7 +86,7 @@ class AsaasService
 
     Rails.logger.debug "📦 Payload: #{payload.to_json}"
 
-    # 7. Envia para Asaas
+    # 8. Envia para Asaas
     response = request(:post, "/payments", payload)
 
     if response && response.is_a?(Net::HTTPSuccess)
@@ -139,6 +145,52 @@ class AsaasService
 
     # Retorna o link da primeira parcela (ou você poderia retornar uma página com todos os links)
     puts "✅ Carnê finalizado com sucesso."
+    return payment_urls.first
+  end
+
+  # Cria múltiplos pagamentos PIX (Carnê de PIX)
+  def create_pix_installments(customer_id, total_value, description, external_id, installments)
+    valor_parcela = (total_value / installments).round(2)
+
+    # Validação Asaas para PIX
+    if valor_parcela < 0.50
+      Rails.logger.error "❌ Valor da parcela (R$ #{valor_parcela}) abaixo do mínimo para PIX (R$ 0,50)"
+      return nil
+    end
+
+    puts "📱 Iniciando criação de carnê de PIX: #{installments}x de R$ #{valor_parcela}"
+
+    payment_urls = []
+
+    installments.times do |i|
+      parcela_num = i + 1
+      due_date = (Date.today + parcela_num.months).to_s
+
+      payload = {
+        customer: customer_id,
+        billingType: 'PIX',
+        value: valor_parcela,
+        dueDate: due_date,
+        description: "#{description} - Parc. #{parcela_num}/#{installments}",
+        postalService: false,
+        externalReference: "#{external_id}_pix_parc_#{parcela_num}"
+      }
+
+      response = request(:post, "/payments", payload)
+
+      if response && response.is_a?(Net::HTTPSuccess)
+        json = JSON.parse(response.body)
+        payment_urls << json['invoiceUrl']
+        puts "   -> Parcela PIX #{parcela_num} criada: #{json['id']}"
+      else
+        puts "   -> Erro na parcela PIX #{parcela_num}"
+        log_error(response)
+        return nil # Aborta se uma falhar para não gerar carnê incompleto
+      end
+    end
+
+    # Retorna o link da primeira parcela
+    puts "✅ Carnê de PIX finalizado com sucesso."
     return payment_urls.first
   end
 

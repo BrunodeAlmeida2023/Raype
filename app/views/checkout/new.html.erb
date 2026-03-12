@@ -83,37 +83,43 @@
           <%= hidden_field_tag :payment_type, '', id: 'selected-payment-type' %>
           <%= hidden_field_tag :installments, 1, id: 'selected-installments' %>
 
-          <% max_installments = @checkout_data[:quantity_months].to_i %>
+          <%
+            # Calcula o máximo de parcelas baseado na quantidade de meses
+            max_installments = @checkout_data[:quantity_months].to_i
+            # Garante mínimo de 1 parcela como fallback de segurança
+            max_installments = 1 if max_installments < 1
+            # Limita a 12 parcelas no máximo
+            max_installments = [max_installments, 12].min
+          %>
 
-          <!-- PIX ou Boleto Bancário -->
-          <div class="payment-method-card" data-method="PIX_BOLETO">
+          <!-- PIX -->
+          <div class="payment-method-card" data-method="PIX">
             <div class="payment-method-header">
-              <div class="payment-method-icon pix-boleto-icon">
+              <div class="payment-method-icon pix-icon">
                 <i class="fas fa-qrcode"></i>
-                <i class="fas fa-barcode"></i>
               </div>
               <div class="payment-method-info">
-                <h4 class="payment-method-name">PIX ou Boleto Bancário</h4>
-                <p class="payment-method-desc">Escolha à vista ou parcelado</p>
+                <h4 class="payment-method-name">PIX</h4>
+                <p class="payment-method-desc">Pagamento instantâneo</p>
               </div>
             </div>
-            <div class="payment-method-badge instant-badge">Aprovação rápida</div>
+            <div class="payment-method-badge instant-badge">Aprovação imediata</div>
 
-            <!-- Opções: À Vista ou Parcelado (SEM escolher PIX/Boleto - Asaas decide) -->
-            <div class="installments-container hidden-data" id="pix-boleto-options">
+            <!-- Opções: À Vista ou Parcelado para PIX -->
+            <div class="installments-container hidden-data" id="pix-options">
               <!-- Opções de Pagamento: À Vista ou Parcelado -->
               <div class="payment-mode-selector">
                 <h4 class="payment-mode-title">Como deseja pagar?</h4>
                 <div class="payment-mode-options">
                   <!-- À Vista -->
-                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix-boleto">
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="pix">
                     <div class="payment-mode-icon">
                       <i class="fas fa-money-bill-wave"></i>
                     </div>
                     <div class="payment-mode-content">
                       <h5>À Vista</h5>
                       <p class="payment-mode-value"><%= format_installment_value(@checkout_data[:total_amount]) %></p>
-                      <span class="payment-mode-benefit">Pagamento único • PIX ou Boleto</span>
+                      <span class="payment-mode-benefit">Pagamento único via PIX</span>
                     </div>
                     <div class="payment-mode-check">
                       <i class="fas fa-check-circle"></i>
@@ -121,14 +127,14 @@
                   </div>
 
                   <!-- Parcelado -->
-                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix-boleto">
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="pix">
                     <div class="payment-mode-icon">
                       <i class="fas fa-calendar-alt"></i>
                     </div>
                     <div class="payment-mode-content">
                       <h5>Parcelado</h5>
                       <p class="payment-mode-value">Até <%= max_installments %>x</p>
-                      <span class="payment-mode-benefit">Parcelas mensais • Boleto</span>
+                      <span class="payment-mode-benefit">Parcelas mensais via PIX</span>
                     </div>
                     <div class="payment-mode-check">
                       <i class="fas fa-check-circle"></i>
@@ -137,8 +143,8 @@
                 </div>
               </div>
 
-              <!-- Grid de Parcelas -->
-              <div class="installments-grid-container hidden-data" id="pix-boleto-installments-grid">
+              <!-- Grid de Parcelas PIX -->
+              <div class="installments-grid-container hidden-data" id="pix-installments-grid">
                 <h4 class="installments-grid-title">
                   <i class="fas fa-hand-pointer"></i>
                   Escolha a quantidade de parcelas
@@ -146,7 +152,7 @@
                 <div class="installments-grid-modern">
                   <% (1..max_installments).each do |i| %>
                     <% installment_value = calculate_installment_value(@checkout_data[:total_amount], i) %>
-                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix-boleto">
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="pix">
                       <div class="installment-number"><%= i %>x</div>
                       <div class="installment-value"><%= format_installment_value(installment_value) %></div>
                       <div class="installment-total">Total: <%= format_installment_value(@checkout_data[:total_amount]) %></div>
@@ -158,29 +164,74 @@
             </div>
           </div>
 
-          <!-- Cartão -->
-          <div class="payment-method-card" data-method="CARD">
+          <!-- BOLETO -->
+          <div class="payment-method-card" data-method="BOLETO">
             <div class="payment-method-header">
-              <div class="payment-method-icon card-icon">
-                <i class="fas fa-credit-card"></i>
+              <div class="payment-method-icon boleto-icon">
+                <i class="fas fa-barcode"></i>
               </div>
               <div class="payment-method-info">
-                <h4 class="payment-method-name">Cartão de Crédito ou Débito</h4>
-                <p class="payment-method-desc">Processado pelo Asaas</p>
+                <h4 class="payment-method-name">Boleto Bancário</h4>
+                <p class="payment-method-desc">Pague em qualquer banco</p>
               </div>
             </div>
-            <div class="payment-method-badge credit-badge">Aprovação imediata</div>
+            <div class="payment-method-badge instant-badge">Vencimento em 1 dia</div>
 
-            <!-- Sem opções adicionais - Asaas decide tudo -->
-            <div class="installments-container hidden-data" id="card-options">
-              <div class="card-info-notice">
-                <i class="fas fa-info-circle"></i>
-                <p><strong>Você será redirecionado para o Asaas</strong> onde poderá escolher entre:</p>
-                <ul>
-                  <li>💳 Cartão de Crédito (com opções de parcelamento)</li>
-                  <li>💰 Cartão de Débito (pagamento à vista)</li>
-                </ul>
-                <p class="card-security"><i class="fas fa-lock"></i> Ambiente seguro e criptografado</p>
+            <!-- Opções: À Vista ou Parcelado para BOLETO -->
+            <div class="installments-container hidden-data" id="boleto-options">
+              <!-- Opções de Pagamento: À Vista ou Parcelado -->
+              <div class="payment-mode-selector">
+                <h4 class="payment-mode-title">Como deseja pagar?</h4>
+                <div class="payment-mode-options">
+                  <!-- À Vista -->
+                  <div class="payment-mode-card active" data-mode="avista" data-payment-type="boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>À Vista</h5>
+                      <p class="payment-mode-value"><%= format_installment_value(@checkout_data[:total_amount]) %></p>
+                      <span class="payment-mode-benefit">Pagamento único via Boleto</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+
+                  <!-- Parcelado -->
+                  <div class="payment-mode-card" data-mode="parcelado" data-payment-type="boleto">
+                    <div class="payment-mode-icon">
+                      <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <div class="payment-mode-content">
+                      <h5>Parcelado</h5>
+                      <p class="payment-mode-value">Até <%= max_installments %>x</p>
+                      <span class="payment-mode-benefit">Carnê de boletos mensais</span>
+                    </div>
+                    <div class="payment-mode-check">
+                      <i class="fas fa-check-circle"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grid de Parcelas BOLETO -->
+              <div class="installments-grid-container hidden-data" id="boleto-installments-grid">
+                <h4 class="installments-grid-title">
+                  <i class="fas fa-hand-pointer"></i>
+                  Escolha a quantidade de parcelas
+                </h4>
+                <div class="installments-grid-modern">
+                  <% (1..max_installments).each do |i| %>
+                    <% installment_value = calculate_installment_value(@checkout_data[:total_amount], i) %>
+                    <div class="installment-card" data-installments="<%= i %>" data-payment-type="boleto">
+                      <div class="installment-number"><%= i %>x</div>
+                      <div class="installment-value"><%= format_installment_value(installment_value) %></div>
+                      <div class="installment-total">Total: <%= format_installment_value(@checkout_data[:total_amount]) %></div>
+                      <div class="installment-check"><i class="fas fa-check"></i></div>
+                    </div>
+                  <% end %>
+                </div>
               </div>
             </div>
           </div>

@@ -50,3 +50,24 @@
   opacity: 0.8;
 }
 
+/* Mobile: botões lado a lado */
+@media screen and (max-width: 768px) {
+  .flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .home-social-link {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  .home-social-link svg {
+    width: 32px;
+    height: 32px;
+  }
+}
+
