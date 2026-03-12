@@ -7,7 +7,7 @@ class BudgetCalculator
   }.freeze
 
   PRICE_PER_ART = 975
-  INSTALLATION_FEE = 1000 # Cobrado apenas para períodos menores que 2 meses
+  INSTALLATION_FEE = 100# Cobrado apenas para períodos menores que 2 meses
 
   class << self
     # Calcula o valor total do orçamento

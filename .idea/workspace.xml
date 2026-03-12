@@ -5,26 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2356602e-aa5f-4a9e-bc34-c9208b607292" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/IMPLEMENTACAO_FACES_PROMOCOES.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/IMPLEMENTACAO_FINAL_SUMMARY.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README_IMPLEMENTACAO.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/controllers/admin/promotions_controller.rb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/admin/promotions/edit.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/admin/promotions/index.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/views/admin/promotions/new.html.erb" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test_implementation.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_choose_art_faces.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_choose_art_faces.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_form_pages.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" beforeDir="false" afterPath="$PROJECT_DIR$/app/assets/stylesheets/home/_responsive.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/controllers/checkout_controller.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/models/rent.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/models/rent.rb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/services/budget_calculator.rb" beforeDir="false" afterPath="$PROJECT_DIR$/app/services/budget_calculator.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/admin/dashboard/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/admin/dashboard/index.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/choose_art.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/finalize_budget.html.erb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/routes.rb" beforeDir="false" afterPath="$PROJECT_DIR$/config/routes.rb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db/schema.rb" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.rb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/choose_art.html.erb.backup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/home/index.html.erb" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/home/index.html.erb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,6 +19,9 @@
     <persistenceIdMap>
       <entry key="_/home/bruno/code/Raype" value="38xELwsdaG5gOAyJHGBvmpF3f08" />
     </persistenceIdMap>
+  </component>
+  <component name="CopilotUserSelectedChatMode">
+    <option name="chatModeId" value="file:///snapshot/copilot-intellij/dist/assets/agents/Plan.agent.md" />
   </component>
   <component name="CopilotUserSelectedModel">
     <selectedModels>
@@ -294,14 +281,29 @@
       <workItem from="1772799866949" duration="3282000" />
       <workItem from="1772886406870" duration="3769000" />
       <workItem from="1773023849479" duration="3245000" />
+      <workItem from="1773281708000" duration="1573000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="ruby-line">
+          <url>file://$PROJECT_DIR$/app/views/checkout/new.html.erb</url>
+          <line>10</line>
+          <properties myBlockOrdinal="-1">
+            <option name="block-ordinal" value="-1" />
+          </properties>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1773024527084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
+    <SUITE FILE_PATH="coverage/Raype@Raype.rcov" NAME="Raype Coverage Results" MODIFIED="1773281872033" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="rcov" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" MODULE_NAME="Raype" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
